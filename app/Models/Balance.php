@@ -29,6 +29,11 @@ class Balance extends Model
         return $this->belongsTo(Account::class, 'account_id', 'code');
     }
 
+    public function scopeLastInstance($query)
+    {
+        return $query->orderBy('reference_date', 'desc')->first();
+    }
+
     public function scopeBalanceTypeForward($query)
     {
         return $query->where('balance_type', $this->balanceTypes[1]);

@@ -33,5 +33,6 @@ return [
     'Transactions update' => "Transactions update",
     'UPDATE INFORMATION' =>  "UPDATE INFORMATION",
     'Update List' => "Update List",
-    'Your email address is unverified' => "Your email address is unverified"
+    'Your email address is unverified' => "Your email address is unverified",
+    'You can reorder the accounts!' => "You can reorder the accounts!"
 ];

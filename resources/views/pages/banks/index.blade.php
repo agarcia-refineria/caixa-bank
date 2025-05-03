@@ -20,7 +20,7 @@
         <div class="min-h-screen w-full  text-white p-6">
             @if ($currentAccount)
                 @php
-                    $balance = $currentAccount->balances()->balanceTypeForward()->first();
+                    $balance = $currentAccount->balances()->balanceTypeForward()->lastInstance();
                 @endphp
 
                 @if ($balance)
@@ -81,6 +81,20 @@
 
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script>
+        @php
+            $usedColors = [];
+            function randomColorHex(&$usedColors) {
+                do {
+                    $r = mt_rand(0, 180);
+                    $g = mt_rand(0, 255);
+                    $b = mt_rand(180, 255);
+                    $color = sprintf("#%02X%02X%02X", $r, $g, $b);
+                } while (in_array($color, $usedColors));
+                $usedColors[] = $color;
+                return $color;
+            }
+        @endphp
+
         const categoryCtx = document.getElementById('categoryChart');
         new Chart(categoryCtx, {
             type: 'doughnut',
@@ -89,7 +103,7 @@
                 datasets: [{
                     label: 'Expenses',
                     data: [@foreach($currentAccount->transactionsCurrentMonth->groupBy('remittanceInformationUnstructured') as $group) {{ $group->sum('transactionAmount_amount') }} {{ !$loop->last ? ',' : '' }} @endforeach],
-                    backgroundColor: [@foreach($currentAccount->transactionsCurrentMonth->groupBy('remittanceInformationUnstructured') as $group) '{{ "hsl(" . ($loop->index * 40 % 360) . ", 70%, 60%)" }}' {{ !$loop->last ? ',' : '' }} @endforeach],
+                    backgroundColor: [@foreach($currentAccount->transactionsCurrentMonth->groupBy('remittanceInformationUnstructured') as $group) '{{ randomColorHex($usedColors) }}' {{ !$loop->last ? ',' : '' }} @endforeach],
                 }]
             }
         });
@@ -98,7 +112,7 @@
         new Chart(balanceCtx, {
             type: 'line',
             data: {
-                labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Oct'],
+                labels: [{!! $currentAccount->balances()->balanceTypeForward()->pluck('reference_date')->map(fn($key) => "'" . trim((string) $key, '[]"') . "'")->implode(',') !!}],
                 datasets: [{
                     label: 'Balance',
                     data: [{{ $currentAccount->balances()->balanceTypeForward()->pluck('amount')->implode(',') }}],

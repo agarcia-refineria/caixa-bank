@@ -38,6 +38,15 @@ class ProfileController extends Controller
         return Redirect::route('profile.edit')->with('status', 'profile-updated');
     }
 
+    public function reorder(Request $request)
+    {
+        foreach ($request->ids as $index => $id) {
+            \App\Models\Account::where('id', $id)->update(['order' => $index]);
+        }
+
+        return response()->json(['status' => 'ok']);
+    }
+
     public function bankUpdate(): RedirectResponse
     {
         $user = Auth::user();

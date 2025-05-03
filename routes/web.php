@@ -31,6 +31,7 @@ Route::middleware('auth')->group(function () {
     // Profile routes
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
+    Route::post('/profile/accounts/order', [ProfileController::class, 'reorder'])->name('profile.accounts.reorder');
     Route::patch('/profile/bank', [ProfileController::class, 'bankUpdate'])->name('profile.bank.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 

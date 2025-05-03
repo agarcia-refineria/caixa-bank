@@ -12,7 +12,7 @@
 
     @php
         // GET ALL ACCOUNTS FROM USER
-        $accounts = auth()->user()->accounts;
+        $accounts = auth()->user()->accounts()->sortOrder()->get();
     @endphp
 
     @if (auth()->user()->bank)
@@ -70,10 +70,14 @@
                 </div>
             </div>
 
-            <div class="max-w-7xl mx-auto sm:px-6 lg:px-8" style="padding-bottom: 1rem">
+            <div id="sortable-accounts" class="max-w-7xl mx-auto sm:px-6 lg:px-8" style="padding-bottom: 1rem">
+                <p class="mt-1 text-sm text-gray-600 dark:text-gray-400">
+                    {{ __("You can reorder the accounts!") }}
+                </p>
+
                 @if (count($accounts) > 0)
                     @foreach ($accounts as $account)
-                        <div class="max-w-7xl mx-auto dark:bg-[#1c1d20]" style="border: 1px solid white ;padding-top: 1rem; padding-bottom: 1rem; margin-top: 1rem">
+                        <div data-id="{{ $account->code }}" class="max-w-7xl mx-auto dark:bg-[#1c1d20]" style="border: 1px solid white ;padding-top: 1rem; padding-bottom: 1rem; margin-top: 1rem">
                             <h2 class="flex gap-4 items-center text-lg font-medium text-gray-900 dark:text-gray-100 w-full sm:px-6 lg:px-8 pb-3" style="border-bottom: 2px solid white">
                                 <img src="{{ $bank->institution->logo }}" alt="{{ $bank->institution->name }}" width="32" height="32" class="h-8 w-8 mr-2">
                                 {{ $account->institution?->name }} - {{ $account->iban }} ({{ $account->status }})

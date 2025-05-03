@@ -33,5 +33,6 @@ return [
     'Transactions update' => "Transacciones editadas",
     'UPDATE INFORMATION' =>  "EDITAR INFORMACIÓN",
     'Update List' => "Editar lista",
-    'Your email address is unverified' => "Tu dirección de correo electrónico no está verificada"
+    'Your email address is unverified' => "Tu dirección de correo electrónico no está verificada",
+    'You can reorder the accounts!' => "¡Puedes reordenar las cuentas!"
 ];

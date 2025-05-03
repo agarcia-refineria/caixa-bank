@@ -11,7 +11,7 @@ class BankController extends Controller
     public function index()
     {
         // Fetch all banks from the database
-        $accounts = auth()->user()->accounts;
+        $accounts = auth()->user()->accounts()->sortOrder()->get();
 
         $currentAccount = $accounts->first();
 
@@ -21,7 +21,7 @@ class BankController extends Controller
 
     public function show($id)
     {
-        $accounts = auth()->user()->accounts;
+        $accounts = auth()->user()->accounts()->sortOrder()->get();
 
         // Fetch the bank details from the database
         $currentAccount = Account::where('id', $id)->first();

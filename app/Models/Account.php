@@ -56,6 +56,11 @@ class Account extends Model
         return $this->hasMany(Balance::class, 'account_id', 'code');
     }
 
+    public function scopeSortOrder($query)
+    {
+        return $query->orderBy('order', 'asc');
+    }
+
     public function getTransactionsCurrentMonthAttribute()
     {
         return $this->transactions()

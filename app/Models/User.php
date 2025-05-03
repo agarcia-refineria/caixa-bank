@@ -57,7 +57,12 @@ class User extends Authenticatable
     {
         // Calculate the total sum of all accounts for the user on the relationship with balances on each account
         return $this->accounts->sum(function ($account) {
-            return $account->balances()->balanceTypeForward()->pluck('amount')->sum();
+            $latestBalance = $account->balances()
+                ->balanceTypeForward()
+                ->orderByDesc('reference_date')
+                ->first();
+
+            return $latestBalance?->amount ?? 0;
         });
     }
 }
