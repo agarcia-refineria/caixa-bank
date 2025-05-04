@@ -30,17 +30,17 @@
                         <x-stat-box icon="📈" title="{{ __('Income This Month') }}" value="{{ number_format($currentAccount->income, 2, ',', '.') }} €" />
                     </div>
 
-                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+                    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
                         @php
                             $usedColors = [];
                         @endphp
                         <div class="bg-[#1c1d20] p-4 rounded-xl shadow">
                             <h2 class="text-xl mb-4">{{ __('Expenses by Category') }}</h2>
-                            <canvas id="categoryChart" data-colors="@foreach($currentAccount->transactionsCurrentMonth->groupBy('remittanceInformationUnstructured') as $group){{ $currentAccount->getUsedColors($usedColors) }}{{ !$loop->last ? ',' : '' }}@endforeach" data-values="@foreach($currentAccount->transactionsCurrentMonth->groupBy('remittanceInformationUnstructured') as $group) {{ $group->sum('transactionAmount_amount') }} {{ !$loop->last ? ',' : '' }} @endforeach" data-labels="{!! $currentAccount->transactionsCurrentMonth->groupBy('remittanceInformationUnstructured')->keys()->map(fn($key) => trim((string) $key, '[]"'))->implode(',') !!}" class="!w-full md:px-[25%] md:!h-96"></canvas>
+                            <canvas id="categoryChart" data-colors="@foreach($currentAccount->transactionsExpensesCurrentMonth->groupBy('remittanceInformationUnstructured') as $group){{ $currentAccount->getUsedColors($usedColors) }}{{ !$loop->last ? ',' : '' }}@endforeach" data-values="@foreach($currentAccount->transactionsExpensesCurrentMonth->groupBy('remittanceInformationUnstructured') as $group) {{ $group->sum('transactionAmount_amount') }} {{ !$loop->last ? ',' : '' }} @endforeach" data-labels="{!! $currentAccount->transactionsExpensesCurrentMonth->groupBy('remittanceInformationUnstructured')->keys()->map(fn($key) => trim((string) $key, '[]"'))->implode(',') !!}"></canvas>
                         </div>
-                        <div class="bg-[#1c1d20] p-4 rounded-xl shadow">
+                        <div class="bg-[#1c1d20] col-span-2 p-4 rounded-xl shadow">
                             <h2 class="text-xl mb-4">{{ __('Balance History') }}</h2>
-                            <canvas id="balanceChart" data-values="{{ $currentAccount->balances()->balanceTypeForward()->pluck('amount')->implode(',') }}" data-labels="{!! $currentAccount->balances()->balanceTypeForward()->pluck('reference_date')->map(fn($key) => trim((string) $key, '[]"'))->implode(',') !!}" class="!w-full md:!h-96"></canvas>
+                            <canvas id="balanceChart" data-values="{{ $currentAccount->balances()->balanceTypeForward()->pluck('amount')->implode(',') }}" data-labels="{!! $currentAccount->balances()->balanceTypeForward()->pluck('reference_date')->map(fn($key) => trim((string) $key, '[]"'))->implode(',') !!}" style="height: 100% !important;"></canvas>
                         </div>
                     </div>
 

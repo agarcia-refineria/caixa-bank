@@ -13,7 +13,7 @@ class Kernel extends ConsoleKernel
     protected function schedule(Schedule $schedule): void
     {
         \Log::info("✅ Laravel scheduler ejecutado a " . now());
-        $schedule->command('accounts:scheduletasks')->everyMinute();
+        $schedule->command('accounts:scheduletasks')->everyMinute()->withoutOverlapping();
     }
 
     /**

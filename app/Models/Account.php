@@ -87,6 +87,36 @@ class Account extends Model
             ->get();
     }
 
+    public function getTransactionsExpensesCurrentMonthAttribute()
+    {
+        $date = session('month') ?? now()->format('m-Y');
+        $parsedDate = \Carbon\Carbon::createFromFormat('m-Y', $date);
+
+        $startOfMonth = $parsedDate->copy()->startOfMonth()->startOfDay();
+        $endOfMonth = $parsedDate->copy()->endOfMonth()->endOfDay();
+
+        return $this->transactions()
+            ->whereBetween('bookingDate', [$startOfMonth, $endOfMonth])
+            ->where('transactionAmount_amount', '<', 0)
+            ->orderBy('bookingDate', 'desc')
+            ->get();
+    }
+
+    public function getTransactionsIncomeCurrentMonthAttribute()
+    {
+        $date = session('month') ?? now()->format('m-Y');
+        $parsedDate = \Carbon\Carbon::createFromFormat('m-Y', $date);
+
+        $startOfMonth = $parsedDate->copy()->startOfMonth()->startOfDay();
+        $endOfMonth = $parsedDate->copy()->endOfMonth()->endOfDay();
+
+        return $this->transactions()
+            ->whereBetween('bookingDate', [$startOfMonth, $endOfMonth])
+            ->where('transactionAmount_amount', '>', 0)
+            ->orderBy('bookingDate', 'desc')
+            ->get();
+    }
+
     public function getExpensesAttribute()
     {
         $date = session('month') ?? now()->format('m-Y');
@@ -97,7 +127,6 @@ class Account extends Model
 
         return $this->transactions()
             ->whereBetween('bookingDate', [$startOfMonth, $endOfMonth])
-            // Where transactionAmount_amount is less than 0
             ->where('transactionAmount_amount', '<', 0)
             ->sum('transactionAmount_amount');
     }
@@ -112,7 +141,6 @@ class Account extends Model
 
         return $this->transactions()
             ->whereBetween('bookingDate', [$startOfMonth, $endOfMonth])
-            // Where transactionAmount_amount is greater than 0
             ->where('transactionAmount_amount', '>', 0)
             ->sum('transactionAmount_amount');
     }
