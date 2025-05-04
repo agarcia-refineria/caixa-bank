@@ -230,6 +230,14 @@ class NordigenController extends Controller
         return Carbon::now()->addSeconds(intval($time));
     }
 
+    public function update(Request $request, $accountId)
+    {
+        $this->transactions($request, $accountId);
+        $this->balances($request, $accountId);
+
+        return Redirect::route('bank.configuration')->with('status', 'Transactions and balances updated successfully');
+    }
+
     public function insertInstitutions(Request $request)
     {
         $accessToken = session('access_token');

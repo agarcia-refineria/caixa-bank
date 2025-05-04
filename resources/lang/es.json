@@ -109,5 +109,17 @@
     "UPDATE INFORMATION":  "EDITAR INFORMACIÓN",
     "Update List": "Editar lista",
     "Your email address is unverified": "Tu dirección de correo electrónico no está verificada",
-    "You can reorder the accounts!": "¡Puedes reordenar las cuentas!"
+    "You can reorder the accounts!": "¡Puedes reordenar las cuentas!",
+    "Clock": "Reloj",
+    "Schedule Time": "Hora programada",
+    "This will add all the transactions": "Esto añadirá todas las transacciones",
+    "This will add all the balances": "Esto añadirá todos los saldos",
+    "This will add all the accounts!": "Esto añadirá todas las cuentas!",
+    "This will make the session data needed to process the api!": "Esto hará que los datos de sesión sean necesarios para procesar la api!",
+    "Scheduled tasks": "Tareas programadas",
+    "Update your account's data (transactions and balances).": "Actualice los datos de su cuenta (transacciones y saldos).",
+    "Max schedule times is": "El tiempo máximo de programación es",
+    "Schedule Times": "Horarios programados",
+    "Execute on login?": "¿Ejecutar al iniciar sesión?",
+    "Go to Clock": "Ir al reloj"
 }

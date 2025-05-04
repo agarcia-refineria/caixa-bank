@@ -11,7 +11,7 @@
             <nav class="md:block flex justify-center gap-4 space-y-3">
                 @foreach($accounts as $account)
                     <a style="--tw-space-y-reverse: 0;margin-top: calc(.75rem * calc(1 - var(--tw-space-y-reverse)));margin-bottom: calc(.75rem * var(--tw-space-y-reverse));" href="{{ route('bank.show', ['id' => $account->code]) }}" class="block px-4 py-2 rounded-lg  @if (isset($currentAccount) and $account->code == $currentAccount->code) bg-[#2b2d30] @endif hover:bg-[#2b2d30] text-gray-300">
-                        {{ __('Account') }} <br/> <span style="font-size: 10px">{{ $account->iban }}</span>
+                        {{ __('Account') }} <br/> <span class="text-[10px]">{{ $account->iban }}</span>
                     </a>
                 @endforeach
             </nav>
@@ -31,13 +31,16 @@
                     </div>
 
                     <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+                        @php
+                            $usedColors = [];
+                        @endphp
                         <div class="bg-[#1c1d20] p-4 rounded-xl shadow">
                             <h2 class="text-xl mb-4">{{ __('Expenses by Category') }}</h2>
-                            <canvas id="categoryChart" class="!w-full md:px-[25%] md:!h-96"></canvas>
+                            <canvas id="categoryChart" data-colors="@foreach($currentAccount->transactionsCurrentMonth->groupBy('remittanceInformationUnstructured') as $group){{ $currentAccount->getUsedColors($usedColors) }}{{ !$loop->last ? ',' : '' }}@endforeach" data-values="@foreach($currentAccount->transactionsCurrentMonth->groupBy('remittanceInformationUnstructured') as $group) {{ $group->sum('transactionAmount_amount') }} {{ !$loop->last ? ',' : '' }} @endforeach" data-labels="{!! $currentAccount->transactionsCurrentMonth->groupBy('remittanceInformationUnstructured')->keys()->map(fn($key) => trim((string) $key, '[]"'))->implode(',') !!}" class="!w-full md:px-[25%] md:!h-96"></canvas>
                         </div>
                         <div class="bg-[#1c1d20] p-4 rounded-xl shadow">
                             <h2 class="text-xl mb-4">{{ __('Balance History') }}</h2>
-                            <canvas id="balanceChart" class="!w-full md:!h-96"></canvas>
+                            <canvas id="balanceChart" data-values="{{ $currentAccount->balances()->balanceTypeForward()->pluck('amount')->implode(',') }}" data-labels="{!! $currentAccount->balances()->balanceTypeForward()->pluck('reference_date')->map(fn($key) => trim((string) $key, '[]"'))->implode(',') !!}" class="!w-full md:!h-96"></canvas>
                         </div>
                     </div>
 
@@ -80,47 +83,5 @@
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <script>
-        @php
-            $usedColors = [];
-            function randomColorHex(&$usedColors) {
-                do {
-                    $r = mt_rand(0, 180);
-                    $g = mt_rand(0, 255);
-                    $b = mt_rand(180, 255);
-                    $color = sprintf("#%02X%02X%02X", $r, $g, $b);
-                } while (in_array($color, $usedColors));
-                $usedColors[] = $color;
-                return $color;
-            }
-        @endphp
-
-        const categoryCtx = document.getElementById('categoryChart');
-        new Chart(categoryCtx, {
-            type: 'doughnut',
-            data: {
-                labels: [{!! $currentAccount->transactionsCurrentMonth->groupBy('remittanceInformationUnstructured')->keys()->map(fn($key) => "'" . trim((string) $key, '[]"') . "'")->implode(',') !!}],
-                datasets: [{
-                    label: 'Expenses',
-                    data: [@foreach($currentAccount->transactionsCurrentMonth->groupBy('remittanceInformationUnstructured') as $group) {{ $group->sum('transactionAmount_amount') }} {{ !$loop->last ? ',' : '' }} @endforeach],
-                    backgroundColor: [@foreach($currentAccount->transactionsCurrentMonth->groupBy('remittanceInformationUnstructured') as $group) '{{ randomColorHex($usedColors) }}' {{ !$loop->last ? ',' : '' }} @endforeach],
-                }]
-            }
-        });
-
-        const balanceCtx = document.getElementById('balanceChart');
-        new Chart(balanceCtx, {
-            type: 'line',
-            data: {
-                labels: [{!! $currentAccount->balances()->balanceTypeForward()->pluck('reference_date')->map(fn($key) => "'" . trim((string) $key, '[]"') . "'")->implode(',') !!}],
-                datasets: [{
-                    label: 'Balance',
-                    data: [{{ $currentAccount->balances()->balanceTypeForward()->pluck('amount')->implode(',') }}],
-                    borderColor: '#108cb9',
-                    backgroundColor: 'transparent',
-                    tension: 0.4
-                }]
-            }
-        });
-    </script>
+    @vite(['resources/js/chart.js'])
 </x-app-layout>

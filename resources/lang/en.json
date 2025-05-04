@@ -109,5 +109,17 @@
     "UPDATE INFORMATION":  "UPDATE INFORMATION",
     "Update List": "Update List",
     "Your email address is unverified": "Your email address is unverified",
-    "You can reorder the accounts!": "You can reorder the accounts!"
+    "You can reorder the accounts!": "You can reorder the accounts!",
+    "Clock": "Clock",
+    "Schedule Time": "Schedule Time",
+    "This will add all the transactions": "This will add all the transactions",
+    "This will add all the balances": "This will add all the balances",
+    "This will add all the accounts!": "This will add all the accounts!",
+    "This will make the session data needed to process the api!": "This will make the session data needed to process the api!",
+    "Scheduled tasks": "Scheduled tasks",
+    "Update your account's data (transactions and balances).": "Update your account's data (transactions and balances).",
+    "Max schedule times is": "Max schedule times is",
+    "Schedule Times": "Schedule Times",
+    "Execute on login?": "Execute on login?",
+    "Go to Clock": "Go to Clock"
 }

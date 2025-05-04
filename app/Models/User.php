@@ -2,9 +2,10 @@
 
 namespace App\Models;
 
-// use Illuminate\Contracts\Auth\MustVerifyEmail;
+use App\Http\Controllers\NordigenController;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Http\Request;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
 
@@ -21,6 +22,8 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
+        'schedule_times',
+        'execute_login'
     ];
 
     /**
@@ -53,6 +56,21 @@ class User extends Authenticatable
         return $this->hasMany(Account::class, 'user_id');
     }
 
+    public function schedule()
+    {
+        return $this->hasMany(ScheduledTasks::class, 'user_id');
+    }
+
+    public function getLoggerAttribute()
+    {
+        // Create a logger instance for the user
+        $logger = new \Monolog\Logger("user_{$this->id}");
+        $logPath = storage_path("logs/user_{$this->id}.log");
+        $logger->pushHandler(new \Monolog\Handler\StreamHandler($logPath, \Monolog\Logger::INFO));
+
+        return $logger;
+    }
+
     public function getTotalAccountSumAttribute()
     {
         // Calculate the total sum of all accounts for the user on the relationship with balances on each account
@@ -64,5 +82,16 @@ class User extends Authenticatable
 
             return $latestBalance?->amount ?? 0;
         });
+    }
+
+    public function executeAccountTasks()
+    {
+        // Execute account tasks for the user
+        $nordigen = new NordigenController();
+
+        foreach ($this->accounts as $account) {
+            $nordigen->transactions(new Request(), $account->code);
+            $nordigen->balances(new Request(), $account->code);
+        }
     }
 }

@@ -6,6 +6,29 @@ window.Alpine = Alpine;
 
 Alpine.start();
 
+document.addEventListener('DOMContentLoaded', function () {
+    const container = document.getElementById('month');
+
+    container.addEventListener('change', function () {
+        fetch('/month/' + container.value, {
+            method: 'GET',
+            headers: {
+                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
+                'Content-Type': 'application/json',
+            }
+        }).then(
+            response => {
+                if (response.ok) {
+                    window.location.reload();
+                } else {
+                    console.error('Failed to fetch data');
+                }
+            }
+        ).catch(error => {
+            console.error('Error:', error);
+        });
+    })
+});
 
 document.addEventListener('DOMContentLoaded', function () {
     const container = document.getElementById('sortable-accounts');
@@ -25,3 +48,18 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     });
 });
+
+// Execute schedule tasks each minute to see if update is needed
+setInterval(() => {
+    fetch('/profile/schedule/check', {
+        method: 'POST',
+        headers: {
+            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
+            'Content-Type': 'application/json',
+        }
+    }).then(response => response.json()).then(data => {
+        if (data.update) {
+            window.location.reload();
+        }
+    });
+}, 60000); // 1 minute

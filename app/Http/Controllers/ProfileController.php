@@ -9,6 +9,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\View\View;
+use Illuminate\Support\Facades\Cache;
 
 class ProfileController extends Controller
 {
@@ -45,6 +46,40 @@ class ProfileController extends Controller
         }
 
         return response()->json(['status' => 'ok']);
+    }
+
+    public function schedule(Request $request)
+    {
+        if ($request->schedule_times && $request->schedule_times > \App\Models\ScheduledTasks::$MAX_TIMES) {
+            return Redirect::route('profile.edit')->with('status', 'schedule-error');
+        }
+
+        $user = Auth::user();
+        $user->schedule_times = $request->schedule_times;
+        $user->execute_login = $request->execute_login == 'on' ? 1 : 0;
+        $user->save();
+
+        $scheduledTasks = \App\Models\ScheduledTasks::where('user_id', $user->id)->truncate();
+
+        if ($request->times) {
+            foreach ($request->times as $index => $time) {
+                if ($index >= $request->schedule_times) {
+                    break;
+                }
+                $scheduledTask = new \App\Models\ScheduledTasks();
+                $scheduledTask->hour = $time;
+                $scheduledTask->user_id = $user->id;
+                $scheduledTask->save();
+            }
+        }
+
+        return Redirect::route('profile.edit')->with('status', 'schedule-updated');
+    }
+
+    public function scheduleTasks(Request $request)
+    {
+        \Artisan::call('schedule:run');
+        return response()->json(['status' => 'excuted']);
     }
 
     public function bankUpdate(): RedirectResponse

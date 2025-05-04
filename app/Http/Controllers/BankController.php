@@ -39,6 +39,15 @@ class BankController extends Controller
         return view('pages.banks.history', compact('banks'));
     }
 
+    public function clock()
+    {
+        // Fetch all banks from the database
+        $schedules = auth()->user()->schedule;
+
+        // Return the view with the banks data
+        return view('pages.banks.clock', compact('schedules'));
+    }
+
     public function configuration()
     {
         // Fetch all banks from the database
