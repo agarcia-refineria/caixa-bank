@@ -81,7 +81,4 @@
             @endif
         </div>
     </div>
-
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    @vite(['resources/js/chart.js'])
 </x-app-layout>

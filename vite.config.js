@@ -10,7 +10,6 @@ export default defineConfig({
                 'resources/css/datatable.css',
 
                 'resources/js/app.js',
-                'resources/js/chart.js'
             ],
             refresh: true,
         }),

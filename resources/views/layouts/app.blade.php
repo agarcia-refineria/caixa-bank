@@ -10,12 +10,12 @@
         <!-- Fonts -->
         <link rel="preconnect" href="https://fonts.bunny.net">
         <link href="https://fonts.bunny.net/css?family=figtree:400,500,600&display=swap" rel="stylesheet" />
-        <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
-        @vite(['resources/css/select2.css'])
-        @vite(['resources/css/datatable.css'])
 
         <!-- Scripts -->
-        @vite(['resources/css/app.css', 'resources/js/app.js'])
+        @vite(['resources/js/app.js', 'resources/css/app.css'])
+
+        @vite(['resources/css/select2.css'])
+        @vite(['resources/css/datatable.css'])
     </head>
     <body class="font-sans antialiased">
         <div class="min-h-screen bg-gray-100 dark:bg-[#111214]">
@@ -35,40 +35,5 @@
                 {{ $slot }}
             </main>
         </div>
-
-        <!-- GENERAL -->
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js" integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-
-        <!-- SELECT2 -->
-        <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
-        <script>
-            document.addEventListener('DOMContentLoaded', function() {
-                // Initialize Select2
-                $('.select2').select2({
-                    placeholder: '-- Select an option --',
-                    allowClear: true
-                });
-            });
-        </script>
-
-        <!-- DATATABLE -->
-        <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
-        <script src="https://cdn.datatables.net/plug-ins/1.13.4/sorting/datetime-moment.js"></script>
-        <script>
-            $(document).ready(function () {
-                $.fn.dataTable.moment('DD-MM-YYYY');
-                $('.datatable').DataTable({
-                    language: {
-                        url: 'https://cdn.datatables.net/plug-ins/1.13.6/i18n/{{ app()->getLocale() === "es" ? "es-ES" : app()->getLocale() }}.json'
-                    },
-                    columnDefs: [
-                        { targets: 1, type: 'date' },
-                        { orderable: false, targets: 'no-sort' }
-                    ],
-                    order: [[1, 'desc']]
-                });
-            });
-        </script>
     </body>
 </html>
