@@ -73,6 +73,16 @@ class Account extends Model
         return $color;
     }
 
+    public function getTransactionsDisabledAttribute()
+    {
+        return $this->transactions_disabled_date !== null && $this->transactions_disabled_date->isFuture();
+    }
+
+    public function getBalanceDisabledAttribute()
+    {
+        return $this->balance_disabled_date !== null && $this->balance_disabled_date->isFuture();
+    }
+
     public function getTransactionsCurrentMonthAttribute()
     {
         $date = session('month') ?? now()->format('m-Y');
@@ -83,7 +93,7 @@ class Account extends Model
 
         return $this->transactions()
             ->whereBetween('bookingDate', [$startOfMonth, $endOfMonth])
-            ->orderBy('bookingDate', 'desc')
+            ->orderDate()
             ->get();
     }
 
@@ -98,7 +108,7 @@ class Account extends Model
         return $this->transactions()
             ->whereBetween('bookingDate', [$startOfMonth, $endOfMonth])
             ->where('transactionAmount_amount', '<', 0)
-            ->orderBy('bookingDate', 'desc')
+            ->orderDate()
             ->get();
     }
 
@@ -113,7 +123,7 @@ class Account extends Model
         return $this->transactions()
             ->whereBetween('bookingDate', [$startOfMonth, $endOfMonth])
             ->where('transactionAmount_amount', '>', 0)
-            ->orderBy('bookingDate', 'desc')
+            ->orderDate()
             ->get();
     }
 

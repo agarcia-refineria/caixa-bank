@@ -4,11 +4,13 @@ namespace App\Http\Controllers;
 
 use App\Models\Account;
 use App\Models\Bank;
-use Illuminate\Http\Request;
+use Illuminate\Contracts\View\Factory;
+use Illuminate\Contracts\View\View;
+use Illuminate\Foundation\Application;
 
 class BankController extends Controller
 {
-    public function index()
+    public function index(): Factory|Application|View|\Illuminate\Contracts\Foundation\Application
     {
         // Fetch all banks from the database
         $accounts = auth()->user()->accounts()->sortOrder()->get();
@@ -19,7 +21,7 @@ class BankController extends Controller
         return view('pages.banks.index', compact('accounts', 'currentAccount'));
     }
 
-    public function show($id)
+    public function show($id): Factory|Application|View|\Illuminate\Contracts\Foundation\Application
     {
         $accounts = auth()->user()->accounts()->sortOrder()->get();
 
@@ -30,16 +32,18 @@ class BankController extends Controller
         return view('pages.banks.index', compact('accounts', 'currentAccount'));
     }
 
-    public function history()
+    public function history(): Factory|Application|View|\Illuminate\Contracts\Foundation\Application
     {
         // Fetch all banks from the database
-        $banks = Bank::all();
+        $user = auth()->user();
+
+        $transactions = $user->transactions;
 
         // Return the view with the banks data
-        return view('pages.banks.history', compact('banks'));
+        return view('pages.banks.history', compact('user', 'transactions'));
     }
 
-    public function clock()
+    public function clock(): Factory|Application|View|\Illuminate\Contracts\Foundation\Application
     {
         // Fetch all banks from the database
         $schedules = auth()->user()->schedule;
@@ -48,7 +52,7 @@ class BankController extends Controller
         return view('pages.banks.clock', compact('schedules'));
     }
 
-    public function configuration()
+    public function configuration(): Factory|Application|View|\Illuminate\Contracts\Foundation\Application
     {
         // Fetch all banks from the database
         $banks = Bank::all();

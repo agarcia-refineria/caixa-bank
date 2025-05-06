@@ -88,8 +88,8 @@
     "Date": "Date",
     "Deptor Name": "Deptor Name",
     "Expenses by Category": "Expenses by Category",
-    "Expenses This Month":  "Expenses This Month",
-    "Income This Month": "Income This Month",
+    "Expenses":  "Expenses",
+    "Income": "Income",
     "Institution":  "Institution",
     "It seems like there is no balance data available for this account. Go to configuration to import the balance and transfers.": "It seems like there is no balance data available for this account. Go to configuration to import the balance and transfers.",
     "No Account Selected": "No Account Selected",
@@ -121,5 +121,10 @@
     "Max schedule times is": "Max schedule times is",
     "Schedule Times": "Schedule Times",
     "Execute on login?": "Execute on login?",
-    "Go to Clock": "Go to Clock"
+    "Go to Clock": "Go to Clock",
+    "History": "History",
+    "Owner Name": "Owner Name",
+    "Balance": "Balance",
+    "Transactions": "Transactions",
+    "Accounts": "Accounts"
 }

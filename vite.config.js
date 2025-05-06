@@ -7,6 +7,7 @@ export default defineConfig({
             input: [
                 'resources/css/app.css',
                 'resources/css/select2.css',
+                'resources/css/datatable.css',
 
                 'resources/js/app.js',
                 'resources/js/chart.js'

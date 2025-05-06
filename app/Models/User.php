@@ -61,6 +61,14 @@ class User extends Authenticatable
         return $this->hasMany(ScheduledTasks::class, 'user_id');
     }
 
+    public function getTransactionsAttribute()
+    {
+        // Fetch all transactions for the user ordered by booking date
+        return Transaction::whereHas('account', function ($query) {
+            $query->where('user_id', $this->id);
+        })->orderDate()->get();
+    }
+
     public function getLoggerAttribute()
     {
         // Create a logger instance for the user
@@ -90,8 +98,8 @@ class User extends Authenticatable
         $nordigen = new NordigenController();
 
         foreach ($this->accounts as $account) {
-            $nordigen->transactions(new Request(), $account->code);
-            $nordigen->balances(new Request(), $account->code);
+            // Log the execution of tasks for each account
+            $nordigen->update(new Request(), $account->code);
         }
     }
 }

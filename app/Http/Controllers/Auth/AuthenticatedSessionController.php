@@ -37,6 +37,7 @@ class AuthenticatedSessionController extends Controller
             $logger = $user->logger;
 
             $user->executeAccountTasks();
+
             $logger->info("✅ Ejecutando tarea programada para {$user->email} al iniciar sesión");
         }
 

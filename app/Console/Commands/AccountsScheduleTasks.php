@@ -2,9 +2,7 @@
 
 namespace App\Console\Commands;
 
-use App\Http\Controllers\NordigenController;
 use Illuminate\Console\Command;
-use Illuminate\Http\Request;
 
 class AccountsScheduleTasks extends Command
 {

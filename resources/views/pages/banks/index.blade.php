@@ -26,8 +26,8 @@
                 @if ($balance)
                     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
                         <x-stat-box icon="💳" title="{{ __('Current Balance') }}" value="{{ number_format($balance->amount, 2, ',', '.') }} €" />
-                        <x-stat-box icon="💸" title="{{ __('Expenses This Month') }}" value="{{ number_format($currentAccount->expenses, 2, ',', '.') }} €" />
-                        <x-stat-box icon="📈" title="{{ __('Income This Month') }}" value="{{ number_format($currentAccount->income, 2, ',', '.') }} €" />
+                        <x-stat-box icon="💸" title="{{ __('Expenses') }}" value="{{ number_format($currentAccount->expenses, 2, ',', '.') }} €" />
+                        <x-stat-box icon="📈" title="{{ __('Income') }}" value="{{ number_format($currentAccount->income, 2, ',', '.') }} €" />
                     </div>
 
                     <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">

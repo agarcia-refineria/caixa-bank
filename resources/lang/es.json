@@ -88,8 +88,8 @@
     "Date": "Fecha",
     "Deptor Name": "Nombre del deudor",
     "Expenses by Category": "Gastos por categoría",
-    "Expenses This Month":  "Gastos este mes",
-    "Income This Month": "Ingresos este mes",
+    "Expenses":  "Gastos",
+    "Income": "Ingresos",
     "Institution":  "Institución",
     "It seems like there is no balance data available for this account. Go to configuration to import the balance and transfers.": "Parece que no hay datos de saldo disponibles para esta cuenta. Vaya a configuración para importar el saldo y las transferencias.",
     "No Account Selected": "No se ha seleccionado ninguna cuenta",
@@ -121,5 +121,10 @@
     "Max schedule times is": "El tiempo máximo de programación es",
     "Schedule Times": "Horarios programados",
     "Execute on login?": "¿Ejecutar al iniciar sesión?",
-    "Go to Clock": "Ir al reloj"
+    "Go to Clock": "Ir al reloj",
+    "History": "Historial",
+    "Owner Name": "Nombre del propietario",
+    "Balance": "Saldo",
+    "Transactions": "Transacciones",
+    "Accounts": "Cuentas"
 }

@@ -2,13 +2,9 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Account;
-use App\Models\Bank;
-use Illuminate\Http\Request;
-
 class MonthController extends Controller
 {
-    public function index($month)
+    public function index($month): \Illuminate\Http\JsonResponse
     {
         session('month', date('m-Y'));
 

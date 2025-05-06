@@ -85,9 +85,9 @@
                                 </h2>
                                 <div class="flex md:flex-row flex-col gap-4 py-6 sm:px-6 lg:px-8">
                                     <div class="bg-white dark:bg-[#1c1d20] overflow-hidden shadow-sm rounded-lg">
-                                        @if ($account->transactions_disabled_date)
+                                        @if ($account->transactionsDisabled)
                                             <p class="mt-1 text-sm text-gray-600 dark:text-gray-400">
-                                                <span class="text-red-600">[{{ __('Rate limit exceeded') }}: {{ $account->transactions_disabled_date->format('d-m-Y H:m:s') }}]</span>
+                                                <span class="text-red-600">[{{ __('Rate limit exceeded') }}: {{ $account->transactions_disabled_date->format('d-m-Y H:i:s') }}]</span>
                                             </p>
                                         @endif
 
@@ -105,9 +105,9 @@
                                         </div>
                                     </div>
                                     <div class="bg-white dark:bg-[#1c1d20] overflow-hidden shadow-sm rounded-lg">
-                                        @if ($account->balance_disabled_date)
+                                        @if ($account->balanceDisabled)
                                             <p class="mt-1 text-sm text-gray-600 dark:text-gray-400">
-                                                <span class="text-red-600">[{{ __('Rate limit exceeded') }}: {{ $account->balance_disabled_date->format('d-m-Y H:m:s') }}]</span>
+                                                <span class="text-red-600">[{{ __('Rate limit exceeded') }}: {{ $account->balance_disabled_date->format('d-m-Y H:i:s') }}]</span>
                                             </p>
                                         @endif
 
@@ -124,7 +124,7 @@
                                             </x-nav-link>
                                         </div>
                                     </div>
-                                    @if (!$account->balance_disabled_date && !$account->transactions_disabled_date)
+                                    @if (!$account->transactionsDisabled && !$account->balanceDisabled)
                                         <div class="bg-white dark:bg-[#1c1d20] overflow-hidden shadow-sm rounded-lg">
                                             <h2 class="text-lg font-medium text-gray-900 dark:text-gray-100">
                                                 {{ __('Update all') }}
