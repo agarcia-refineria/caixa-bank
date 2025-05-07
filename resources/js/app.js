@@ -22,6 +22,16 @@ window.Alpine = Alpine;
 
 Alpine.start();
 
+let currentLocale = document.querySelector('meta[name="locale"]').content ?? 'es-ES';
+
+if (currentLocale) {
+    //  Hot fixes
+    if (currentLocale === 'en-EN') {
+        currentLocale = 'en-GB';
+    }
+}
+console.log("Current Locale: "+ currentLocale);
+
 $(document).ready(function() {
     console.log('jQuery is working!');
 });
@@ -40,8 +50,10 @@ $(document).ready(function() {
 $(document).ready(function () {
     console.log('DataTable is working!');
     $('.datatable').DataTable({
+        paging: true,
+        pageLength: 10,
         language: {
-            url: 'https://cdn.datatables.net/plug-ins/1.13.6/i18n/es-ES.json'
+            url: 'https://cdn.datatables.net/plug-ins/1.13.6/i18n/' + currentLocale + '.json'
         },
         columnDefs: [
             { targets: 1, type: 'date' },
@@ -54,6 +66,52 @@ $(document).ready(function () {
                     firstLast: false
                 }
             }
+        },
+        drawCallback: function (settings) {
+            let api = this.api();
+            let rows = api.rows({ search: 'applied' }).count();
+
+            let tableContainer = $(api.table().container());
+
+            let paginationNav = tableContainer.find('nav[aria-label="pagination"]');
+
+            if (rows <= settings._iDisplayLength) {
+                paginationNav.hide();
+            } else {
+                paginationNav.show();
+            }
+        },
+        footerCallback: function (row, data, start, end, display) {
+            let api = this.api();
+            let total = 0;
+
+            // Sumar todos los data-amount por página
+            //pi.rows({ page: 'current' }).nodes().each(function (row) {
+            //   let amountStr = row.getAttribute('data-amount') || '0';
+            //   let parsed = parseFloat(amountStr.replace(/\./g, '').replace(',', '.')) || 0;
+            //   total += parsed;
+            //);
+
+            // Sumar todos los data-amount por todas las páginas
+            //api.rows().nodes().each(function (row) {
+            //    let amountStr = row.getAttribute('data-amount') || '0';
+            //    let parsed = parseFloat(amountStr.replace(/\./g, '').replace(',', '.')) || 0;
+            //    total += parsed;
+            //});
+
+            // Sumar todos los data-amount por todas las paginas con filtro aplicado
+            api.rows({ search: 'applied' }).nodes().each(function (row) {
+                let amountStr = row.getAttribute('data-amount') || '0';
+                let parsed = parseFloat(amountStr.replace(/\./g, '').replace(',', '.')) || 0;
+                total += parsed;
+            });
+
+            // Mostrar el total en el pie de tabla
+            $(row.querySelector('td:last-child')).html(total.toLocaleString(currentLocale, {
+                style: 'currency',
+                currency: 'EUR',
+                minimumFractionDigits: 2
+            }));
         }
     });
 });
@@ -82,9 +140,12 @@ $(document).ready(function () {
         });
     })
 });
+
+// SORTABLE JS
 $(document).ready(function () {
     const container = document.getElementById('sortable-accounts');
-    if (container) {
+    if (container && container instanceof HTMLElement) {
+        console.log('Sortable is working!');
         Sortable.create(container, {
             animation: 150,
             onEnd: function (evt) {
@@ -103,7 +164,7 @@ $(document).ready(function () {
     }
 });
 
-// Execute schedule tasks each minute to see if update is needed
+// SCHEDULE CHECKER JS
 $(document).ready(function () {
     console.log('Checking schedule...');
 
@@ -129,13 +190,16 @@ $(document).ready(function () {
 // CHARTS JS
 $(document).ready(function () {
     const categoryCtx = document.getElementById('categoryChart');
-    setCategoryChart();
+    if (categoryCtx) {
+        setCategoryChart();
+    }
 
     function setCategoryChart() {
         var labels = categoryCtx.getAttribute('data-labels').split(",");
         var values = categoryCtx.getAttribute('data-values').split(",").map(Number);
         var colors = categoryCtx.getAttribute('data-colors').split(",");
 
+        console.log('Chart is working!');
         new Chart(categoryCtx, {
             type: 'doughnut',
             data: {
@@ -150,12 +214,15 @@ $(document).ready(function () {
     }
 
     const balanceCtx = document.getElementById('balanceChart');
-    setBalanceChart();
+    if (balanceCtx) {
+        setBalanceChart();
+    }
 
     function setBalanceChart() {
         var labels = balanceCtx.getAttribute('data-labels').split(",");
         var values = balanceCtx.getAttribute('data-values').split(",").map(Number);
 
+        console.log('Chart is working!');
         new Chart(balanceCtx, {
             type: 'line',
             data: {

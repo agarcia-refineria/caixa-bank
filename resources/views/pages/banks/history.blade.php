@@ -9,21 +9,28 @@
         <div class="bg-[#1c1d20] p-4 rounded-xl shadow">
             <table class="datatable min-w-full table-auto text-left">
                 <thead>
-                <tr>
-                    <th class="py-2">{{ __('IBAN') }}</th>
-                    <th class="py-2">{{ __('Owner Name') }}</th>
-                    <th class="py-2">{{ __('Balance') }}</th>
-                </tr>
+                    <tr>
+                        <th class="py-2">{{ __('IBAN') }}</th>
+                        <th class="py-2">{{ __('Owner Name') }}</th>
+                        <th class="py-2">{{ __('Balance') }}</th>
+                    </tr>
                 </thead>
                 <tbody>
-                @foreach($user->accounts as $account)
-                    <tr class="border-t border-gray-700">
-                        <td class="py-2">{{ $account->iban }}</td>
-                        <td class="py-2">{{ $account->owner_name }}</td>
-                        <td class="py-2 !text-green-600">{{ number_format($account->balances()->balanceTypeForward()->lastInstance()->amount, 2, ',', '.') }} €</td>
-                    </tr>
-                @endforeach
+                    @foreach($user->accounts as $account)
+                        <tr class="border-t border-gray-700" data-amount="{{ number_format($account->balances()->balanceTypeForward()->lastInstance()->amount, 2, ',', '.') }}">
+                            <td class="py-2" width="25%">{{ $account->iban }}</td>
+                            <td class="py-2">{{ $account->owner_name }}</td>
+                            <td class="py-2 @if (number_format($account->balances()->balanceTypeForward()->lastInstance()->amount, 2, ',', '.') < 0) !text-red-600 @else !text-green-600 @endif" width="25%">{{ number_format($account->balances()->balanceTypeForward()->lastInstance()->amount, 2, ',', '.') }} €</td>
+                        </tr>
+                    @endforeach
                 </tbody>
+                <tfoot>
+                    <tr class="border-t border-gray-700 w-full font-bold">
+                        <td class="py-2 text-right">Total:</td>
+                        <td class="py-2"></td>
+                        <td class="py-2"></td>
+                    </tr>
+                </tfoot>
             </table>
         </div>
     </div>
@@ -43,7 +50,7 @@
                 </thead>
                 <tbody>
                     @foreach($transactions as $transaction)
-                        <tr class="border-t border-gray-700">
+                        <tr class="border-t border-gray-700" data-amount="{{ number_format($transaction->transactionAmount_amount, 2, ',', '.') }}">
                             <td class="py-2">{{ $transaction->account->iban }}</td>
                             <td class="py-2" data-order="{{ $transaction->bookingDate->format('Y-m-d') }}">{{ $transaction->bookingDate->format('d-m-Y') }}</td>
                             <td class="py-2 md:block hidden">{{ $transaction->debtorName }}</td>
@@ -52,6 +59,15 @@
                         </tr>
                     @endforeach
                 </tbody>
+                <tfoot>
+                    <tr class="border-t border-gray-700 w-full font-bold">
+                        <td class="py-2 text-right">Total:</td>
+                        <td class="py-2"></td>
+                        <td class="py-2"></td>
+                        <td class="py-2"></td>
+                        <td class="py-2"></td>
+                    </tr>
+                </tfoot>
             </table>
         </div>
     </div>

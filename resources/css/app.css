@@ -13,3 +13,14 @@
     font-family: 'Courier New', Courier, monospace;
     font-size: 5em;
 }
+
+.c-logo {
+    /*filter: drop-shadow(2px 4px 6px black);*/
+    filter: drop-shadow(0px 0px 5px white);
+}
+
+.c-logo__container {
+    width: 40px;
+    height: 40px;
+    display: block;
+}

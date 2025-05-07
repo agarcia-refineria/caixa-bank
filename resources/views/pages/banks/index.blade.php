@@ -40,7 +40,7 @@
                         </div>
                         <div class="bg-[#1c1d20] col-span-2 p-4 rounded-xl shadow">
                             <h2 class="text-xl mb-4">{{ __('Balance History') }}</h2>
-                            <canvas id="balanceChart" data-values="{{ $currentAccount->balances()->balanceTypeForward()->pluck('amount')->implode(',') }}" data-labels="{!! $currentAccount->balances()->balanceTypeForward()->pluck('reference_date')->map(fn($key) => trim((string) $key, '[]"'))->implode(',') !!}" style="height: 100% !important;"></canvas>
+                            <canvas id="balanceChart" data-values="{{ $currentAccount->balances()->balanceTypeForward()->currentMonth()->pluck('amount')->implode(',') }}" data-labels="{!! $currentAccount->balances()->balanceTypeForward()->currentMonth()->pluck('reference_date')->map(fn($key) => trim((string) $key, '[]"'))->implode(',') !!}" style="height: 100% !important;"></canvas>
                         </div>
                     </div>
 
