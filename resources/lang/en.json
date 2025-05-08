@@ -126,5 +126,18 @@
     "Owner Name": "Owner Name",
     "Balance": "Balance",
     "Transactions": "Transactions",
-    "Accounts": "Accounts"
+    "Accounts": "Accounts",
+    "Please add a bank account to see the session data.": "Please add a bank account on the profile to see the session data.",
+    "If there is no banks please, click update list for banks to be added.": "If there is no banks please, click update list for banks to be added.",
+    "-- Select an option --": "-- Select an option --",
+    "UPDATE Accounts": "UPDATE Accounts",
+    "Transactions and balances update": "Transactions and balances update",
+    "This will add all the accounts balances and trasactions!": "This will add all the accounts information like balances and trasactions!",
+    "UPDATE ALL": "UPDATE ALL",
+    "Please add a bank from profile to see the accounts.": "Please add a bank from profile to see the accounts.",
+    "Please add an account from update accounts.": "Please add an account from update accounts.",
+    "Last update balance": "Last update balance",
+    "Last update transactions": "Last update transactions",
+    "No balances found": "No balances found",
+    "No transactions found": "No transactions found"
 }

@@ -56,6 +56,11 @@ class Account extends Model
         return $this->hasMany(Balance::class, 'account_id', 'code');
     }
 
+    public function bankDataSync()
+    {
+        return $this->hasMany(BankDataSync::class, 'account_id', 'code');
+    }
+
     public function scopeSortOrder($query)
     {
         return $query->orderBy('order', 'asc');

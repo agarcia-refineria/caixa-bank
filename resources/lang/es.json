@@ -126,5 +126,18 @@
     "Owner Name": "Nombre del propietario",
     "Balance": "Saldo",
     "Transactions": "Transacciones",
-    "Accounts": "Cuentas"
+    "Accounts": "Cuentas",
+    "Please add a bank account to see the session data.": "Por favor, agregue una cuenta bancaria en el perfil para ver los datos de sesión.",
+    "If there is no banks please, click update list for banks to be added.": "Si no hay bancos, haga clic en actualizar lista para que se agreguen los bancos.",
+    "-- Select an option --": "-- Seleccione una opción --",
+    "UPDATE Accounts": "EDITAR CUENTAS",
+    "Transactions and balances update": "Transacciones y saldos editados",
+    "This will add all the accounts balances and trasactions!": "Esto añadira de todas las cuentas sus saldos y transacciones!",
+    "UPDATE ALL": "EDITAR TODO",
+    "Please add a bank from profile to see the accounts.": "Por favor, agregue un banco desde el perfil para ver las cuentas.",
+    "Please add an account from update accounts.": "Por favor, agregue una cuenta desde editar cuentas.",
+    "Last update balance": "Última actualización de saldo",
+    "Last update transactions": "Última actualización de transacciones",
+    "No balances found": "No se encontraron saldos",
+    "No transactions found": "No se encontraron transacciones"
 }

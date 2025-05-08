@@ -4,7 +4,7 @@
             <div class="flex gap-4 items-center">
                 <img src="{{ $bank->institution->logo }}" alt="{{ $bank->institution->name }}" width="32" height="32" class="h-8 w-8 mr-2">
                 <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">
-                    {{ $bank->institution->name }}
+                    {{ $bank->institution->name }} API
                 </h2>
             </div>
         @endforeach
@@ -52,21 +52,52 @@
             @if (session('callback_url'))
                 <div class="pb-6">
                     <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-                        <div class="bg-white dark:bg-[#1c1d20] px-4 md:px-0 overflow-hidden shadow-sm rounded-lg">
-                            <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 pt-4">
-                                <h2 class="text-lg font-medium text-gray-900 dark:text-gray-100">
-                                    {{ __('Accounts update') }}
-                                </h2>
+                        <div class="grid grid-cols-1 lg:grid-cols-2 w-full lg:gap-16 bg-white dark:bg-[#1c1d20] px-4 md:px-0 overflow-hidden shadow-sm rounded-lg">
+                            <div>
+                                <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 pt-4">
+                                    <h2 class="text-lg font-medium text-gray-900 dark:text-gray-100">
+                                        {{ __('Accounts update') }}
+                                    </h2>
 
-                                <p class="mt-1 text-sm text-gray-600 dark:text-gray-400">
-                                    {{ __("This will add all the accounts!") }}
-                                </p>
+                                    <p class="mt-1 text-sm text-gray-600 dark:text-gray-400">
+                                        {{ __("This will add all the accounts!") }}
+                                    </p>
+                                </div>
+                                <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 py-4">
+                                    <x-nav-link class="inline-flex items-center px-4 py-1 bg-[#1c1d20] dark:bg-gray-200 dark:hover:text-white border border-transparent rounded-md font-semibold text-xs text-white dark:text-gray-800 uppercase tracking-widest hover:bg-gray-700  focus:bg-gray-700 dark:focus:bg-white active:bg-gray-900 dark:active:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 dark:focus:ring-offset-gray-800 transition ease-in-out duration-150" :href="session('callback_url')">
+                                        {{ __('UPDATE Accounts') }}
+                                    </x-nav-link>
+                                </div>
                             </div>
-                            <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 py-4">
-                                <x-nav-link class="inline-flex items-center px-4 py-1 bg-[#1c1d20] dark:bg-gray-200 dark:hover:text-white border border-transparent rounded-md font-semibold text-xs text-white dark:text-gray-800 uppercase tracking-widest hover:bg-gray-700  focus:bg-gray-700 dark:focus:bg-white active:bg-gray-900 dark:active:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 dark:focus:ring-offset-gray-800 transition ease-in-out duration-150" :href="session('callback_url')">
-                                    {{ __('UPDATE INFORMATION') }}
-                                </x-nav-link>
-                            </div>
+
+                            @php
+                                $showUpdate = true;
+                                foreach ($accounts as $account) {
+                                    if ($account->transactionsDisabled || $account->balanceDisabled) {
+                                        $showUpdate = false;
+                                        break;
+                                    }
+                                }
+                            @endphp
+
+                            @if ($showUpdate)
+                                <div>
+                                    <div class="max-w-7xl pt-4">
+                                        <h2 class="text-lg font-medium text-gray-900 dark:text-gray-100">
+                                            {{ __('Transactions and balances update') }}
+                                        </h2>
+
+                                        <p class="mt-1 text-sm text-gray-600 dark:text-gray-400">
+                                            {{ __("This will add all the accounts balances and trasactions!") }}
+                                        </p>
+                                    </div>
+                                    <div class="max-w-7xl py-4">
+                                        <x-nav-link class="inline-flex items-center px-4 py-1 bg-[#1c1d20] dark:bg-gray-200 dark:hover:text-white border border-transparent rounded-md font-semibold text-xs text-white dark:text-gray-800 uppercase tracking-widest hover:bg-gray-700  focus:bg-gray-700 dark:focus:bg-white active:bg-gray-900 dark:active:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 dark:focus:ring-offset-gray-800 transition ease-in-out duration-150" :href="route('nordigen.all_accounts')">
+                                            {{ __('UPDATE ALL') }}
+                                        </x-nav-link>
+                                    </div>
+                                </div>
+                            @endif
                         </div>
                     </div>
                 </div>
@@ -98,6 +129,12 @@
                                         <p class="mt-1 text-sm text-gray-600 dark:text-gray-400">
                                             {{ __("This will add all the transactions") }}
                                         </p>
+
+                                        <!-- Show the date of the last transaction -->
+                                        <p class="mt-1 text-sm text-gray-600 dark:text-gray-400">
+                                            {{ __('Last update transactions') }}: {{ $account->bankDataSync()->dataTypeTransaction()->latest()->first() ? $account->bankDataSync()->dataTypeTransaction()->latest()->first()->created_at->format('d-m-Y H:i:s') : __('No transactions found') }}
+                                        </p>
+
                                         <div class="pt-4">
                                             <x-nav-link class="inline-flex items-center px-4 py-1 bg-[#1c1d20] dark:bg-gray-200 dark:hover:text-white border border-transparent rounded-md font-semibold text-xs text-white dark:text-gray-800 uppercase tracking-widest hover:bg-gray-700  focus:bg-gray-700 dark:focus:bg-white active:bg-gray-900 dark:active:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 dark:focus:ring-offset-gray-800 transition ease-in-out duration-150" href="{{ route('nordigen.transactions', ['accountId' => $account->code]) }}">
                                                 {{ __('UPDATE INFORMATION') }}
@@ -118,6 +155,12 @@
                                         <p class="mt-1 text-sm text-gray-600 dark:text-gray-400">
                                             {{ __("This will add all the balances") }}
                                         </p>
+
+                                        <!-- Show the date of the last balance -->
+                                        <p class="mt-1 text-sm text-gray-600 dark:text-gray-400">
+                                            {{ __('Last update balance') }}: {{ $account->bankDataSync()->dataTypeBalance()->latest()->first() ? $account->bankDataSync()->dataTypeBalance()->latest()->first()->created_at->format('d-m-Y H:i:s') : __('No balances found') }}
+                                        </p>
+
                                         <div class="pt-4">
                                             <x-nav-link class="inline-flex items-center px-4 py-1 bg-[#1c1d20] dark:bg-gray-200 dark:hover:text-white border border-transparent rounded-md font-semibold text-xs text-white dark:text-gray-800 uppercase tracking-widest hover:bg-gray-700  focus:bg-gray-700 dark:focus:bg-white active:bg-gray-900 dark:active:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 dark:focus:ring-offset-gray-800 transition ease-in-out duration-150" href="{{ route('nordigen.balances', ['accountId' => $account->code]) }}">
                                                 {{ __('UPDATE INFORMATION') }}
@@ -150,7 +193,7 @@
                             </h2>
 
                             <p class="mt-1 text-sm text-gray-600 dark:text-gray-400">
-                                {{ __("Please add an account to see the session data.") }}
+                                {{ __("Please add an account from update accounts.") }}
                             </p>
                         </div>
                     @endif
@@ -166,7 +209,7 @@
                             </h2>
 
                             <p class="mt-1 text-sm text-gray-600 dark:text-gray-400">
-                                {{ __("Please add a bank account to see the session data.") }}
+                                {{ __("Please add a bank from profile to see the accounts.") }}
                             </p>
                         </div>
                     </div>

@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 use App\Models\Account;
 use App\Models\Balance;
 use App\Models\Bank;
+use App\Models\BankDataSync;
 use App\Models\Institution;
 use App\Models\Transaction;
 use Illuminate\Http\RedirectResponse;
@@ -113,8 +114,14 @@ class NordigenController extends Controller
                     'user_id' => auth()->user()->id,
                 ]);
             }
-
         }
+
+        BankDataSync::create([
+            'data_type' => BankDataSync::$ACCOUNT_TYPE,
+            'status' => 'success',
+            'account_id' => $accountId,
+            'last_fetched_at' => Carbon::now(),
+        ]);
 
         return redirect()->route('bank.configuration')->with('status', 'Accounts and transactions retrieved successfully');
     }
@@ -177,6 +184,13 @@ class NordigenController extends Controller
                     ]);
                 }
             }
+
+            BankDataSync::create([
+                'data_type' => BankDataSync::$TRANSACTIONS_TYPE,
+                'status' => 'success',
+                'account_id' => $accountId,
+                'last_fetched_at' => Carbon::now(),
+            ]);
         }
 
         return Redirect::route('bank.configuration');
@@ -222,6 +236,13 @@ class NordigenController extends Controller
                     ]);
                 }
             }
+
+            BankDataSync::create([
+                'data_type' => BankDataSync::$BALANCE_TYPE,
+                'status' => 'success',
+                'account_id' => $accountId,
+                'last_fetched_at' => Carbon::now(),
+            ]);
         }
 
         return Redirect::route('bank.configuration');
@@ -253,6 +274,29 @@ class NordigenController extends Controller
         return Redirect::route('bank.configuration')->with('status', 'Transactions and balances updated successfully');
     }
 
+    public function updateAll(Request $request)
+    {
+        // GET ACCESS TOKEN
+        if (!session('access_token')) {
+            $response = Http::post("{$this->baseUrl}/token/new/", [
+                'secret_id' => $this->secretId,
+                'secret_key' => $this->secretKey
+            ]);
+
+            session(['access_token' => $response['access']]);
+        }
+
+        $user = auth()->user();
+        $accounts = Account::where('user_id', $user->id)->get();
+
+        foreach ($accounts as $account) {
+            $this->transactions($request, $account->code);
+            $this->balances($request, $account->code);
+        }
+
+        return Redirect::route('bank.configuration')->with('status', 'Transactions and balances updated successfully');
+    }
+
     public function insertInstitutions(Request $request): RedirectResponse
     {
         $accessToken = session('access_token');
@@ -275,7 +319,11 @@ class NordigenController extends Controller
         if ($institutions) {
             // Elimina todas las instituciones existentes
             if (count(Institution::all()) > 0) {
-                Institution::truncate();
+                $allInstitutions = Institution::all();
+
+                foreach ($allInstitutions as $institution) {
+                    $institution->delete();
+                }
             }
         } else {
             return Redirect::route('profile.edit')->with('status', 'No institutions found');

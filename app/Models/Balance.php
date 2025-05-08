@@ -11,6 +11,10 @@ class Balance extends Model
 
     public $timestamps = false;
 
+    protected $casts = [
+        'reference_date' => 'date',
+    ];
+
     private $balanceTypes = [
         'closingBooked',
         'forwardAvailable',

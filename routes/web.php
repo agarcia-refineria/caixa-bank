@@ -52,6 +52,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/balances/{accountId}', [NordigenController::class, 'balances'])->name('nordigen.balances');
 
     Route::get('/update/{accountId}', [NordigenController::class, 'update'])->name('nordigen.all');
+    Route::get('/update', [NordigenController::class, 'updateAll'])->name('nordigen.all_accounts');
 
     Route::post('/institutions', [NordigenController::class, 'insertInstitutions'])->name('nordigen.institutions');
 });
