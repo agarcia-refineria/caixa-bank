@@ -10,54 +10,83 @@ use Illuminate\Foundation\Application;
 
 class BankController extends Controller
 {
+    /**
+     * Display a list of the user's bank accounts.
+     * @return Factory|Application|View|\Illuminate\Contracts\Foundation\Application
+     */
     public function index(): Factory|Application|View|\Illuminate\Contracts\Foundation\Application
     {
-        // Fetch all banks from the database
         $accounts = auth()->user()->accounts()->sortOrder()->get();
 
         $currentAccount = $accounts->first();
 
-        // Return the view with the banks data
-        return view('pages.banks.index', compact('accounts', 'currentAccount'));
+        $balance = $currentAccount->balances()->balanceTypeForward()->lastInstance();
+
+        return view('pages.banks.index', compact('accounts', 'currentAccount', 'balance'));
     }
 
+    /**
+     * Display the specified bank account details.
+     *
+     * @param int|string $id The ID of the account to display.
+     * @return Factory|Application|View|\Illuminate\Contracts\Foundation\Application The view containing account and bank data.
+     */
     public function show($id): Factory|Application|View|\Illuminate\Contracts\Foundation\Application
     {
         $accounts = auth()->user()->accounts()->sortOrder()->get();
 
-        // Fetch the bank details from the database
         $currentAccount = Account::where('id', $id)->first();
 
-        // Return the view with the bank data
-        return view('pages.banks.index', compact('accounts', 'currentAccount'));
+        $balance = $currentAccount->balances()->balanceTypeForward()->lastInstance();
+
+
+        return view('pages.banks.index', compact('accounts', 'currentAccount', 'balance'));
     }
 
+    /**
+     * Display the transaction history of the authenticated user.
+     *
+     * @return \Illuminate\Contracts\View\View|\Illuminate\Contracts\View\Factory|\Illuminate\Contracts\Foundation\Application
+     */
     public function history(): Factory|Application|View|\Illuminate\Contracts\Foundation\Application
     {
-        // Fetch all banks from the database
         $user = auth()->user();
 
         $transactions = $user->transactions;
 
-        // Return the view with the banks data
         return view('pages.banks.history', compact('user', 'transactions'));
     }
 
+    /**
+     * Fetches the user's schedule and returns a view displaying the bank schedules.
+     *
+     * @return Factory|Application|View|\Illuminate\Contracts\Foundation\Application The rendered view with the user's schedule data.
+     */
     public function clock(): Factory|Application|View|\Illuminate\Contracts\Foundation\Application
     {
-        // Fetch all banks from the database
         $schedules = auth()->user()->schedule;
 
-        // Return the view with the banks data
         return view('pages.banks.clock', compact('schedules'));
     }
 
+    /**
+     * Retrieves all banks from the database and returns a view displaying their configuration.
+     *
+     * @return Factory|Application|View|\Illuminate\Contracts\Foundation\Application The rendered view with the banks data.
+     */
     public function configuration(): Factory|Application|View|\Illuminate\Contracts\Foundation\Application
     {
-        // Fetch all banks from the database
-        $banks = Bank::all();
+        $user = auth()->user();
 
-        // Return the view with the banks data
-        return view('pages.banks.configuration', compact('banks'));
+        $accounts = $user->accounts()->sortOrder()->get();
+
+        $showUpdateAccounts = true;
+        foreach ($accounts as $account) {
+            if ($account->transactionsDisabled || $account->balanceDisabled || $account->bankDataSyncTransactionsCount > \App\Models\ScheduledTasks::$MAX_TIMES || $account->bankDataSyncBalancesCount > \App\Models\ScheduledTasks::$MAX_TIMES) {
+                $showUpdateAccounts = false;
+            }
+        }
+
+        return view('pages.banks.configuration', compact( 'user', 'accounts', 'showUpdateAccounts'));
     }
 }

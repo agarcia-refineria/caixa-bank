@@ -10,7 +10,7 @@
 
         <form method="post" action="{{ route('nordigen.institutions') }}">
             @csrf
-            <x-primary-button class="mt-2">{{ __('Update List') }}</x-primary-button>
+            <x-buttons.primary-button class="mt-2">{{ __('Update List') }}</x-buttons.primary-button>
         </form>
     </header>
 
@@ -23,20 +23,20 @@
         @method('patch')
 
         <div>
-            <x-input-label for="name" :value="__('Institution')" />
-            <select data-default="{{ __('-- Select an option --') }}" id="institution" name="institution" class="select2 form-control border-gray-300 dark:border-gray-700 dark:bg-[#1c1d20] dark:text-gray-300 focus:border-indigo-500 dark:focus:border-indigo-600 focus:ring-indigo-500 dark:focus:ring-indigo-600 rounded-md shadow-sm mt-1 block w-full" required>
+            <x-inputs.input-label for="name" :value="__('Institution')" />
+            <select data-default="{{ __('-- Select an option --') }}" id="institution" name="institution" class="select2 form-control border-gray-300 dark:border-gray-700 dark:bg-[#1c1d20] dark:text-gray-300 focus:border-indigo-500 dark:focus:border-[#2d43b0] focus:ring-[#2d43b0] dark:focus:ring-[#2d43b0] rounded-md shadow-sm mt-1 block w-full" required>
                 <option value="" disabled selected>{{ __('Select an institution') }}</option>
                 @foreach (\App\Models\Institution::all() as $institution)
-                    <option value="{{ $institution->id }}" {{ $bank && $bank->institution_id == $institution->id ? 'selected' : '' }}>
+                    <option value="{{ $institution->id }}" {{ $user->bank && $user->bank?->institution_id == $institution->id ? 'selected' : '' }}>
                         {{ $institution->name }}
                     </option>
                 @endforeach
             </select>
-            <x-input-error class="mt-2" :messages="$errors->get('institution')" />
+            <x-inputs.input-error class="mt-2" :messages="$errors->get('institution')" />
         </div>
 
         <div class="flex items-center gap-4">
-            <x-primary-button>{{ __('Save') }}</x-primary-button>
+            <x-buttons.primary-button>{{ __('Save') }}</x-buttons.primary-button>
 
             @if (session('status') === 'bank-updated')
                 <p

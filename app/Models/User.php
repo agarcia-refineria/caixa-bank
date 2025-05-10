@@ -8,6 +8,7 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Http\Request;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
+use Monolog\Logger;
 
 class User extends Authenticatable
 {
@@ -61,17 +62,35 @@ class User extends Authenticatable
         return $this->hasMany(ScheduledTasks::class, 'user_id');
     }
 
+    public function getBankDataSyncCountAttribute()
+    {
+        $count = 0;
+        $accounts = $this->accounts()->get();
+
+        foreach ($accounts as $account) {
+            $count += $account->bankDataSyncCount;
+        }
+
+        return $count;
+    }
+
+    /**
+     * Fetch all transactions for the user ordered by booking date
+     * @return mixed
+     */
     public function getTransactionsAttribute()
     {
-        // Fetch all transactions for the user ordered by booking date
         return Transaction::whereHas('account', function ($query) {
             $query->where('user_id', $this->id);
         })->orderDate()->get();
     }
 
+    /**
+     * Get user's logger instance.
+     * @return Logger
+     */
     public function getLoggerAttribute()
     {
-        // Create a logger instance for the user
         $logger = new \Monolog\Logger("user_{$this->id}");
         $logPath = storage_path("logs/user_{$this->id}.log");
         $logger->pushHandler(new \Monolog\Handler\StreamHandler($logPath, \Monolog\Logger::INFO));
@@ -79,9 +98,12 @@ class User extends Authenticatable
         return $logger;
     }
 
+    /**
+     * Calculate the total sum of all accounts for the user on the relationship with balances on each account
+     * @return mixed
+     */
     public function getTotalAccountSumAttribute()
     {
-        // Calculate the total sum of all accounts for the user on the relationship with balances on each account
         return $this->accounts->sum(function ($account) {
             $latestBalance = $account->balances()
                 ->balanceTypeForward()
@@ -92,13 +114,15 @@ class User extends Authenticatable
         });
     }
 
+    /**
+     * Execute account tasks for the user
+     * @return void
+     */
     public function executeAccountTasks()
     {
-        // Execute account tasks for the user
         $nordigen = new NordigenController();
 
         foreach ($this->accounts as $account) {
-            // Log the execution of tasks for each account
             $nordigen->update(new Request(), $account->code);
         }
     }

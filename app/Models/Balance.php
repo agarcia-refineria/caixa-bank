@@ -33,6 +33,11 @@ class Balance extends Model
         return $this->belongsTo(Account::class, 'account_id', 'code');
     }
 
+    /**
+     * Get the balance for the current month.
+     * @param $query
+     * @return mixed
+     */
     public function scopeCurrentMonth($query)
     {
         $date = session('month') ?? now()->format('m-Y');
@@ -47,16 +52,31 @@ class Balance extends Model
         return $query->whereBetween('reference_date', [$startDate, $endDate]);
     }
 
+    /**
+     * Order by reference date.
+     * @param $query
+     * @return mixed
+     */
     public function scopeLastInstance($query)
     {
         return $query->orderBy('reference_date', 'desc')->first();
     }
 
+    /**
+     * Filter by balance type 1.
+     * @param $query
+     * @return mixed
+     */
     public function scopeBalanceTypeForward($query)
     {
         return $query->where('balance_type', $this->balanceTypes[1]);
     }
 
+    /**
+     * Filter by balance type 0.
+     * @param $query
+     * @return mixed
+     */
     public function scopeBalanceTypeClosing($query)
     {
         return $query->where('balance_type', $this->balanceTypes[0]);

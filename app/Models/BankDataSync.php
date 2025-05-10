@@ -34,16 +34,31 @@ class BankDataSync extends Model
         return $this->belongsTo(Account::class);
     }
 
+    /**
+     * Scope a query to only include transactions.
+     * @param $query
+     * @return mixed
+     */
     public function scopeDataTypeTransaction($query)
     {
         return $query->where('data_type', self::$TRANSACTIONS_TYPE);
     }
 
+    /**
+     * Scope a query to only include balance.
+     * @param $query
+     * @return mixed
+     */
     public function scopeDataTypeBalance($query)
     {
         return $query->where('data_type', self::$BALANCE_TYPE);
     }
 
+    /**
+     * Scope a query to only include account.
+     * @param $query
+     * @return mixed
+     */
     public function scopeDataTypeAccount($query)
     {
         return $query->where('data_type', self::$ACCOUNT_TYPE);

@@ -12,37 +12,37 @@
 
                 <!-- Navigation Links -->
                 <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
-                    <x-nav-link :href="route('bank.index')" :active="request()->routeIs('bank.index')">
+                    <x-links.nav-link :href="route('bank.index')" :active="request()->routeIs(['bank.index', 'bank.show'])">
                         {{ __('Dashboard') }}
-                    </x-nav-link>
+                    </x-links.nav-link>
                 </div>
 
                 <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
-                    <x-nav-link :href="route('bank.history')" :active="request()->routeIs('bank.history')">
+                    <x-links.nav-link :href="route('bank.history')" :active="request()->routeIs('bank.history')">
                         {{ __('See History') }}
-                    </x-nav-link>
+                    </x-links.nav-link>
                 </div>
 
                 <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
-                    <x-nav-link :href="route('bank.clock')" :active="request()->routeIs('bank.clock')">
+                    <x-links.nav-link :href="route('bank.clock')" :active="request()->routeIs('bank.clock')">
                         {{ __('Clock') }}
-                    </x-nav-link>
+                    </x-links.nav-link>
                 </div>
 
                 <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
-                    <x-nav-link :href="route('bank.configuration')" :active="request()->routeIs('bank.configuration')">
+                    <x-links.nav-link :href="route('bank.configuration')" :active="request()->routeIs('bank.configuration')">
                         {{ __('Configuration') }}
-                    </x-nav-link>
+                    </x-links.nav-link>
                 </div>
             </div>
 
             <!-- Settings Dropdown -->
             <div class="hidden sm:flex gap-4 sm:items-center sm:ms-6">
-                <x-month-selector class="sm:flex sm:items-center sm:ms-6" />
+                <x-ui.month-selector class="sm:flex sm:items-center sm:ms-6" />
 
-                <x-lang-selector class="sm:flex sm:items-center" />
+                <x-ui.lang-selector class="sm:flex sm:items-center" />
 
-                <x-dropdown align="right" width="48">
+                <x-inputs.dropdown align="right" width="48">
                     <x-slot name="trigger">
                         <button class="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-gray-500 dark:text-gray-400 bg-white dark:bg-[#111214] hover:text-gray-700 dark:hover:text-gray-300 focus:outline-none transition ease-in-out duration-150">
                             <div>{{ Auth::user()->name }}</div>
@@ -56,34 +56,35 @@
                     </x-slot>
 
                     <x-slot name="content">
-                        <x-dropdown-link :href="route('profile.edit')">
+                        <x-inputs.dropdown-link :href="route('profile.edit')">
                             {{ __('Profile') }}
-                        </x-dropdown-link>
+                        </x-inputs.dropdown-link>
 
                         <!-- Authentication -->
                         <form method="POST" action="{{ route('logout') }}">
                             @csrf
 
-                            <x-dropdown-link :href="route('logout')"
+                            <x-inputs.dropdown-link :href="route('logout')"
                                     onclick="event.preventDefault();
                                                 this.closest('form').submit();">
                                 {{ __('Log Out') }}
-                            </x-dropdown-link>
+                            </x-inputs.dropdown-link>
                         </form>
                     </x-slot>
-                </x-dropdown>
+                </x-inputs.dropdown>
             </div>
 
             <!-- Hamburger -->
             <div class="-me-2 flex items-center sm:hidden">
                 <div class="pt-4 pb-3 px-4 flex">
                     @foreach(['es', 'en'] as $lang)
-                        <x-dropdown-link href="{{ route('lang.switch', $lang) }}" class="uppercase !w-12">
+                        <x-inputs.dropdown-link href="{{ route('lang.switch', $lang) }}" class="uppercase !w-12">
                             {{ $lang }}
-                        </x-dropdown-link>
+                        </x-inputs.dropdown-link>
                     @endforeach
                 </div>
-                <x-month-selector class="sm:flex sm:items-center sm:ms-6" />
+
+                <x-ui.month-selector class="sm:flex sm:items-center sm:ms-6" />
 
                 <button @click="open = ! open" class="inline-flex items-center justify-center p-2 rounded-md text-gray-400 dark:text-gray-500 hover:text-gray-500 dark:hover:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-900 focus:outline-none focus:bg-gray-100 dark:focus:bg-gray-900 focus:text-gray-500 dark:focus:text-gray-400 transition duration-150 ease-in-out">
                     <svg class="h-6 w-6" stroke="currentColor" fill="none" viewBox="0 0 24 24">
@@ -98,27 +99,27 @@
     <!-- Responsive Navigation Menu -->
     <div :class="{'block': open, 'hidden': ! open}" class="hidden sm:hidden">
         <div class="pt-2 pb-3 space-y-1">
-            <x-responsive-nav-link :href="route('bank.index')" :active="request()->routeIs('bank.index')">
+            <x-links.responsive-nav-link :href="route('bank.index')" :active="request()->routeIs(['bank.index', 'bank.show'])">
                 {{ __('Dashboard') }}
-            </x-responsive-nav-link>
+            </x-links.responsive-nav-link>
         </div>
 
         <div class="pt-2 pb-3 space-y-1">
-            <x-responsive-nav-link :href="route('bank.history')" :active="request()->routeIs('bank.history')">
+            <x-links.responsive-nav-link :href="route('bank.history')" :active="request()->routeIs('bank.history')">
                 {{ __('See History') }}
-            </x-responsive-nav-link>
+            </x-links.responsive-nav-link>
         </div>
 
         <div class="pt-2 pb-3 space-y-1">
-            <x-responsive-nav-link :href="route('bank.clock')" :active="request()->routeIs('bank.clock')">
+            <x-links.responsive-nav-link :href="route('bank.clock')" :active="request()->routeIs('bank.clock')">
                 {{ __('Clock') }}
-            </x-responsive-nav-link>
+            </x-links.responsive-nav-link>
         </div>
 
         <div class="pt-2 pb-3 space-y-1">
-            <x-responsive-nav-link :href="route('bank.configuration')" :active="request()->routeIs('bank.configuration')">
+            <x-links.responsive-nav-link :href="route('bank.configuration')" :active="request()->routeIs('bank.configuration')">
                 {{ __('Configuration') }}
-            </x-responsive-nav-link>
+            </x-links.responsive-nav-link>
         </div>
 
         <!-- Responsive Settings Options -->
@@ -129,19 +130,19 @@
             </div>
 
             <div class="mt-3 space-y-1">
-                <x-responsive-nav-link :href="route('profile.edit')">
+                <x-links.responsive-nav-link :href="route('profile.edit')">
                     {{ __('Profile') }}
-                </x-responsive-nav-link>
+                </x-links.responsive-nav-link>
 
                 <!-- Authentication -->
                 <form method="POST" action="{{ route('logout') }}">
                     @csrf
 
-                    <x-responsive-nav-link :href="route('logout')"
+                    <x-links.responsive-nav-link :href="route('logout')"
                             onclick="event.preventDefault();
                                         this.closest('form').submit();">
                         {{ __('Log Out') }}
-                    </x-responsive-nav-link>
+                    </x-links.responsive-nav-link>
                 </form>
             </div>
         </div>

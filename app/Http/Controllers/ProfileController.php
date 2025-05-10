@@ -19,7 +19,20 @@ class ProfileController extends Controller
     {
         return view('profile.edit', [
             'user' => auth()->user(),
-            'bank' => auth()->user()->bank,
+        ]);
+    }
+
+    /**
+     * Display the user's bank profile form.
+     */
+    public function bankEdit(Request $request): View
+    {
+        $user = auth()->user();
+        $bank = Bank::where('user_id', $user->id)->first();
+
+        return view('profile.bank', [
+            'user' => $user,
+            'bank' => $bank,
         ]);
     }
 
@@ -39,7 +52,12 @@ class ProfileController extends Controller
         return Redirect::route('profile.edit')->with('status', 'profile-updated');
     }
 
-    public function reorder(Request $request)
+    /**
+     * Reorder accounts based on the provided IDs and their indexes.
+     *
+     * Updates the 'order' attribute of accounts to reflect the provided order.
+     */
+    public function reorder(Request $request): \Illuminate\Http\JsonResponse
     {
         foreach ($request->ids as $index => $id) {
             \App\Models\Account::where('id', $id)->update(['order' => $index]);
@@ -48,7 +66,19 @@ class ProfileController extends Controller
         return response()->json(['status' => 'ok']);
     }
 
-    public function schedule(Request $request)
+    /**
+     * Update the user's schedule settings and associated scheduled tasks.
+     *
+     * Validates the provided schedule times input against the maximum allowed limit.
+     * If the validation fails, redirects the user back to the profile edit page
+     * with an error status. Updates the user's schedule times and login execution
+     * settings in the database. Clears the user's existing scheduled tasks and
+     * repopulates them based on the input times, capped by the maximum schedule times.
+     *
+     * @param Request $request The incoming HTTP request containing schedule and time data.
+     * @return RedirectResponse Redirects to the profile edit page with a status message.
+     */
+    public function schedule(Request $request): RedirectResponse
     {
         if ($request->schedule_times && $request->schedule_times > \App\Models\ScheduledTasks::$MAX_TIMES) {
             return Redirect::route('profile.edit')->with('status', 'schedule-error');
@@ -76,12 +106,23 @@ class ProfileController extends Controller
         return Redirect::route('profile.edit')->with('status', 'schedule-updated');
     }
 
-    public function scheduleTasks(Request $request)
+    /**
+     * Execute the scheduled tasks immediately.
+     *
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function scheduleTasks(Request $request): \Illuminate\Http\JsonResponse
     {
         \Artisan::call('schedule:run');
         return response()->json(['status' => 'excuted']);
     }
 
+    /**
+     * Updates or creates a bank record associated with the authenticated user and redirects to the profile edit page with a success status.
+     *
+     * @return RedirectResponse
+     */
     public function bankUpdate(): RedirectResponse
     {
         $user = Auth::user();

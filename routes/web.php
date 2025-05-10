@@ -29,6 +29,8 @@ Route::get('/month/{month}',[MonthController::class, 'index'])->name('month.inde
 Route::middleware('auth')->group(function () {
     // Profile routes
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
+    Route::get('/profile/bank', [ProfileController::class, 'bankEdit'])->name('profile.bank.edit');
+
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::post('/profile/accounts/order', [ProfileController::class, 'reorder'])->name('profile.accounts.reorder');
     Route::patch('/profile/schedule', [ProfileController::class, 'schedule'])->name('profile.accounts.schedule');
