@@ -159,8 +159,8 @@ class NordigenController extends Controller
     {
         $accessToken = session('access_token');
 
-        $account = Account::where('id', $accountId)->first();
-        if (!$account->transactionsDisabled) {
+        $account = Account::where('id', $accountId)->onlyApi()->first();
+        if ($account && !$account->transactionsDisabled) {
             $account->transactions_disabled_date = null;
             $account->save();
 
@@ -243,8 +243,8 @@ class NordigenController extends Controller
     {
         $accessToken = session('access_token');
 
-        $account = Account::where('id', $accountId)->first();
-        if (!$account->balanceDisabled) {
+        $account = Account::where('id', $accountId)->onlyApi()->first();
+        if ($account && !$account->balanceDisabled) {
             $account->balance_disabled_date = null;
             $account->save();
 
@@ -364,7 +364,11 @@ class NordigenController extends Controller
         }
 
         $user = auth()->user();
-        $accounts = Account::where('user_id', $user->id)->get();
+        $accounts = Account::where('user_id', $user->id)->onlyApi()->get();
+
+        if ($accounts->isEmpty()) {
+            return Redirect::route('bank.configuration')->with('status', 'No accounts found');
+        }
 
         foreach ($accounts as $account) {
             $this->transactions($request, $account->code);

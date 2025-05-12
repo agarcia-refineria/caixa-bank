@@ -1,20 +1,24 @@
 @php
-    $color = 'bg-gray-800';
+    $color = 'bg-green-800';
 
-    if (!isset($count)) {
-        $count = 0;
-    }
-    if (!isset($maxTimes)) {
-        $maxTimes = \App\Models\ScheduledTasks::$MAX_TIMES;
-    }
-    if (!isset($warningTimes)) {
-        $warningTimes = \App\Models\ScheduledTasks::$WARNING_TIMES;
-    }
+    if (isset($defaultBg)) {
+        $color = $defaultBg;
+    } else {
+        if (!isset($count)) {
+            $count = 0;
+        }
+        if (!isset($maxTimes)) {
+            $maxTimes = \App\Models\ScheduledTasks::$MAX_TIMES;
+        }
+        if (!isset($warningTimes)) {
+            $warningTimes = \App\Models\ScheduledTasks::$WARNING_TIMES;
+        }
 
-    if ($count > $maxTimes) {
-        $color = 'bg-red-800';
-    } elseif ($count > $warningTimes) {
-        $color = 'bg-yellow-800';
+        if ($count >= $maxTimes) {
+            $color = 'bg-red-800';
+        } elseif ($count >= $warningTimes) {
+            $color = 'bg-yellow-800';
+        }
     }
 @endphp
 

@@ -8,7 +8,7 @@
             @if ($currentAccount)
                 @if ($balance)
                     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
-                        <x-ui.stat-box icon="💳" :title="__('Current Balance')" value="{{ number_format($balance->amount, 2, ',', '.') }} €" />
+                        <x-ui.stat-box icon="💳" :title="__('Current Balance')" value="{{ $balance ? number_format($balance->amount, 2, ',', '.') : 0 }} €" />
                         <x-ui.stat-box icon="💸" :title="__('Expenses')" value="{{ number_format($currentAccount->expenses, 2, ',', '.') }} €" />
                         <x-ui.stat-box icon="📈" :title="__('Income')" value="{{ number_format($currentAccount->income, 2, ',', '.') }} €" />
                     </div>
@@ -20,15 +20,14 @@
                             :data-values="$currentAccount->chartTransactionsValues"
                             :data-labels="$currentAccount->chartTransactionsLabels"
                             :data-colors="$currentAccount->chartTransactionsColors"
-                            container-class="col-span-2 md:col-span-1" />
+                            container-class="col-span-1" />
 
                         <x-charts.chart-card
                             id="balanceChart"
                             :title="__('Balance History')"
                             :data-values="$currentAccount->chartBalancesValues"
                             :data-labels="$currentAccount->chartBalancesLabels"
-                            container-class="col-span-2"
-                            class="!w-full"
+                            container-class="col-span-1 lg:col-span-2"
                         />
                     </div>
 

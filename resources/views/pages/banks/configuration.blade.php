@@ -1,14 +1,14 @@
 <x-app-layout>
-    <x-slot name="header">
-        @if ($user->bank)
+    @if ($user->bank)
+        <x-slot name="header">
             <div class="flex gap-4 items-center">
                 <img src="{{ $user->bank->institution->logo }}" alt="{{ $user->bank->institution->name }}" width="32" height="32" class="h-8 w-8 mr-2">
                 <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">
                     {{ $user->bank->institution->name }} API
                 </h2>
             </div>
-        @endif
-    </x-slot>
+        </x-slot>
+    @endif
 
     <div class="md:px-0 px-4">
         @if ($user->bank)
@@ -46,15 +46,15 @@
                                 :button="__('UPDATE Accounts')"
                                 :link="session('callback_url')" />
                         </div>
-                        <div class="w-full lg:gap-16 bg-white dark:bg-[#1c1d20] px-4 md:px-0 overflow-hidden shadow-sm rounded-lg">
-                            @if ($showUpdateAccounts)
+                        @if ($showUpdateAccounts)
+                            <div class="w-full lg:gap-16 bg-white dark:bg-[#1c1d20] px-4 md:px-0 overflow-hidden shadow-sm rounded-lg">
                                 <x-pages.configuration.item
                                     :title="__('Transactions and balances update')"
                                     :description="__('This will add all the accounts balances and trasactions!')"
                                     :button="__('UPDATE ALL')"
                                     :link="route('nordigen.all_accounts')" />
-                            @endif
-                        </div>
+                            </div>
+                        @endif
                     </div>
                 </div>
 
@@ -70,9 +70,11 @@
                 </div>
             @endif
         @else
-            <x-ui.empty
-                :title="__('No banks found')"
-                :description="__('Please add a bank from profile to see the accounts.')" />
+            <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
+                <x-ui.empty
+                    :title="__('No banks found')"
+                    :description="__('Please add a bank from profile to see the accounts.')" />
+            </div>
         @endif
     </div>
 </x-app-layout>

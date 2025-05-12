@@ -29,14 +29,27 @@ Route::get('/month/{month}',[MonthController::class, 'index'])->name('month.inde
 Route::middleware('auth')->group(function () {
     // Profile routes
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
-    Route::get('/profile/bank', [ProfileController::class, 'bankEdit'])->name('profile.bank.edit');
+    Route::get('/profile/bank', [ProfileController::class, 'bank'])->name('profile.bank.edit');
+    Route::get('/profile/import', [ProfileController::class, 'import'])->name('profile.import.edit');
+    Route::get('/profile/accounts', [ProfileController::class, 'accounts'])->name('profile.accounts.edit');
 
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
+
     Route::post('/profile/accounts/order', [ProfileController::class, 'reorder'])->name('profile.accounts.reorder');
     Route::patch('/profile/schedule', [ProfileController::class, 'schedule'])->name('profile.accounts.schedule');
+
     Route::post('/profile/schedule/check', [ProfileController::class, 'scheduleTasks'])->name('profile.accounts.scheduleTasks');
     Route::patch('/profile/bank', [ProfileController::class, 'bankUpdate'])->name('profile.bank.update');
+
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+
+    Route::post('/profile/import/accounts/csv', [ProfileController::class, 'importAccountsCSV'])->name('profile.csv.accounts');
+    Route::post('/profile/import/transactions/csv', [ProfileController::class, 'importTransactionsCSV'])->name('profile.csv.transactions');
+    Route::post('/profile/import/balances/csv', [ProfileController::class, 'importBalancesCSV'])->name('profile.csv.balances');
+
+    Route::patch('/profile/accounts', [ProfileController::class, 'updateAccount'])->name('profile.account.update');
+    Route::post('/profile/accounts', [ProfileController::class, 'createAccounts'])->name('profile.account.create');
+    Route::delete('/profile/accounts/{id}', [ProfileController::class, 'destroyAccount'])->name('profile.account.destroy');
 
     // Bank routes
     Route::get('/accounts', [BankController::class, 'index'])->name('bank.index');

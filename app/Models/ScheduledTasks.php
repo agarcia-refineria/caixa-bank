@@ -13,7 +13,7 @@ class ScheduledTasks extends Model
 
     public static $MAX_TIMES = 3;
 
-    public static $WARNING_TIMES = 1;
+    public static $WARNING_TIMES = 2;
 
     protected $fillable = [
         'hour',

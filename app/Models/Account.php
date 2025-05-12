@@ -11,6 +11,11 @@ class Account extends Model
 
     public $timestamps = false;
 
+    public static $accountTypes = [
+        'api' => 'api',
+        'manual' => 'manual',
+    ];
+
     protected $casts = [
         'created' => 'datetime',
         'last_accessed' => 'datetime',
@@ -28,6 +33,7 @@ class Account extends Model
         'created',
         'last_accessed',
         'institution_id',
+        'type',
         'user_id'
     ];
 
@@ -90,6 +96,46 @@ class Account extends Model
         } while (in_array($color, $usedColors));
         $usedColors[] = $color;
         return $color;
+    }
+
+    /**
+     * Scope only accounts created by the user.
+     */
+    public function scopeOnlyUser($query)
+    {
+        return $query->where('type', Account::$accountTypes['manual']);
+    }
+
+    /**
+     * Scope only accounts created by the API.
+     */
+    public function scopeOnlyApi($query)
+    {
+        return $query->where('type', Account::$accountTypes['api']);
+    }
+
+    /**
+     * Scope only accounts created by the type.
+     */
+    public function scopeOnlyType($query, $type)
+    {
+        return $query->where('type', $type);
+    }
+
+    /**
+     * Bool is the account is created by the API.
+     */
+    public function getIsApiAttribute()
+    {
+        return $this->type == Account::$accountTypes['api'];
+    }
+
+    /**
+     * Bool is the account is created by the user.
+     */
+    public function getIsUserAttribute()
+    {
+        return $this->type == Account::$accountTypes['manual'];
     }
 
     /**
@@ -291,5 +337,20 @@ class Account extends Model
             ->pluck('reference_date')
             ->map(fn($date) => trim($date->format('d-m-Y'), '[]"'))
             ->implode(',');
+    }
+
+    public static function getExampleModel()
+    {
+        return new self([
+            'id' => uniqid(),
+            'name' => 'Example Account',
+            'iban' => 'DE89370400440532013000',
+            'bban' => '12345678901234567890',
+            'status' => 'active',
+            'owner_name' => 'John Doe',
+            'created' => now(),
+            'last_accessed' => now(),
+            'institution_id' => 1
+        ]);
     }
 }

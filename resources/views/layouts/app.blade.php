@@ -21,6 +21,7 @@
     </head>
     <body class="font-sans antialiased">
         <div class="min-h-screen bg-gray-100 dark:bg-[#111214]">
+            <x-site.flash-messages />
             <x-site.navigation />
 
             <!-- Page Heading -->

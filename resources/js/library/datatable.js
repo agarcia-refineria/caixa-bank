@@ -41,6 +41,11 @@ $(document).ready(function () {
             let api = this.api();
             let total = 0;
 
+            // Verifica si la tabla tiene la clase 'u-footer'
+            if (!$(api.table().node()).hasClass('u-footer')) {
+                return;
+            }
+
             // Sumar todos los data-amount por página
             //pi.rows({ page: 'current' }).nodes().each(function (row) {
             //   let amountStr = row.getAttribute('data-amount') || '0';

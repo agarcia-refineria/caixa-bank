@@ -26,6 +26,10 @@
     top: 8px !important;
 }
 
+.u-select2-create .select2 {
+    width: 100% !important;
+}
+
 @media screen and (max-width: 640px) {
     .select2-container {
         width: 100% !important;

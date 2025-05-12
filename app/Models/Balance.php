@@ -59,7 +59,7 @@ class Balance extends Model
      */
     public function scopeLastInstance($query)
     {
-        return $query->orderBy('reference_date', 'desc')->first();
+        return $query->orderBy('reference_date', 'desc');
     }
 
     /**
@@ -80,5 +80,15 @@ class Balance extends Model
     public function scopeBalanceTypeClosing($query)
     {
         return $query->where('balance_type', $this->balanceTypes[0]);
+    }
+
+    public static function getExampleModel()
+    {
+        return new self([
+            'amount' => 12.3,
+            'currency' => 'EUR',
+            'balance_type' => 'forwardAvailable',
+            'reference_date' => now(),
+        ]);
     }
 }

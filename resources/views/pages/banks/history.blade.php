@@ -4,7 +4,7 @@
     <!-- Show the currents accounts code -->
     <div class="w-full  text-white p-6">
         <h2 class="text-lg font-semibold mb-4">{{ __('Accounts') }}</h2>
-        <x-tables.balance-table :accounts="$user->accounts" />
+        <x-tables.balance-table :accounts="$accounts" />
     </div>
 
     <div class="w-full  text-white p-6">

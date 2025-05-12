@@ -19,8 +19,11 @@ class BankController extends Controller
         $accounts = auth()->user()->accounts()->sortOrder()->get();
 
         $currentAccount = $accounts->first();
+        $balance = null;
 
-        $balance = $currentAccount->balances()->balanceTypeForward()->lastInstance();
+        if ($currentAccount) {
+            $balance = $currentAccount->balances()->balanceTypeForward()->lastInstance()->first();
+        }
 
         return view('pages.banks.index', compact('accounts', 'currentAccount', 'balance'));
     }
@@ -36,9 +39,11 @@ class BankController extends Controller
         $accounts = auth()->user()->accounts()->sortOrder()->get();
 
         $currentAccount = Account::where('id', $id)->first();
+        $balance = null;
 
-        $balance = $currentAccount->balances()->balanceTypeForward()->lastInstance();
-
+        if ($currentAccount) {
+            $balance = $currentAccount->balances()->balanceTypeForward()->lastInstance()->first();
+        }
 
         return view('pages.banks.index', compact('accounts', 'currentAccount', 'balance'));
     }
@@ -51,10 +56,10 @@ class BankController extends Controller
     public function history(): Factory|Application|View|\Illuminate\Contracts\Foundation\Application
     {
         $user = auth()->user();
-
         $transactions = $user->transactions;
+        $accounts = $user->accounts()->sortOrder()->get();
 
-        return view('pages.banks.history', compact('user', 'transactions'));
+        return view('pages.banks.history', compact('user', 'transactions', 'accounts'));
     }
 
     /**
@@ -78,14 +83,20 @@ class BankController extends Controller
     {
         $user = auth()->user();
 
-        $accounts = $user->accounts()->sortOrder()->get();
+        $accounts = $user->accounts()->onlyApi()->sortOrder()->get();
 
-        $showUpdateAccounts = true;
-        foreach ($accounts as $account) {
-            if ($account->transactionsDisabled || $account->balanceDisabled || $account->bankDataSyncTransactionsCount > \App\Models\ScheduledTasks::$MAX_TIMES || $account->bankDataSyncBalancesCount > \App\Models\ScheduledTasks::$MAX_TIMES) {
-                $showUpdateAccounts = false;
+        if (count($accounts) > 0) {
+            $showUpdateAccounts = true;
+            foreach ($accounts as $account) {
+                if ($account->transactionsDisabled || $account->balanceDisabled || $account->bankDataSyncTransactionsCount > \App\Models\ScheduledTasks::$MAX_TIMES || $account->bankDataSyncBalancesCount > \App\Models\ScheduledTasks::$MAX_TIMES) {
+                    $showUpdateAccounts = false;
+                }
             }
+        } else {
+            $showUpdateAccounts = false;
         }
+
+        $accounts = $user->accounts()->sortOrder()->get();
 
         return view('pages.banks.configuration', compact( 'user', 'accounts', 'showUpdateAccounts'));
     }
