@@ -1,4 +1,5 @@
 @php $required = $required ?? false; @endphp
+@php $disabled = $disabled ?? false; @endphp
 
 <div class="col-span-3 md:col-span-1 flex !flex-col">
     <x-inputs.input-label for="{{ $name }}" value="{{ __($label) }}{{ $required ? '*' : '' }}" />
@@ -11,6 +12,7 @@
         minlength="{{ $minlength ?? null }}"
         value="{{ $value ?? null }}"
         placeholder="{{ __($label) }} {{ $required ? '*' : '' }}"
-        :required="$required" />
+        :required="$required"
+        :disabled="$disabled"/>
     <x-inputs.input-error :messages="$errors->get($name)" class="mt-2" />
 </div>

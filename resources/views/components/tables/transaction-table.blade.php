@@ -1,3 +1,11 @@
+@props([
+    'actions' => false,
+    'transactions',
+    'account',
+    'user',
+    'noFooter' => false
+])
+
 <div class="bg-[#1c1d20] p-4 rounded-xl shadow">
     <table class="datatable min-w-full table-auto nowrap">
         <thead>
@@ -8,7 +16,7 @@
                 <th class="py-2 dt-low-priority">{{ __('Transaction') }}</th>
                 <th class="py-2">{{ __('Amount') }}</th>
 
-                @if (isset($actions))
+                @if ($actions)
                     <th class="py-2 dt-low-priority">{{ __('Actions') }}</th>
                 @endif
             </tr>
@@ -22,7 +30,7 @@
                     <td class="py-2">{{ json_decode($transaction->remittanceInformationUnstructured) ? json_decode($transaction->remittanceInformationUnstructured)[0] : '--' }}</td>
                     <td class="py-2 @if (number_format($transaction->transactionAmount_amount, 2, ',', '.') < 0) !text-red-600 @else !text-green-600 @endif">{{ number_format($transaction->transactionAmount_amount, 2, ',', '.') }} €</td>
 
-                    @if (isset($actions))
+                    @if ($actions)
                         <td class="py-2">
                             <x-buttons.primary-button class="py-2" x-data="" x-on:click.prevent="$dispatch('open-modal', 'confirm-transaction-update-{{ $transaction->code }}')">
                                 {{ __('UPDATE') }}
@@ -66,7 +74,7 @@
                 </tr>
             @endforeach
         </tbody>
-        @if (!isset($noFooter))
+        @if (!$noFooter)
             <tfoot>
                 <tr class="border-t border-gray-700 w-full font-bold">
                     <td class="py-2"><span class="md:block hidden">Total:</span></td>

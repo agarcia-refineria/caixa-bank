@@ -472,6 +472,20 @@ class Account extends Model
     }
 
     /**
+     * Check if the account should show the update all button.
+     *
+     * @noinspection PhpUnused
+     * @return bool
+     */
+    public function getShowUpdateAllAttribute(): bool
+    {
+        return $this->bankDataSync()
+            ->where('created_at', '>=', now()->subDays(7))
+            ->where('created_at', '<=', now())
+            ->count() < ScheduledTasks::$MAX_TIMES;
+    }
+
+    /**
      * Get the example model for testing purposes.
      *
      * @noinspection PhpUnused

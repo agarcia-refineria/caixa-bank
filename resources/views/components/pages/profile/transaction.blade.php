@@ -8,18 +8,12 @@
         <input type="hidden" name="transaction_id" value="{{ $transaction->code }}" />
     @endif
 
-    @if (isset($account))
-        <input type="hidden" name="account_id" value="{{ $account->code }}" />
-    @endif
+    <input type="hidden" name="account_id" value="{{ $account->code }}" />
 
     <!-- Show the bank logo and name -->
     <h2 class="flex gap-4 items-center text-lg font-medium text-gray-900 dark:text-gray-100 w-full sm:px-6 lg:px-8 pb-3">
         <img src="{{ $user->bank->institution->logo }}" alt="{{ $user->bank->institution->name }}" width="32" height="32" class="h-8 w-8 mr-2">
-        @if (isset($account))
-            {{ $account->institution?->name }} - {{ $account->iban }} <span class="md:block hidden">({{ $account->type }})</span>
-        @else
-            {{ __('Create Manual Transaction') }}
-        @endif
+        {{ $account->institution?->name }} - {{ $account->iban }} <span class="md:block hidden">({{ $account->type }})</span>
     </h2>
 
     <!-- Show the account buttons -->

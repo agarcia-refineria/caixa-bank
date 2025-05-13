@@ -20,58 +20,11 @@
 
     <!-- Show the account buttons -->
     <div class="grid grid-cols-2 gap-4 py-6 sm:px-6 lg:px-8 w-full">
-        <div class="col-span-2 lg:col-span-1">
-            <x-inputs.input-label for="owner_name" :value="__('Owner name')" />
-            <x-inputs.text-input
-                name="owner_name"
-                class="w-full"
-                :placeholder="__('Owner name')"
-                :value="$account->owner_name ?? ''" />
-            <x-inputs.input-error :messages="$errors->get('owner_name')" class="mt-2" />
-        </div>
-
-        <div class="col-span-2 lg:col-span-1">
-            <x-inputs.input-label for="institution" value="{{__('Institution')}}*" />
-            <x-inputs.text-input
-                name="institution"
-                class="w-full"
-                required
-                :value="isset($account) ? $account->institution?->name : $user->bank->institution?->name"
-                placeholder="{{__('Institution')}}*"
-                :disabled="true" />
-        </div>
-
-        <div class="col-span-2 lg:col-span-1">
-            <x-inputs.input-label for="iban" value="{{__('Iban')}}*" />
-            <x-inputs.text-input
-                name="iban"
-                class="w-full"
-                :value="$account->iban ?? ''"
-                required
-                placeholder="{{__('Iban')}}*"/>
-            <x-inputs.input-error :messages="$errors->get('iban')" class="mt-2" />
-        </div>
-
-        <div class="col-span-2 lg:col-span-1">
-            <x-inputs.input-label for="iban" :value="__('bban')" />
-            <x-inputs.text-input
-                name="bban"
-                class="w-full"
-                :placeholder="__('bban')"
-                :value="$account->bban ?? ''"
-                :placeholder="__('bban')" />
-            <x-inputs.input-error :messages="$errors->get('bban')" class="mt-2" />
-        </div>
-
-        <div class="col-span-2 lg:col-span-1">
-            <x-inputs.input-label for="status" :value="__('Status')" />
-            <x-inputs.text-input
-                name="status"
-                class="w-full"
-                :value="$account->status ?? ''"
-                :placeholder="__('Status')" />
-            <x-inputs.input-error :messages="$errors->get('status')" class="mt-2" />
-        </div>
+        <x-inputs.input required="required" :value="isset($account) ? $account->owner_name : null" type="text" name="owner_name" :label="__('Owner name')"/>
+        <x-inputs.input required="required" :value="isset($account) ? $account->institution?->name : $user->bank->institution?->name" type="text" name="institution" :label="__('Institution')" disabled="disabled" />
+        <x-inputs.input required="required" :value="isset($account) ? $account->iban : null" type="text" name="iban" :label="__('Iban')" />
+        <x-inputs.input :value="isset($account) ? $account->bban : null" type="text" name="bban" :label="__('bban')" />
+        <x-inputs.input :value="isset($account) ? $account->status : null" type="text" name="status" :label="__('Status')" />
     </div>
 
     @if (isset($account))
@@ -85,17 +38,15 @@
                 </x-buttons.danger-button>
             </div>
 
-            @if ($account->isManual)
-                <div class="mt-2 flex justify-center md:justify-end gap-4">
-                    <x-links.nav-link :href="route('profile.transaction.edit', ['id' => $account->code])">
-                        {{ __('View Transactions') }}
-                    </x-links.nav-link>
+            <div class="mt-2 flex justify-center md:justify-end gap-4">
+                <x-links.nav-link :href="route('profile.transaction.edit', ['id' => $account->code])">
+                    {{ __('View Transactions') }}
+                </x-links.nav-link>
 
-                    <x-links.nav-link :href="route('profile.balance.edit', ['id' => $account->code])">
-                        {{ __('View Balances') }}
-                    </x-links.nav-link>
-                </div>
-            @endif
+                <x-links.nav-link :href="route('profile.balance.edit', ['id' => $account->code])">
+                    {{ __('View Balances') }}
+                </x-links.nav-link>
+            </div>
         </div>
     @else
         <div class="sm:px-6 lg:px-8">

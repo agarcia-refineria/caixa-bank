@@ -38,7 +38,9 @@
 
             <!-- Settings Dropdown -->
             <div class="hidden sm:flex gap-4 sm:items-center sm:ms-6">
-                <x-ui.month-selector class="sm:flex sm:items-center sm:ms-6" />
+                @if (request()->routeIs(['dashboard.index', 'dashboard.show']))
+                    <x-ui.month-selector class="sm:flex sm:items-center sm:ms-6" />
+                @endif
 
                 <x-ui.lang-selector class="sm:flex sm:items-center" />
 

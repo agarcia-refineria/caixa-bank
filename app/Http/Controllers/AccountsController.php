@@ -175,7 +175,6 @@ class AccountsController extends Controller
     {
         $validated = $request->validate([
             'ids' => 'required|array',
-            'ids.*' => 'required|integer|exists:accounts,id'
         ]);
 
         try {

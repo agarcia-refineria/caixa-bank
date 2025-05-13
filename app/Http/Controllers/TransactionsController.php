@@ -7,6 +7,7 @@ use App\Models\Transaction;
 use Exception;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Redirect;
@@ -31,14 +32,8 @@ class TransactionsController extends Controller
      */
     public function edit(string $accountId): View|RedirectResponse
     {
-        $account = Account::onlyManual()
-            ->where('user_id', auth()->id())
+        $account = Account::where('user_id', Auth::id())
             ->findOrFail($accountId);
-
-        if (!$account->isManual) {
-            return Redirect::route('profile.accounts.edit')
-                ->with('error', __('status.transactionscontroller.transaction-account-type-failed'));
-        }
 
         $transactions = $account->transactions()
             ->orderDate()
@@ -100,10 +95,10 @@ class TransactionsController extends Controller
                 'internalTransactionId' => $validated['internalTransactionId'] ?? null,
                 'debtorName' => $validated['debtorName'] ?? null,
                 'debtorAccount' => $validated['debtorAccount'] ?? null,
-                'account_id' => $account->id,
+                'account_id' => $account->code,
             ]);
 
-            return Redirect::route('profile.transaction.edit', ['id' => $account->id])
+            return Redirect::route('profile.transaction.edit', ['id' => $account->code])
                 ->with('success', __('status.transactionscontroller.transaction-created'));
 
         } catch (Exception $e) {
@@ -112,7 +107,7 @@ class TransactionsController extends Controller
                 'account_id' => $request->input('account_id'),
                 'request_data' => $request->all(),
             ]);
-            return Redirect::route('profile.transaction.edit')
+            return Redirect::route('profile.accounts.edit')
                 ->with('error', __('status.transactionscontroller.transaction-creation-failed'));
         }
     }

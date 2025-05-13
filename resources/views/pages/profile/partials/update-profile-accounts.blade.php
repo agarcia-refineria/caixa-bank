@@ -60,7 +60,7 @@
             @endif
 
             <div>
-                <x-links.nav-link :href="route('bank.clock')" :active="request()->routeIs('bank.clock')">
+                <x-links.nav-link :href="route('dashboard.clock')" :active="request()->routeIs('dashboard.clock')">
                     {{ __('Go to Clock') }}
                 </x-links.nav-link>
             </div>

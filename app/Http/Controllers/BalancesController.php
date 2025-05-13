@@ -9,6 +9,7 @@ use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Log;
@@ -31,8 +32,7 @@ class BalancesController extends Controller
     public function edit(string $accountId): View|RedirectResponse
     {
         try {
-            $account = Account::onlyManual()
-                ->where('user_id', auth()->id())
+            $account = Account::where('user_id', Auth::id())
                 ->findOrFail($accountId);
 
             return view('pages.profile.balances.edit', [

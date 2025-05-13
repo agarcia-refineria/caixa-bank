@@ -8,7 +8,7 @@ $(document).ready(function () {
         Sortable.create(container, {
             animation: 150,
             onEnd: function (evt) {
-                const ids = [...container.children].map(el => el.dataset.id);
+                const ids = [...container.children].map(el => el.dataset.id).filter(Boolean);
 
                 fetch('/profile/accounts/order', {
                     method: 'POST',

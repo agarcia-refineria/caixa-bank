@@ -11,7 +11,7 @@
                 <!-- Show the account buttons -->
                 <div class="flex md:flex-row flex-col gap-4 py-6 sm:px-6 lg:px-8">
                     <!-- Show the update all button -->
-                    @if ($showUpdateAccounts)
+                    @if ($account->showUpdateAll)
                         <x-pages.configuration.item
                             :title="__('Update all')"
                             :description="__('This will add all the transactions and balances at the same time')"

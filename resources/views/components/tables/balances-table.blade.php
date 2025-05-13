@@ -1,3 +1,10 @@
+@props([
+    'balances',
+    'account',
+    'user',
+    'actions' => false,
+])
+
 <div class="bg-[#1c1d20] p-4 rounded-xl shadow">
     <table class="datatable min-w-full table-auto nowrap text-left">
         <thead>
@@ -8,7 +15,7 @@
                 <th class="py-2">{{ __('Reference Date') }}</th>
                 <th class="py-2">{{ __('Account') }}</th>
 
-                @if (isset($actions))
+                @if ($actions)
                     <th class="py-2 dt-low-priority">{{ __('Actions') }}</th>
                 @endif
             </tr>
@@ -22,7 +29,7 @@
                     <td class="py-2">{{ $balance->reference_date->format('d-m-Y') }}</td>
                     <td class="py-2">{{ $balance->account->iban }}</td>
 
-                    @if (isset($actions))
+                    @if ($actions)
                         <td class="py-2">
                             <x-buttons.primary-button class="py-2" x-data="" x-on:click.prevent="$dispatch('open-modal', 'confirm-transaction-update-{{ $balance->code }}')">
                                 {{ __('UPDATE') }}
