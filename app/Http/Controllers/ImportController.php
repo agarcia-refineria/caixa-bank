@@ -6,6 +6,7 @@ use App\Models\Account;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\View\View;
 
@@ -38,7 +39,7 @@ class ImportController extends Controller
             return Redirect::route('pages.profile.import.edit')->withErrors(['file_csv_accounts' => 'Please upload a CSV file.', 'file_xlsx_accounts' => 'Please upload an XLSX file.']);
         }
 
-        $user = \auth()->user();
+        $user = Auth::user();
 
         $file_csv = $request->file('file_csv_accounts');
         $file_xlsx = $request->file('file_xlsx_accounts');

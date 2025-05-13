@@ -3,7 +3,6 @@ namespace App\Http\Controllers;
 
 use App\Models\Account;
 use App\Models\Balance;
-use App\Models\Bank;
 use App\Models\BankDataSync;
 use App\Models\Institution;
 use App\Models\Transaction;
@@ -92,6 +91,7 @@ class NordigenController extends Controller
 
         $requisition = Http::withToken($accessToken)->get("{$this->baseUrl}/requisitions/{$requisitionId}");
         $accounts = $requisition['accounts'];
+        $user = Auth::user();
 
         $institution = Institution::where('code', $requisition['institution_id'])->first();
 
@@ -113,7 +113,7 @@ class NordigenController extends Controller
                     'created' => Carbon::parse($accountData['created'])->format('Y-m-d H:i:s'),
                     'last_accessed' => Carbon::parse($accountData['last_accessed'])->format('Y-m-d H:i:s'),
                     'institution_id' => $institution->id,
-                    'user_id' => auth()->user()->id,
+                    'user_id' => $user->id,
                 ]);
             } else {
                 Account::create([
@@ -126,7 +126,7 @@ class NordigenController extends Controller
                     'created' => Carbon::parse($accountData['created'])->format('Y-m-d H:i:s'),
                     'last_accessed' => Carbon::parse($accountData['last_accessed'])->format('Y-m-d H:i:s'),
                     'institution_id' => $institution->id,
-                    'user_id' => auth()->user()->id,
+                    'user_id' => $user->id,
                 ]);
             }
 
@@ -360,7 +360,7 @@ class NordigenController extends Controller
             session(['access_token' => $response['access']]);
         }
 
-        $user = auth()->user();
+        $user = Auth::user();
         $accounts = Account::where('user_id', $user->id)->onlyApi()->get();
 
         if ($accounts->isEmpty()) {

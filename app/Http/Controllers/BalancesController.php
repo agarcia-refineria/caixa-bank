@@ -13,6 +13,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Log;
 use Illuminate\View\View;
+use Throwable;
 
 class BalancesController extends Controller
 {
@@ -58,7 +59,7 @@ class BalancesController extends Controller
      * @param Request $request The incoming HTTP request containing balance creation data.
      * @return RedirectResponse Redirects to the edit balance view on success or back to the form with errors on failure.
      *
-     * @throws Exception If an error occurs during balance creation, the transaction is rolled back, and the error is logged.
+     * @throws Exception|Throwable If an error occurs during balance creation, the transaction is rolled back, and the error is logged.
      */
     public function create(Request $request): RedirectResponse
     {
@@ -112,7 +113,7 @@ class BalancesController extends Controller
      *                          with error messages on failure.
      *
      * @throws ModelNotFoundException If the specified balance is not found.
-     * @throws Exception If any other error occurs during the update process, it is logged
+     * @throws Exception|Throwable If any other error occurs during the update process, it is logged
      *                   and handled appropriately.
      */
     public function update(Request $request): RedirectResponse
@@ -169,7 +170,7 @@ class BalancesController extends Controller
      * @param Request $request The HTTP request instance containing the balance ID to be deleted.
      * @return RedirectResponse Redirects to the appropriate route with a success or error message.
      *
-     * @throws Exception If an error occurs during balance deletion, logs the error and redirects with an error message.
+     * @throws Exception|Throwable If an error occurs during balance deletion, logs the error and redirects with an error message.
      */
     public function destroy(Request $request): RedirectResponse
     {

@@ -16,6 +16,7 @@ use Illuminate\Support\Str;
 use Illuminate\View\View;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
+use Throwable;
 
 class AccountsController extends Controller
 {
@@ -31,7 +32,7 @@ class AccountsController extends Controller
         }
 
         try {
-            $user = User::findOrFail(Auth::id());
+            $user = Auth::user();
             $accounts = Account::where('user_id', $user->id)
                 ->orderBy('order')
                 ->get();
@@ -48,7 +49,6 @@ class AccountsController extends Controller
      *
      * @param Request $request The incoming HTTP request containing the account details.
      * @return RedirectResponse Redirects to the account edit view with a success status.
-     * @throws AuthorizationException
      */
     public function create(Request $request): RedirectResponse
     {
@@ -60,7 +60,7 @@ class AccountsController extends Controller
         ]);
 
         try {
-            $user = User::findOrFail(Auth::id());
+            $user = Auth::user();
 
             Account::create([
                 'id' => Str::uuid()->toString(),
@@ -129,6 +129,7 @@ class AccountsController extends Controller
      * @param Request $request The incoming HTTP request.
      * @param string $id The ID of the account to be deleted.
      * @return RedirectResponse A redirect response to the account's edit page with a status message.
+     * @throws Throwable
      */
     public function destroy(Request $request, string $id): RedirectResponse
     {
@@ -137,7 +138,7 @@ class AccountsController extends Controller
         ]);
 
         try {
-            $user = User::find(Auth::id());
+            $user = Auth::user();
             $account = Account::where('user_id', $user->id)
                 ->where('id', $id)
                 ->firstOrFail();
@@ -168,6 +169,7 @@ class AccountsController extends Controller
      *
      * @param Request $request The incoming HTTP request containing the ordered IDs.
      * @return JsonResponse A JSON response indicating the status of the operation.
+     * @throws Throwable
      */
     public function reorder(Request $request): JsonResponse
     {

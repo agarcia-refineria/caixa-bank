@@ -2,9 +2,79 @@
 
 namespace App\Models;
 
+use Eloquent;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Support\Carbon;
+use Illuminate\Support\Str;
 
+/**
+ * @property int $id
+ * @property string|null $name
+ * @property string|null $iban
+ * @property string|null $bban
+ * @property string|null $status
+ * @property string|null $owner_name
+ * @property Carbon $created
+ * @property Carbon $last_accessed
+ * @property Carbon|null $transactions_disabled_date
+ * @property Carbon|null $balance_disabled_date
+ * @property int $institution_id
+ * @property int $user_id
+ * @property int $order
+ * @property string $type
+ * @property-read Collection<int, Balance> $balances
+ * @property-read int|null $balances_count
+ * @property-read Collection<int, BankDataSync> $bankDataSync
+ * @property-read int $bank_data_sync_count
+ * @property-read bool $balance_disabled
+ * @property-read int $bank_data_sync_balances_count
+ * @property-read int $bank_data_sync_transactions_count
+ * @property-read mixed $chart_balances_labels
+ * @property-read mixed $chart_balances_values
+ * @property-read mixed $chart_transactions_colors
+ * @property-read mixed $chart_transactions_labels
+ * @property-read mixed $chart_transactions_values
+ * @property-read mixed|null $code
+ * @property-read int|mixed $expenses
+ * @property-read int|mixed $income
+ * @property-read mixed $is_api
+ * @property-read mixed $is_manual
+ * @property-read mixed $transactions_current_month
+ * @property-read bool $transactions_disabled
+ * @property-read mixed $transactions_expenses_current_month
+ * @property-read mixed $transactions_income_current_month
+ * @property-read Institution $institution
+ * @property-read Collection<int, Transaction> $transactions
+ * @property-read int|null $transactions_count
+ * @property-read User $user
+ * @method static Builder|Account newModelQuery()
+ * @method static Builder|Account newQuery()
+ * @method static Builder|Account onlyApi()
+ * @method static Builder|Account onlyManual()
+ * @method static Builder|Account onlyType($type)
+ * @method static Builder|Account query()
+ * @method static Builder|Account sortOrder()
+ * @method static Builder|Account whereBalanceDisabledDate($value)
+ * @method static Builder|Account whereBban($value)
+ * @method static Builder|Account whereCreated($value)
+ * @method static Builder|Account whereIban($value)
+ * @method static Builder|Account whereId($value)
+ * @method static Builder|Account whereInstitutionId($value)
+ * @method static Builder|Account whereLastAccessed($value)
+ * @method static Builder|Account whereName($value)
+ * @method static Builder|Account whereOrder($value)
+ * @method static Builder|Account whereOwnerName($value)
+ * @method static Builder|Account whereStatus($value)
+ * @method static Builder|Account whereTransactionsDisabledDate($value)
+ * @method static Builder|Account whereType($value)
+ * @method static Builder|Account whereUserId($value)
+ * @mixin Eloquent
+ */
 class Account extends Model
 {
     use HasFactory;
@@ -37,40 +107,46 @@ class Account extends Model
         'user_id'
     ];
 
+    /**
+     * Get the account code.
+     *
+     * @noinspection PhpUnused
+     * @return mixed
+     */
     public function getCodeAttribute(): mixed
     {
         return $this->attributes['id'];
     }
 
-    public function user()
+    public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
     }
 
-    public function institution()
+    public function institution(): BelongsTo
     {
         return $this->belongsTo(Institution::class);
     }
 
-    public function transactions()
+    public function transactions(): HasMany
     {
         return $this->hasMany(Transaction::class, 'account_id', 'code');
     }
 
-    public function balances()
+    public function balances(): HasMany
     {
         return $this->hasMany(Balance::class, 'account_id', 'code');
     }
 
-    public function bankDataSync()
+    public function bankDataSync(): HasMany
     {
         return $this->hasMany(BankDataSync::class, 'account_id', 'code');
     }
 
     /**
      * Order the accounts by their order attribute.
-     * @param $query
-     * @return mixed
+     *
+     * @noinspection PhpUnused
      */
     public function scopeSortOrder($query)
     {
@@ -82,7 +158,7 @@ class Account extends Model
      * @param $usedColors
      * @return string
      */
-    public function getUsedColors(&$usedColors)
+    public function getUsedColors(&$usedColors): string
     {
         do {
             $r = mt_rand(0, 100);
@@ -96,6 +172,8 @@ class Account extends Model
 
     /**
      * Scope only accounts created by the user.
+     *
+     * @noinspection PhpUnused
      */
     public function scopeOnlyManual($query)
     {
@@ -104,6 +182,8 @@ class Account extends Model
 
     /**
      * Scope only accounts created by the API.
+     *
+     * @noinspection PhpUnused
      */
     public function scopeOnlyApi($query)
     {
@@ -112,6 +192,8 @@ class Account extends Model
 
     /**
      * Scope only accounts created by the type.
+     *
+     * @noinspection PhpUnused
      */
     public function scopeOnlyType($query, $type)
     {
@@ -120,25 +202,31 @@ class Account extends Model
 
     /**
      * Bool is the account is created by the API.
+     *
+     * @noinspection PhpUnused
      */
-    public function getIsApiAttribute()
+    public function getIsApiAttribute(): bool
     {
         return $this->type == Account::$accountTypes['api'];
     }
 
     /**
      * Bool is the account is created by the user.
+     *
+     * @noinspection PhpUnused
      */
-    public function getIsManualAttribute()
+    public function getIsManualAttribute(): bool
     {
         return $this->type == Account::$accountTypes['manual'];
     }
 
     /**
      * Get the number of bank data syncs for today.
+     *
+     * @noinspection PhpUnused
      * @return int
      */
-    public function getBankDataSyncCountAttribute()
+    public function getBankDataSyncCountAttribute(): int
     {
         $todayStart = now()->startOfDay();
         $todayEnd = now()->endOfDay();
@@ -151,9 +239,11 @@ class Account extends Model
 
     /**
      * Get the number of bank data syncs for today for type transactions.
+     *
+     * @noinspection PhpUnused
      * @return int
      */
-    public function getBankDataSyncTransactionsCountAttribute()
+    public function getBankDataSyncTransactionsCountAttribute(): int
     {
         $todayStart = now()->startOfDay();
         $todayEnd = now()->endOfDay();
@@ -166,9 +256,11 @@ class Account extends Model
 
     /**
      * Get the number of bank data syncs for today for type balances.
+     *
+     * @noinspection PhpUnused
      * @return int
      */
-    public function getBankDataSyncBalancesCountAttribute()
+    public function getBankDataSyncBalancesCountAttribute(): int
     {
         $todayStart = now()->startOfDay();
         $todayEnd = now()->endOfDay();
@@ -181,6 +273,8 @@ class Account extends Model
 
     /**
      * Check if the transactions is disabled.
+     *
+     * @noinspection PhpUnused
      * @return bool
      */
     public function getTransactionsDisabledAttribute(): bool
@@ -190,6 +284,8 @@ class Account extends Model
 
     /**
      * Check if the balance is disabled.
+     *
+     * @noinspection PhpUnused
      * @return bool
      */
     public function getBalanceDisabledAttribute(): bool
@@ -199,9 +295,11 @@ class Account extends Model
 
     /**
      * Get the transactions for the current month.
+     *
+     * @noinspection PhpUnused
      * @return mixed
      */
-    public function getTransactionsCurrentMonthAttribute()
+    public function getTransactionsCurrentMonthAttribute(): mixed
     {
         $date = session('month') ?? now()->format('m-Y');
         $parsedDate = \Carbon\Carbon::createFromFormat('m-Y', $date);
@@ -217,9 +315,11 @@ class Account extends Model
 
     /**
      * Get the transactions for the current month that are expenses.
+     *
+     * @noinspection PhpUnused
      * @return mixed
      */
-    public function getTransactionsExpensesCurrentMonthAttribute()
+    public function getTransactionsExpensesCurrentMonthAttribute(): mixed
     {
         $date = session('month') ?? now()->format('m-Y');
         $parsedDate = \Carbon\Carbon::createFromFormat('m-Y', $date);
@@ -236,9 +336,11 @@ class Account extends Model
 
     /**
      * Get the transactions for the current month that are income.
+     *
+     * @noinspection PhpUnused
      * @return mixed
      */
-    public function getTransactionsIncomeCurrentMonthAttribute()
+    public function getTransactionsIncomeCurrentMonthAttribute(): mixed
     {
         $date = session('month') ?? now()->format('m-Y');
         $parsedDate = \Carbon\Carbon::createFromFormat('m-Y', $date);
@@ -255,9 +357,11 @@ class Account extends Model
 
     /**
      * Get the total expenses for the current month.
+     *
+     * @noinspection PhpUnused
      * @return int|mixed
      */
-    public function getExpensesAttribute()
+    public function getExpensesAttribute(): mixed
     {
         $date = session('month') ?? now()->format('m-Y');
         $parsedDate = \Carbon\Carbon::createFromFormat('m-Y', $date);
@@ -273,9 +377,11 @@ class Account extends Model
 
     /**
      * Get the total income for the current month.
+     *
+     * @noinspection PhpUnused
      * @return int|mixed
      */
-    public function getIncomeAttribute()
+    public function getIncomeAttribute(): mixed
     {
         $date = session('month') ?? now()->format('m-Y');
         $parsedDate = \Carbon\Carbon::createFromFormat('m-Y', $date);
@@ -289,7 +395,13 @@ class Account extends Model
             ->sum('transactionAmount_amount');
     }
 
-    public function getChartTransactionsValuesAttribute()
+    /**
+     * Get the chart transactions values for the current month.
+     *
+     * @noinspection PhpUnused
+     * @return mixed
+     */
+    public function getChartTransactionsValuesAttribute(): mixed
     {
         return $this->transactionsExpensesCurrentMonth
             ->groupBy('remittanceInformationUnstructured')
@@ -297,7 +409,13 @@ class Account extends Model
             ->implode(',');
     }
 
-    public function getChartTransactionsLabelsAttribute()
+    /**
+     * Get the chart transactions labels for the current month.
+     *
+     * @noinspection PhpUnused
+     * @return mixed
+     */
+    public function getChartTransactionsLabelsAttribute(): mixed
     {
         return $this->transactionsExpensesCurrentMonth
             ->groupBy('remittanceInformationUnstructured')
@@ -306,7 +424,13 @@ class Account extends Model
             ->implode(',');
     }
 
-    public function getChartTransactionsColorsAttribute()
+    /**
+     * Get the chart transactions colors for the current month.
+     *
+     * @noinspection PhpUnused
+     * @return mixed
+     */
+    public function getChartTransactionsColorsAttribute(): mixed
     {
         $usedColors = [];
         return $this->transactionsExpensesCurrentMonth
@@ -316,7 +440,13 @@ class Account extends Model
             })->implode(',');
     }
 
-    public function getChartBalancesValuesAttribute()
+    /**
+     * Get the chart balances values for the current month.
+     *
+     * @noinspection PhpUnused
+     * @return mixed
+     */
+    public function getChartBalancesValuesAttribute(): mixed
     {
         return $this->balances()
             ->balanceTypeForward()
@@ -325,7 +455,13 @@ class Account extends Model
             ->implode(',');
     }
 
-    public function getChartBalancesLabelsAttribute()
+    /**
+     * Get the chart balances labels for the current month.
+     *
+     * @noinspection PhpUnused
+     * @return mixed
+     */
+    public function getChartBalancesLabelsAttribute(): mixed
     {
         return $this->balances()
             ->balanceTypeForward()
@@ -335,10 +471,16 @@ class Account extends Model
             ->implode(',');
     }
 
-    public static function getExampleModel()
+    /**
+     * Get the example model for testing purposes.
+     *
+     * @noinspection PhpUnused
+     * @return self
+     */
+    public static function getExampleModel(): Account
     {
         return new self([
-            'id' => uniqid(),
+            'id' => Str::uuid()->toString(),
             'name' => 'Example Account',
             'iban' => 'DE89370400440532013000',
             'bban' => '12345678901234567890',

@@ -23,7 +23,7 @@ class DashboardController extends Controller
      */
     public function index(): View
     {
-        $user = User::find(Auth::id());
+        $user = Auth::user();
 
         if (!$user) {
             abort(401);
@@ -54,7 +54,7 @@ class DashboardController extends Controller
      */
     public function show(string $id): View
     {
-        $user = User::find(Auth::id());
+        $user = Auth::user();
 
         if (!$user) {
             abort(401);
@@ -81,7 +81,7 @@ class DashboardController extends Controller
      */
     public function history(): View
     {
-        $user = User::find(Auth::id());
+        $user = Auth::user();
 
         if (!$user) {
             abort(403);
@@ -104,7 +104,7 @@ class DashboardController extends Controller
      */
     public function clock(): View
     {
-        $user = User::find(Auth::id());
+        $user = Auth::user();
 
         if (!$user) {
             abort(403);
@@ -125,7 +125,7 @@ class DashboardController extends Controller
      */
     public function configuration(): View
     {
-        $user = User::find(Auth::id());
+        $user = Auth::user();
 
         if (!$user) {
             abort(403);

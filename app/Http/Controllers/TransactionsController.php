@@ -12,6 +12,7 @@ use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Str;
 use Illuminate\View\View;
+use Throwable;
 
 class TransactionsController extends Controller
 {
@@ -127,6 +128,7 @@ class TransactionsController extends Controller
      *
      * @param Request $request The incoming HTTP request containing transaction and account details.
      * @return RedirectResponse A redirection to the transaction edit page with success or error feedback.
+     * @throws Throwable
      */
     public function update(Request $request): RedirectResponse
     {
@@ -180,6 +182,16 @@ class TransactionsController extends Controller
 
     /**
      * Delete a transaction.
+     *
+     * This method validates the incoming request data to ensure the transaction ID and account ID are provided
+     * and exist in the database. If valid, it fetches the transaction and account,
+     * then deletes the transaction within a database transaction.
+     * On success, redirects to the transaction edit page with a success message.
+     * If an error occurs, logs the exception and redirects back with an error message.
+     *
+     * @return RedirectResponse A redirection to the transaction edit page with success or error feedback.
+     *
+     * @throws Throwable
      */
     public function destroy(): RedirectResponse
     {

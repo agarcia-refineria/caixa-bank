@@ -17,7 +17,7 @@ class ProfileController extends Controller
      */
     public function edit(): View
     {
-        $user = User::find(Auth::id());
+        $user = Auth::user();
 
         if (!$user) {
             abort(403);

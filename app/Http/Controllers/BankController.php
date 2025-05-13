@@ -16,6 +16,7 @@ use Illuminate\View\View;
 use Illuminate\Support\Facades\Log;
 use App\Models\ScheduledTasks;
 use Illuminate\Support\Facades\Artisan;
+use Throwable;
 
 class BankController extends Controller
 {
@@ -24,11 +25,10 @@ class BankController extends Controller
      *
      * @return View
      *
-     * @throws AuthorizationException
      */
     public function edit(): View
     {
-        $user = User::find(Auth::id());
+        $user = Auth::user();
 
         if (!$user) {
             abort(403);
@@ -47,7 +47,7 @@ class BankController extends Controller
      */
     public function update(): RedirectResponse
     {
-        $user = User::find(Auth::id());
+        $user = Auth::user();
 
         if (!$user) {
             return Redirect::route('login');
@@ -83,7 +83,7 @@ class BankController extends Controller
      * @param Request $request The incoming HTTP request containing the scheduling data.
      * @return RedirectResponse A redirection to the profile edit page with a status message.
      *
-     * @throws Exception If an error occurs during the scheduling process.
+     * @throws Exception|Throwable If an error occurs during the scheduling process.
      */
     public function schedule(Request $request): RedirectResponse
     {
@@ -96,7 +96,7 @@ class BankController extends Controller
         try {
             DB::beginTransaction();
 
-            $user = User::findOrFail(Auth::id());
+            $user = Auth::user();
 
             $user->update([
                 'schedule_times' => $validated['schedule_times'],
@@ -123,7 +123,6 @@ class BankController extends Controller
 
             DB::commit();
             return redirect()->route('profile.bank.edit')->with('status', __('status.bankcontroller.schedule-updated'));
-
         } catch (Exception $e) {
             DB::rollBack();
             Log::error('Error al programar tareas: ' . $e->getMessage());
