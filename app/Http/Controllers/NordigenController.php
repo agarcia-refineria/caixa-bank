@@ -9,6 +9,7 @@ use App\Models\Institution;
 use App\Models\Transaction;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Redirect;
@@ -54,9 +55,9 @@ class NordigenController extends Controller
      */
     public function createRequisition(): RedirectResponse
     {
+        $user = Auth::user();
         $accessToken = session('access_token');
-        $user = auth()->user();
-        $bank = Bank::where('user_id', $user->id)->first();
+        $bank = $user->bank;
 
         $institutionId = $bank->institution->code;
 
@@ -81,11 +82,10 @@ class NordigenController extends Controller
      * If accounts are successfully retrieved, syncs the fetched account data, including creating or updating accounts as necessary.
      * The function also logs the synchronization process and redirects the user to the configuration page.
      *
-     * @param Request $request The incoming HTTP request containing session and user information.
      *
      * @return RedirectResponse Redirects to the bank configuration page with a status message.
      */
-    public function callback(Request $request): RedirectResponse
+    public function callback(): RedirectResponse
     {
         $accessToken = session('access_token');
         $requisitionId = session('requisition_id');
@@ -96,7 +96,7 @@ class NordigenController extends Controller
         $institution = Institution::where('code', $requisition['institution_id'])->first();
 
         if (empty($accounts)) {
-            return Redirect::route('bank.configuration')->with('status', 'No accounts found');
+            return Redirect::route('bank.configuration')->with('status', __('status.nordigencontroller.callback-failed'));
         }
 
         foreach ($accounts as $i => $accountId) {
@@ -138,7 +138,7 @@ class NordigenController extends Controller
             ]);
         }
 
-        return redirect()->route('bank.configuration')->with('status', 'Accounts and transactions retrieved successfully');
+        return redirect()->route('bank.configuration')->with('status', __('status.nordigencontroller.callback-success'));;
     }
 
     /**
@@ -150,12 +150,11 @@ class NordigenController extends Controller
      * while also handling the status of transactions being disabled and logging the synchronization
      * as successful in the database.
      *
-     * @param Request $request The incoming HTTP request containing session and user information.
      * @param string $accountId The ID of the bank account whose transactions need to be synchronized.
      *
      * @return RedirectResponse Redirects to the bank configuration page upon completion of the synchronization process.
      */
-    public function transactions(Request $request, string $accountId): RedirectResponse
+    public function transactions(string $accountId): RedirectResponse
     {
         $accessToken = session('access_token');
 
@@ -174,7 +173,6 @@ class NordigenController extends Controller
             }
 
             $bookedTransactions = $transactions["transactions"]['booked'];
-            $pendingTransactions = $transactions["transactions"]['pending'];
 
             foreach ($bookedTransactions as $transaction) {
                 $transactionModel = Transaction::where('id', $transaction['transactionId'])->first();
@@ -234,12 +232,11 @@ class NordigenController extends Controller
      * it updates the account's balance disabled date to signify the error.
      * Additionally, it logs the synchronization process for tracking purposes.
      *
-     * @param Request $request The incoming HTTP request containing session and user information.
      * @param string $accountId The unique identifier of the account whose balances need to be synchronized.
      *
      * @return RedirectResponse Redirects to the bank configuration page.
      */
-    public function balances(Request $request, string $accountId): RedirectResponse
+    public function balances(string $accountId): RedirectResponse
     {
         $accessToken = session('access_token');
 
@@ -318,11 +315,11 @@ class NordigenController extends Controller
      * Finally, it redirects the user to the bank configuration page with a success message upon successful update.
      *
      * @param Request $request The incoming HTTP request containing session and user information.
-     * @param mixed $accountId The unique identifier of the account to be updated.
+     * @param string $accountId The unique identifier of the account to be updated.
      *
      * @return RedirectResponse Redirects to the bank configuration page with a status message.
      */
-    public function update(Request $request, $accountId): RedirectResponse
+    public function update(Request $request, string $accountId): RedirectResponse
     {
         if (!session('access_token')) {
             $response = Http::post("{$this->baseUrl}/token/new/", [
@@ -333,10 +330,10 @@ class NordigenController extends Controller
             session(['access_token' => $response['access']]);
         }
 
-        $this->transactions($request, $accountId);
-        $this->balances($request, $accountId);
+        $this->transactions($accountId);
+        $this->balances($accountId);
 
-        return Redirect::route('bank.configuration')->with('status', 'Transactions and balances updated successfully');
+        return Redirect::route('bank.configuration')->with('status', __('status.nordigencontroller.update-account-success'));
     }
 
     /**
@@ -367,15 +364,15 @@ class NordigenController extends Controller
         $accounts = Account::where('user_id', $user->id)->onlyApi()->get();
 
         if ($accounts->isEmpty()) {
-            return Redirect::route('bank.configuration')->with('status', 'No accounts found');
+            return Redirect::route('bank.configuration')->with('status', __('status.nordigencontroller.schedule-error'));
         }
 
         foreach ($accounts as $account) {
-            $this->transactions($request, $account->code);
-            $this->balances($request, $account->code);
+            $this->transactions($account->code);
+            $this->balances($account->code);
         }
 
-        return Redirect::route('bank.configuration')->with('status', 'Transactions and balances updated successfully');
+        return Redirect::route('bank.configuration')->with('status', __('status.nordigencontroller.schedule-updated'));
     }
 
     /**
@@ -393,10 +390,9 @@ class NordigenController extends Controller
      *
      * Finally, redirects the user to the profile edit page with a success status after processing institutions.
      *
-     * @param Request $request The incoming HTTP request object.
      * @return RedirectResponse Returns a redirect response to the profile edit route.
      */
-    public function insertInstitutions(Request $request): RedirectResponse
+    public function insertInstitutions(): RedirectResponse
     {
         $accessToken = session('access_token');
 
@@ -424,7 +420,7 @@ class NordigenController extends Controller
                 }
             }
         } else {
-            return Redirect::route('profile.edit')->with('status', 'No institutions found');
+            return Redirect::route('pages.profile.edit')->with('status', __('status.nordigencontroller.institutions-error'));
         }
 
         foreach ($institutions as $institution) {
@@ -441,6 +437,6 @@ class NordigenController extends Controller
             Institution::create($institutionData);
         }
 
-        return Redirect::route('profile.edit')->with('status', 'profile-updated');
+        return Redirect::route('pages.profile.edit')->with('status', __('status.nordigencontroller.institutions-updated'));
     }
 }

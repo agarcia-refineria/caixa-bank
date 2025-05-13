@@ -75,15 +75,27 @@
     </div>
 
     @if (isset($account))
-        <div class="sm:px-6 lg:px-8">
-            <x-buttons.secondary-button type="submit">
-                {{ __('Update Account') }}
-            </x-buttons.secondary-button>
+        <div class="sm:px-6 lg:px-8 flex md:flex-row flex-col justify-between">
+            <div class="mt-2 flex justify-center md:justify-start gap-4">
+                <x-buttons.secondary-button type="submit">
+                    {{ __('Update Account') }}
+                </x-buttons.secondary-button>
+                <x-buttons.danger-button x-data="" x-on:click.prevent="$dispatch('open-modal', 'confirm-account-{{ $account->code }}-deletion')">
+                    {{ __('Delete Account') }}
+                </x-buttons.danger-button>
+            </div>
 
-            <x-buttons.danger-button
-                x-data=""
-                x-on:click.prevent="$dispatch('open-modal', 'confirm-account-{{ $account->code }}-deletion')"
-            >{{ __('Delete Account') }}</x-buttons.danger-button>
+            @if ($account->isManual)
+                <div class="mt-2 flex justify-center md:justify-end gap-4">
+                    <x-links.nav-link :href="route('profile.transaction.edit', ['id' => $account->code])">
+                        {{ __('View Transactions') }}
+                    </x-links.nav-link>
+
+                    <x-links.nav-link :href="route('profile.balance.edit', ['id' => $account->code])">
+                        {{ __('View Balances') }}
+                    </x-links.nav-link>
+                </div>
+            @endif
         </div>
     @else
         <div class="sm:px-6 lg:px-8">

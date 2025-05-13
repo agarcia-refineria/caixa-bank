@@ -5,6 +5,7 @@
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 space-y-6">
             @if ($user->bank)
                 <x-buttons.primary-button
+                    class="py-2"
                     x-data=""
                     x-on:click.prevent="$dispatch('open-modal', 'confirm-user-create')"
                 >{{ __('Create Account') }}</x-buttons.primary-button>

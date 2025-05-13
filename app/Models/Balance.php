@@ -15,9 +15,9 @@ class Balance extends Model
         'reference_date' => 'date',
     ];
 
-    private $balanceTypes = [
-        'closingBooked',
-        'forwardAvailable',
+    public static array $balanceTypes = [
+        'closingBooked' => 'closingBooked',
+        'forwardAvailable' => 'forwardAvailable',
     ];
 
     protected $fillable = [
@@ -30,7 +30,7 @@ class Balance extends Model
 
     public function account()
     {
-        return $this->belongsTo(Account::class, 'account_id', 'code');
+        return $this->belongsTo(Account::class, 'account_id', 'id');
     }
 
     /**
@@ -69,7 +69,7 @@ class Balance extends Model
      */
     public function scopeBalanceTypeForward($query)
     {
-        return $query->where('balance_type', $this->balanceTypes[1]);
+        return $query->where('balance_type', self::$balanceTypes['forwardAvailable']);
     }
 
     /**
@@ -79,7 +79,17 @@ class Balance extends Model
      */
     public function scopeBalanceTypeClosing($query)
     {
-        return $query->where('balance_type', $this->balanceTypes[0]);
+        return $query->where('balance_type', self::$balanceTypes['closingBooked']);
+    }
+
+    public function getBalanceTypesAttribute()
+    {
+        return self::$balanceTypes;
+    }
+
+    public function getCodeAttribute()
+    {
+        return $this->attributes['id'];
     }
 
     public static function getExampleModel()

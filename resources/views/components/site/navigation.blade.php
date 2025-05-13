@@ -5,32 +5,32 @@
             <div class="flex">
                 <!-- Logo -->
                 <div class="shrink-0 flex items-center">
-                    <a href="{{ route('bank.index') }}" class="c-logo__container">
+                    <a href="{{ route('dashboard.index') }}" class="c-logo__container">
                         <x-application-logo class="block h-9 w-auto fill-current text-gray-800 dark:text-gray-200" />
                     </a>
                 </div>
 
                 <!-- Navigation Links -->
                 <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
-                    <x-links.nav-link :href="route('bank.index')" :active="request()->routeIs(['bank.index', 'bank.show'])">
+                    <x-links.nav-link :href="route('dashboard.index')" :active="request()->routeIs(['dashboard.index', 'dashboard.show'])">
                         {{ __('Dashboard') }}
                     </x-links.nav-link>
                 </div>
 
                 <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
-                    <x-links.nav-link :href="route('bank.history')" :active="request()->routeIs('bank.history')">
+                    <x-links.nav-link :href="route('dashboard.history')" :active="request()->routeIs('dashboard.history')">
                         {{ __('See History') }}
                     </x-links.nav-link>
                 </div>
 
                 <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
-                    <x-links.nav-link :href="route('bank.clock')" :active="request()->routeIs('bank.clock')">
+                    <x-links.nav-link :href="route('dashboard.clock')" :active="request()->routeIs('dashboard.clock')">
                         {{ __('Clock') }}
                     </x-links.nav-link>
                 </div>
 
                 <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
-                    <x-links.nav-link :href="route('bank.configuration')" :active="request()->routeIs('bank.configuration')">
+                    <x-links.nav-link :href="route('dashboard.configuration')" :active="request()->routeIs('dashboard.configuration')">
                         {{ __('Configuration') }}
                     </x-links.nav-link>
                 </div>
@@ -113,25 +113,25 @@
     <!-- Responsive Navigation Menu -->
     <div :class="{'block': open, 'hidden': ! open}" class="hidden sm:hidden">
         <div class="pt-2 pb-3 space-y-1">
-            <x-links.responsive-nav-link :href="route('bank.index')" :active="request()->routeIs(['bank.index', 'bank.show'])">
+            <x-links.responsive-nav-link :href="route('dashboard.index')" :active="request()->routeIs(['dashboard.index', 'dashboard.show'])">
                 {{ __('Dashboard') }}
             </x-links.responsive-nav-link>
         </div>
 
         <div class="pt-2 pb-3 space-y-1">
-            <x-links.responsive-nav-link :href="route('bank.history')" :active="request()->routeIs('bank.history')">
+            <x-links.responsive-nav-link :href="route('dashboard.history')" :active="request()->routeIs('dashboard.history')">
                 {{ __('See History') }}
             </x-links.responsive-nav-link>
         </div>
 
         <div class="pt-2 pb-3 space-y-1">
-            <x-links.responsive-nav-link :href="route('bank.clock')" :active="request()->routeIs('bank.clock')">
+            <x-links.responsive-nav-link :href="route('dashboard.clock')" :active="request()->routeIs('dashboard.clock')">
                 {{ __('Clock') }}
             </x-links.responsive-nav-link>
         </div>
 
         <div class="pt-2 pb-3 space-y-1">
-            <x-links.responsive-nav-link :href="route('bank.configuration')" :active="request()->routeIs('bank.configuration')">
+            <x-links.responsive-nav-link :href="route('dashboard.configuration')" :active="request()->routeIs('dashboard.configuration')">
                 {{ __('Configuration') }}
             </x-links.responsive-nav-link>
         </div>

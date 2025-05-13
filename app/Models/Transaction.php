@@ -48,6 +48,11 @@ class Transaction extends Model
         return $query->orderBy('bookingDate', 'desc');
     }
 
+    public function getCodeAttribute()
+    {
+        return $this->attributes['id'];
+    }
+
     /**
      * Get the debtor name in a formatted way.
      * @return string

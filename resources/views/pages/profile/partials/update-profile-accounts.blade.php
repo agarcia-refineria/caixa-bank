@@ -24,7 +24,7 @@
                 @foreach($user->schedule as $schedule)
                     <div>
                         <x-inputs.input-label for="schedule_time_{{ $loop->index }}" :value="__('Schedule Time') . ' ' . ($loop->index + 1)" />
-                        <x-inputs.text-input id="schedule_time_{{ $loop->index }}" name="times[]" type="time" class="mt-1 block w-full" :value="$schedule->hour" required autocomplete="schedule_time_{{ $loop->index }}" />
+                        <x-inputs.text-input id="schedule_time_{{ $loop->index }}" name="times[]" type="time" class="mt-1 block w-full" :value="$schedule->hour" autocomplete="schedule_time_{{ $loop->index }}" />
                         <x-inputs.input-error class="mt-2" :messages="$errors->get('schedule_time_' . $loop->index)" />
                     </div>
                 @endforeach
@@ -34,7 +34,7 @@
                 @for($i = 0; $user->schedule_times > $i; $i++)
                     <div>
                         <x-inputs.input-label for="schedule_time_{{ $i }}" :value="__('Schedule Time') . ' ' . ($i + 1)" />
-                        <x-inputs.text-input id="schedule_time_{{ $i }}" name="times[]" type="time" class="mt-1 block w-full" required autocomplete="schedule_time_{{ $i }}" />
+                        <x-inputs.text-input id="schedule_time_{{ $i }}" name="times[]" type="time" class="mt-1 block w-full" autocomplete="schedule_time_{{ $i }}" />
                         <x-inputs.input-error class="mt-2" :messages="$errors->get('schedule_time_' . $i)" />
                     </div>
                 @endfor

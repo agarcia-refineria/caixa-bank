@@ -4,17 +4,17 @@
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 space-y-6">
             <div class="p-4 sm:p-8 bg-white dark:bg-[#1a1b1e] shadow rounded-lg">
                 <div class="max-w-xl">
-                    @include('profile.partials.update-profile-bank')
+                    @include('pages.profile.partials.update-profile-bank')
                 </div>
             </div>
 
             @if ($bank)
                 <div class="p-4 sm:p-8 bg-white dark:bg-[#1a1b1e] shadow rounded-lg">
-                    @include('profile.partials.update-profile-accounts')
+                    @include('pages.profile.partials.update-profile-accounts')
                 </div>
 
                 <div class="p-4 sm:p-8 bg-white dark:bg-[#1a1b1e] shadow rounded-lg">
-                    @include('profile.partials.info-profile-accounts')
+                    @include('pages.profile.partials.info-profile-accounts')
                 </div>
             @endif
         </div>

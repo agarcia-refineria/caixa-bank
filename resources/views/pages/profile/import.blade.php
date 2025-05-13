@@ -11,7 +11,7 @@
 
             <x-pages.profile.import-form
                 :user="$user"
-                :action="route('profile.csv.accounts')"
+                :action="route('profile.import.accounts')"
                 :type="__('Accounts')"
                 typeField="accounts">
                 <table class="datatable table-auto w-full px-4">
@@ -52,7 +52,7 @@
 
             <x-pages.profile.import-form
                 :user="$user"
-                :action="route('profile.csv.transactions')"
+                :action="route('profile.import.transactions')"
                 :type="__('Transactions')"
                 typeField="transactions">
                 <table class="datatable table-auto w-full px-4">
@@ -103,7 +103,7 @@
 
             <x-pages.profile.import-form
                 :user="$user"
-                :action="route('profile.csv.balances')"
+                :action="route('profile.import.balances')"
                 :type="__('Balances')"
                 typeField="balances">
                 <table class="datatable table-auto w-full px-4">

@@ -2,6 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use Illuminate\Http\RedirectResponse;
+use Illuminate\Support\Facades\App;
+
 class LangController extends Controller
 {
     /**
@@ -11,13 +14,13 @@ class LangController extends Controller
      * and session with the selected language. Redirects the user back to the previous page.
      *
      * @param string $locale The locale to be set (e.g., 'en', 'es').
-     * @return \Illuminate\Http\RedirectResponse Redirects back to the previous page.
+     * @return RedirectResponse Redirects back to the previous page.
      */
-    public function index($locale): \Illuminate\Http\RedirectResponse
+    public function index(string $locale): RedirectResponse
     {
         if (in_array($locale, ['en', 'es'])) {
             session(['locale' => $locale]);
-            \Illuminate\Support\Facades\App::setLocale($locale);
+            App::setLocale($locale);
         }
         return redirect()->back();
     }

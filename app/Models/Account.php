@@ -11,7 +11,7 @@ class Account extends Model
 
     public $timestamps = false;
 
-    public static $accountTypes = [
+    public static array $accountTypes = [
         'api' => 'api',
         'manual' => 'manual',
     ];
@@ -37,11 +37,7 @@ class Account extends Model
         'user_id'
     ];
 
-    /**
-     * Get the account code.
-     * @return mixed
-     */
-    public function getCodeAttribute()
+    public function getCodeAttribute(): mixed
     {
         return $this->attributes['id'];
     }
@@ -101,7 +97,7 @@ class Account extends Model
     /**
      * Scope only accounts created by the user.
      */
-    public function scopeOnlyUser($query)
+    public function scopeOnlyManual($query)
     {
         return $query->where('type', Account::$accountTypes['manual']);
     }
@@ -133,7 +129,7 @@ class Account extends Model
     /**
      * Bool is the account is created by the user.
      */
-    public function getIsUserAttribute()
+    public function getIsManualAttribute()
     {
         return $this->type == Account::$accountTypes['manual'];
     }
