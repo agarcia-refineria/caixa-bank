@@ -7,7 +7,7 @@
 ])
 
 <div class="bg-[#1c1d20] p-4 rounded-xl shadow">
-    <table class="datatable min-w-full table-auto nowrap">
+    <table class="datatable min-w-full table-auto nowrap @if (!$noFooter) u-footer @endif">
         <thead>
             <tr>
                 <th class="py-2 dt-low-priority">{{ __('IBAN') }}</th>

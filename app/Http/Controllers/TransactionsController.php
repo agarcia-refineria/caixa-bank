@@ -66,7 +66,7 @@ class TransactionsController extends Controller
             $validated = $request->validate([
                 'account_id' => 'required|exists:accounts,id',
                 'bookingDate' => 'required|date',
-                'transactionAmount_amount' => 'required|numeric|min:0.01',
+                'transactionAmount_amount' => 'required|numeric',
                 'valueDate' => 'nullable|date',
                 'transactionAmount_currency' => 'nullable|string|size:3',
                 'entryReference' => 'nullable|string|max:255',

@@ -482,7 +482,7 @@ class Account extends Model
         return $this->bankDataSync()
             ->where('created_at', '>=', now()->subDays(7))
             ->where('created_at', '<=', now())
-            ->count() < ScheduledTasks::$MAX_TIMES;
+            ->count() >= ScheduledTasks::$MAX_TIMES;
     }
 
     /**

@@ -1,5 +1,5 @@
 <div class="bg-[#1c1d20] p-4 rounded-xl shadow">
-    <table class="datatable min-w-full table-auto nowrap text-left">
+    <table class="datatable min-w-full table-auto nowrap text-left u-footer">
         <thead>
             <tr>
                 <th class="py-2 dt-low-priority">{{ __('IBAN') }}</th>
