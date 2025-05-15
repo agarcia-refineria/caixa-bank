@@ -1,5 +1,5 @@
 <x-app-layout>
-    <x-pages.profile.navigation />
+    @include('partials.profile.navigation')
 
     <x-site.top-bar :text="__('Account') . ': ' . $account->iban" />
 
@@ -26,9 +26,7 @@
             >{{ __('Create Balance') }}</x-buttons.primary-button>
 
             <x-ui.modal name="confirm-balance-create" maxWidth="full" margin="sm:px-[50px]" focusable>
-                <x-pages.profile.balance
-                    :account="$account"
-                    :user="$user" />
+                @include('partials.profile.balance', ['account' => $account, 'user' => $user])
             </x-ui.modal>
         @endif
 

@@ -2,7 +2,10 @@
     <x-site.top-bar text="{{ __('The total of the accounts balances is') }} {{ auth()->user()->totalAccountSum }} €" />
 
     <div class="block md:flex min-h-screen bg-[#0e0f11] text-white">
-        <x-pages.dashboard.sidebar :accounts="$accounts" :current-account="$currentAccount" />
+        @include('partials.dashboard.sidebar', [
+            'accounts' => $accounts,
+            'currentAccount' => $currentAccount,
+        ])
 
         <div class="min-h-screen w-full  text-white p-6">
             @if ($currentAccount)

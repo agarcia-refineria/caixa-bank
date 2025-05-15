@@ -88,11 +88,12 @@ class DashboardController extends Controller
         }
 
         $transactions = $user->transactions;
+        $balances = $user->balances;
         $accounts = $user->accounts()
             ->sortOrder()
             ->get();
 
-        return view('pages.dashboard.history', compact('user', 'transactions', 'accounts'));
+        return view('pages.dashboard.history', compact('user', 'transactions', 'accounts', 'balances'));
     }
 
     /**

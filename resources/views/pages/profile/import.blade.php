@@ -1,5 +1,5 @@
 <x-app-layout>
-    <x-pages.profile.navigation />
+    @include('partials.profile.navigation')
 
     <div class="py-6 md:px-0 px-4">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 space-y-6">
@@ -9,7 +9,7 @@
                 (III). {{ __('The fields needs to be THE EXACT same name from examples showing you.') }}<br/>
             </div>
 
-            <x-pages.profile.import-form
+            <x-form.import-form
                 :user="$user"
                 :action="route('profile.import.accounts')"
                 :type="__('Accounts')"
@@ -48,9 +48,9 @@
                 <x-links.nav-link href="/xlsx/import_account.xlsx" download="import_account.xlsx">
                     {{ __('DOWNLOAD') }} XLSX
                 </x-links.nav-link>
-            </x-pages.profile.import-form>
+            </x-form.import-form>
 
-            <x-pages.profile.import-form
+            <x-form.import-form
                 :user="$user"
                 :action="route('profile.import.transactions')"
                 :type="__('Transactions')"
@@ -99,9 +99,9 @@
                 <x-links.nav-link href="/xlsx/import_transactions.xlsx" download="import_transactions.xlsx">
                     {{ __('DOWNLOAD') }} XLSX
                 </x-links.nav-link>
-            </x-pages.profile.import-form>
+            </x-form.import-form>
 
-            <x-pages.profile.import-form
+            <x-form.import-form
                 :user="$user"
                 :action="route('profile.import.balances')"
                 :type="__('Balances')"
@@ -134,7 +134,7 @@
                 <x-links.nav-link href="/xlsx/import_balances.xlsx" download="import_balances.xlsx">
                     {{ __('DOWNLOAD') }} XLSX
                 </x-links.nav-link>
-            </x-pages.profile.import-form>
+            </x-form.import-form>
         </div>
     </div>
 </x-app-layout>

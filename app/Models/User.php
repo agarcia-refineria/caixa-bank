@@ -39,6 +39,7 @@ use Monolog\Logger;
  * @property-read Logger $logger
  * @property-read mixed $total_account_sum
  * @property-read mixed $transactions
+ * @property-read mixed $balances
  * @property-read DatabaseNotificationCollection<int, DatabaseNotification> $notifications
  * @property-read int|null $notifications_count
  * @property-read Collection<int, ScheduledTasks> $schedule
@@ -140,6 +141,19 @@ class User extends Authenticatable
     public function getTransactionsAttribute(): Collection|array
     {
         return Transaction::whereHas('account', function ($query) {
+            $query->where('user_id', $this->id);
+        })->orderDate()->get();
+    }
+
+    /**
+     * Fetch all balances for the user ordered by reference date
+     *
+     * @noinspection PhpUnused
+     * @return Collection|array
+     */
+    public function getBalancesAttribute(): Collection|array
+    {
+        return Balance::whereHas('account', function ($query) {
             $query->where('user_id', $this->id);
         })->orderDate()->get();
     }

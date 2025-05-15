@@ -15,7 +15,7 @@
             <div class="py-6">
                 <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
                     <div class="bg-white dark:bg-[#1c1d20] px-4 md:px-0 overflow-hidden shadow-sm rounded-lg">
-                        <x-pages.configuration.item
+                        <x-box.item
                             :title="__('Session data')"
                             :description="__('This will make the session data needed to process the api!')"
                             :button="__('UPDATE INFORMATION')"
@@ -32,7 +32,7 @@
                                     <x-inputs.input-error class="mt-2" :messages="$errors->get('requisition')" />
                                 </div>
                             </div>
-                        </x-pages.configuration.item>
+                        </x-box.item>
                     </div>
                 </div>
             </div>
@@ -40,7 +40,7 @@
                 <div class="pb-6">
                     <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 grid lg:grid-cols-2 gap-4">
                         <div class="w-full lg:gap-16 bg-white dark:bg-[#1c1d20] px-4 md:px-0 overflow-hidden shadow-sm rounded-lg">
-                            <x-pages.configuration.item
+                            <x-box.item
                                 :title="__('Accounts update')"
                                 :description="__('This will add all the accounts!')"
                                 :button="__('UPDATE Accounts')"
@@ -48,7 +48,7 @@
                         </div>
                         @if ($showUpdateAccounts)
                             <div class="w-full lg:gap-16 bg-white dark:bg-[#1c1d20] px-4 md:px-0 overflow-hidden shadow-sm rounded-lg">
-                                <x-pages.configuration.item
+                                <x-box.item
                                     :title="__('Transactions and balances update')"
                                     :description="__('This will add all the accounts balances and trasactions!')"
                                     :button="__('UPDATE ALL')"
@@ -63,10 +63,11 @@
                         {{ __("You can reorder the accounts!") }}
                     </p>
 
-                    <x-pages.configuration.accounts
-                        :user="$user"
-                        :accounts="$accounts"
-                        :showUpdateAccounts="$showUpdateAccounts" />
+                    @include('partials.configuration.accounts', [
+                        'user' => $user,
+                        'accounts' => $accounts,
+                        'showUpdateAccounts' => $showUpdateAccounts,
+                    ])
                 </div>
             @endif
         @else

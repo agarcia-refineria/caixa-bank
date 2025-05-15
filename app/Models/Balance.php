@@ -96,6 +96,18 @@ class Balance extends Model
     }
 
     /**
+     * Order by reference date.
+     *
+     * @noinspection PhpUnused
+     * @param $query
+     * @return mixed
+     */
+    public function scopeOrderDate($query): mixed
+    {
+        return $query->orderBy('reference_date', 'desc');
+    }
+
+    /**
      * Filter by balance type forwardAvailable.
      *
      * @noinspection PhpUnused

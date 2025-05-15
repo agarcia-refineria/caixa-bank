@@ -2,18 +2,20 @@
     'balances',
     'account',
     'user',
+    'noFooter' => false,
     'actions' => false,
+    'type' => 'static',
 ])
 
 <div class="bg-[#1c1d20] p-4 rounded-xl shadow">
-    <table class="datatable min-w-full table-auto nowrap text-left">
+    <table class="datatable min-w-full table-auto nowrap text-left  @if (!$noFooter) u-footer @endif" data-type="{{ $type }}" {{ $attributes->merge() }}>
         <thead>
             <tr>
-                <th class="py-2 dt-low-priority">{{ __('Amount') }}</th>
-                <th class="py-2">{{ __('Currency') }}</th>
-                <th class="py-2">{{ __('Balance Type') }}</th>
-                <th class="py-2">{{ __('Reference Date') }}</th>
-                <th class="py-2">{{ __('Account') }}</th>
+                <th class="py-2" data-column="iban">{{ __('IBAN') }}</th>
+                <th class="py-2" data-column="reference_date">{{ __('Reference Date') }}</th>
+                <th class="py-2" data-column="balance_type">{{ __('Balance Type') }}</th>
+                <th class="py-2 dt-low-priority" data-column="amount">{{ __('Amount') }}</th>
+                <th class="py-2" data-column="currency">{{ __('Currency') }}</th>
 
                 @if ($actions)
                     <th class="py-2 dt-low-priority">{{ __('Actions') }}</th>
@@ -23,11 +25,11 @@
         <tbody>
             @foreach($balances as $balance)
                 <tr class="border-t border-gray-700">
-                    <td class="py-2">{{ $balance->amount }}</td>
-                    <td class="py-2">{{ $balance->currency }}</td>
-                    <td class="py-2">{{ $balance->balance_type }}</td>
-                    <td class="py-2">{{ $balance->reference_date->format('d-m-Y') }}</td>
                     <td class="py-2">{{ $balance->account->iban }}</td>
+                    <td class="py-2">{{ $balance->reference_date->format('d-m-Y') }}</td>
+                    <td class="py-2">{{ $balance->balance_type }}</td>
+                    <td class="py-2 @if (number_format($balance->amount, 2, ',', '.') < 0) !text-red-600 @else !text-green-600 @endif">{{ $balance->amount }} €</td>
+                    <td class="py-2">{{ $balance->currency }}</td>
 
                     @if ($actions)
                         <td class="py-2">
@@ -39,10 +41,11 @@
                             </x-buttons.danger-button>
 
                             <x-ui.modal name="confirm-transaction-update-{{ $balance->code }}" maxWidth="full" margin="sm:px-[50px]" focusable>
-                                <x-pages.profile.balance
-                                    :balance="$balance"
-                                    :account="$account"
-                                    :user="$user" />
+                                @include('partials.profile.balance', [
+                                    'balance' => $balance,
+                                    'account' => $account,
+                                    'user' => $user
+                                ])
                             </x-ui.modal>
 
                             <x-ui.modal name="confirm-transaction-delete-{{ $balance->code }}" focusable>
@@ -73,5 +76,21 @@
                 </tr>
             @endforeach
         </tbody>
+
+        @if (!$noFooter)
+            <tfoot>
+                <tr class="border-t border-gray-700 w-full font-bold">
+                    <td class="py-2">Total:</td>
+                    <td class="py-2"></td>
+                    <td class="py-2"></td>
+                    <td class="py-2"></td>
+                    <td class="py-2"></td>
+
+                    @if ($actions)
+                        <td class="py-2"></td>
+                    @endif
+                </tr>
+            </tfoot>
+        @endif
     </table>
 </div>

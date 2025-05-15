@@ -1,20 +1,21 @@
 @props([
-    'actions' => false,
     'transactions',
     'account',
     'user',
-    'noFooter' => false
+    'noFooter' => false,
+    'actions' => false,
+    'type' => 'static',
 ])
 
 <div class="bg-[#1c1d20] p-4 rounded-xl shadow">
-    <table class="datatable min-w-full table-auto nowrap @if (!$noFooter) u-footer @endif">
+    <table class="datatable min-w-full table-auto nowrap @if (!$noFooter) u-footer @endif" data-type="{{ $type }}" {{ $attributes->merge() }}>
         <thead>
             <tr>
-                <th class="py-2 dt-low-priority">{{ __('IBAN') }}</th>
-                <th class="py-2">{{ __('Date') }}</th>
-                <th class="py-2 dt-low-priority">{{ __('Deptor Name') }}</th>
-                <th class="py-2 dt-low-priority">{{ __('Transaction') }}</th>
-                <th class="py-2">{{ __('Amount') }}</th>
+                <th class="py-2 dt-low-priority" data-column="iban">{{ __('IBAN') }}</th>
+                <th class="py-2" data-column="bookingDate">{{ __('Date') }}</th>
+                <th class="py-2 dt-low-priority" data-column="debtorNameFormat">{{ __('Deptor Name') }}</th>
+                <th class="py-2 dt-low-priority" data-column="remittanceInformationUnstructured">{{ __('Transaction') }}</th>
+                <th class="py-2" data-column="transactionAmount_amount">{{ __('Amount') }}</th>
 
                 @if ($actions)
                     <th class="py-2 dt-low-priority">{{ __('Actions') }}</th>
@@ -40,10 +41,11 @@
                             </x-buttons.danger-button>
 
                             <x-ui.modal name="confirm-transaction-update-{{ $transaction->code }}" maxWidth="full" margin="sm:px-[50px]" focusable>
-                                <x-pages.profile.transaction
-                                    :transaction="$transaction"
-                                    :account="$account"
-                                    :user="$user" />
+                                @include('partials.profile.transaction', [
+                                    'transaction' => $transaction,
+                                    'account' => $account,
+                                    'user' => $user
+                                ])
                             </x-ui.modal>
 
                             <x-ui.modal name="confirm-transaction-delete-{{ $transaction->code }}" focusable>
@@ -82,6 +84,9 @@
                     <td class="py-2"></td>
                     <td class="py-2"></td>
                     <td class="py-2"></td>
+                    @if ($actions)
+                        <td class="py-2"></td>
+                    @endif
                 </tr>
             </tfoot>
         @endif

@@ -1,10 +1,18 @@
+@props([
+    'accounts',
+    'noFooter' => false,
+    'actions' => false,
+    'static' => false,
+    'type' => 'static'
+])
+
 <div class="bg-[#1c1d20] p-4 rounded-xl shadow">
-    <table class="datatable min-w-full table-auto nowrap text-left u-footer">
+    <table class="datatable min-w-full table-auto nowrap text-left @if (!$noFooter) u-footer @endif" data-type="{{ $type }}" {{ $attributes->merge() }}>
         <thead>
             <tr>
-                <th class="py-2 dt-low-priority">{{ __('IBAN') }}</th>
-                <th class="py-2">{{ __('Owner Name') }}</th>
-                <th class="py-2">{{ __('Balance') }}</th>
+                <th class="py-2 dt-low-priority" data-column="iban">{{ __('IBAN') }}</th>
+                <th class="py-2" data-column="owner_name">{{ __('Owner Name') }}</th>
+                <th class="py-2" data-column="balance">{{ __('Balance') }}</th>
             </tr>
         </thead>
         <tbody>
@@ -17,12 +25,15 @@
                 </tr>
             @endforeach
         </tbody>
-        <tfoot>
-            <tr class="border-t border-gray-700 w-full font-bold">
-                <td class="py-2"><span class="md:block hidden">Total:</span></td>
-                <td class="py-2"><span class="md:hidden">Total:</span></td>
-                <td class="py-2"></td>
-            </tr>
-        </tfoot>
+
+        @if (!$noFooter)
+            <tfoot>
+                <tr class="border-t border-gray-700 w-full font-bold">
+                    <td class="py-2"><span class="md:block hidden">Total:</span></td>
+                    <td class="py-2"><span class="md:hidden">Total:</span></td>
+                    <td class="py-2"></td>
+                </tr>
+            </tfoot>
+        @endif
     </table>
 </div>
