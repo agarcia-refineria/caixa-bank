@@ -5,10 +5,6 @@
 
     <div class="py-6 md:px-0 px-4 sm:px-6 lg:px-8">
         <div class="pb-6 flex justify-center md:justify-start gap-4">
-            <x-links.nav-link :href="route('profile.accounts.edit')">
-                {{ __('View Accounts') }}
-            </x-links.nav-link>
-
             <x-links.nav-link :href="route('profile.transaction.edit', ['id' => $account->code])">
                 {{ __('View Transactions') }}
             </x-links.nav-link>

@@ -22,7 +22,11 @@ function requestDataTable() {
             },
             pageLength: 10,
             columns: Array.from($table.querySelectorAll('thead th'))
-                .map(th => ({ data: th.getAttribute('data-column') })),
+                .map(th => ({
+                    data: th.getAttribute('data-column'),
+                    orderable: th.getAttribute('data-orderable') !== 'false',
+                    searchable: th.getAttribute('data-searchable') !== 'false',
+                })),
             ajax: {
                 url: $table.getAttribute('data-url') || '',
                 type: 'GET',
@@ -47,6 +51,16 @@ function requestDataTable() {
                     }
 
                     return result;
+                },
+                dataSrc: function (json) {
+                    const footer = $table.querySelector('tfoot');
+                    if (footer) {
+                        const footerCells = footer.querySelectorAll('td');
+                        let lastCell = footerCells[footerCells.length - 1];
+                        lastCell.innerHTML = json.totalAmount;
+                    }
+
+                    return json.data;
                 }
             },
             language: {

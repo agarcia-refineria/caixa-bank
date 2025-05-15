@@ -1,3 +1,16 @@
+.datatable tbody,
+.datatable thead,
+.datatable tfoot,
+.datatable thead tr,
+.datatable tbody tr,
+.datatable tfoot tr,
+.datatable thead tr th,
+.datatable tbody tr td,
+.datatable tfoot tr td {
+    /*border: 1px solid rgb(55 65 81) !important;*/
+    /*border-radius: .375rem !important;*/
+}
+
 .dt-container {
     width: 100%;
     margin: 0 auto;
