@@ -14,7 +14,7 @@
                 :action="route('profile.import.accounts')"
                 :type="__('Accounts')"
                 typeField="accounts">
-                <table class="datatable table-auto w-full px-4">
+                <table class="datatable table-auto w-full px-4" data-type="default">
                     <thead>
                         <tr>
                             <th class="!text-left">ID</th>
@@ -55,7 +55,7 @@
                 :action="route('profile.import.transactions')"
                 :type="__('Transactions')"
                 typeField="transactions">
-                <table class="datatable table-auto w-full px-4">
+                <table class="datatable table-auto w-full px-4" data-type="default">
                     <thead>
                         <tr>
                             <th class="dt-low-priority">{{ __('Entry Reference') }}</th>
@@ -106,7 +106,7 @@
                 :action="route('profile.import.balances')"
                 :type="__('Balances')"
                 typeField="balances">
-                <table class="datatable table-auto w-full px-4">
+                <table class="datatable table-auto w-full px-4" data-type="default">
                     <thead>
                         <tr>
                             <th>{{ __('Amount') }}</th>

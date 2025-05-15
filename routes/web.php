@@ -3,14 +3,15 @@
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\NordigenController;
-use \App\Http\Controllers\DashboardController;
-use \App\Http\Controllers\LangController;
-use \App\Http\Controllers\MonthController;
-use \App\Http\Controllers\AccountsController;
-use \App\Http\Controllers\BankController;
-use \App\Http\Controllers\ImportController;
-use \App\Http\Controllers\TransactionsController;
+use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\LangController;
+use App\Http\Controllers\MonthController;
+use App\Http\Controllers\AccountsController;
+use App\Http\Controllers\BankController;
+use App\Http\Controllers\ImportController;
+use App\Http\Controllers\TransactionsController;
 use App\Http\Controllers\BalancesController;
+use App\Http\Controllers\Api\DatatableController;
 
 /*
 |--------------------------------------------------------------------------
@@ -67,6 +68,11 @@ Route::middleware('auth')->group(function () {
     Route::post('/profile/import/accounts', [ImportController::class, 'accounts'])->name('profile.import.accounts');
     Route::post('/profile/import/transactions', [ImportController::class, 'transaction'])->name('profile.import.transactions');
     Route::post('/profile/import/balances', [ImportController::class, 'balances'])->name('profile.import.balances');
+
+    // Profile [Datatable routes]
+    Route::get('/datatable/accounts', [DatatableController::class, 'accounts'])->name('api.datatable.accounts');
+    Route::get('/datatable/balances/{id?}', [DatatableController::class, 'balances'])->name('api.datatable.balances');
+    Route::get('/datatable/transactions/{id?}', [DatatableController::class, 'transactions'])->name('api.datatable.transactions');
 
     // Panel [Panel routes]
     Route::get('/accounts', [DashboardController::class, 'index'])->name('dashboard.index');

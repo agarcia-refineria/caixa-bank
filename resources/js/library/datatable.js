@@ -4,7 +4,36 @@ $(document).ready(function () {
     console.log('DataTable is working!');
     staticDataTable();
     requestDataTable();
+    defaultDataTable();
 });
+
+function defaultDataTable() {
+    const $tables = $('.datatable[data-type=default]');
+
+    $tables.each(function ($i, $table) {
+        $($table).DataTable({
+            pagingType: 'numbers',
+            responsive: {
+                details: {
+                    type: 'inline',
+                    target: 'tr'
+                }
+            },
+            pageLength: 10,
+            language: {
+                url: 'https://cdn.datatables.net/plug-ins/1.13.6/i18n/' + window.currentLocale + '.json'
+            },
+            columnDefs: [
+                {targets: 'dt-low-priority', responsivePriority: 10001},
+                {targets: 'dt-high-priority', responsivePriority: 1},
+                {targets: 'dt-medium-priority', responsivePriority: 2},
+
+                {targets: 'dt-date', type: 'date'},
+                {orderable: false, targets: 'no-sort'}
+            ],
+        });
+    });
+}
 
 function requestDataTable() {
     const $tables = $('.datatable[data-type=request]');

@@ -2,13 +2,14 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Account;
+use App\Imports\AccountImport;
+use App\Imports\BalanceImport;
+use App\Imports\TransactionImport;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
-use Illuminate\Support\Carbon;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\View\View;
+use Maatwebsite\Excel\Facades\Excel;
 
 class ImportController extends Controller
 {
@@ -36,118 +37,94 @@ class ImportController extends Controller
         ]);
 
         if (!$request->file('file_csv_accounts') && !$request->file('file_xlsx_accounts')) {
-            return Redirect::route('pages.profile.import.edit')->withErrors(['file_csv_accounts' => 'Please upload a CSV file.', 'file_xlsx_accounts' => 'Please upload an XLSX file.']);
+            return Redirect::route('profile.import.edit')->withErrors(['file_csv_accounts' => 'Please upload a CSV file.', 'file_xlsx_accounts' => 'Please upload an XLSX file.']);
         }
-
-        $user = Auth::user();
 
         $file_csv = $request->file('file_csv_accounts');
         $file_xlsx = $request->file('file_xlsx_accounts');
 
         if ($file_csv) {
-            $path = $file_csv->store('/import/csv');
-            $file = fopen(storage_path('app/'.$path), 'r');
-            $header = fgetcsv($file);
-            $data = [];
-            while (($row = fgetcsv($file)) !== false) {
-                $data[] = array_combine($header, $row);
-            }
-            fclose($file);
-
-            foreach ($data as $row) {
-                $account = new Account();
-                $account->id = $row["ID"];
-                $account->name = $row['Name'];
-                $account->iban = $row['IBAN'];
-                $account->bban = $row['BBAN'] ?? '';
-                $account->status = $row['Status'] ?? '';
-                $account->owner_name = $row['Owner Name'];
-                $account->created = Carbon::createFromFormat('d-m-Y H:i:s', $row['Created']);
-                $account->last_accessed = Carbon::createFromFormat('d-m-Y H:i:s', $row['Last Accessed']);
-                $account->institution_id = $user->bank->institution_id;
-                $account->user_id = $user->id;
-                $account->type = Account::$accountTypes['manual'];
-
-                // Check if the account already exists
-                $existingAccount = Account::where('user_id', $user->id)->where('id', $account->id)->first();
-                if ($existingAccount) {
-                    return Redirect::route('pages.import.edit')->withErrors(['file_csv_accounts' => 'Duplicate account ID found: ' . $account->id]);
-                }
-
-                // Create the account
-                $account->save();
+            try {
+                Excel::import(new AccountImport(), $file_csv, null, \Maatwebsite\Excel\Excel::CSV);
+            } catch (\Exception $e) {
+                return Redirect::route('profile.import.edit')->withErrors(['file_csv_accounts' => 'Error reading CSV file: ' . $e->getMessage()]);
             }
         }
 
         if ($file_xlsx) {
-            $path = $file_xlsx->store('/import/xlsx');
-            $file = fopen(storage_path('app/'.$path), 'r');
-            $header = fgetcsv($file);
-            $data = [];
-            while (($row = fgetcsv($file)) !== false) {
-                $data[] = array_combine($header, $row);
-            }
-            fclose($file);
-
-            foreach ($data as $row) {
-                $account = new Account();
-                $account->id = $row["ID"];
-                $account->name = $row['Name'];
-                $account->iban = $row['IBAN'];
-                $account->bban = $row['BBAN'] ?? '';
-                $account->status = $row['Status'] ?? '';
-                $account->owner_name = $row['Owner Name'];
-                $account->created = Carbon::createFromFormat('d-m-Y H:i:s', $row['Created']);
-                $account->last_accessed = Carbon::createFromFormat('d-m-Y H:i:s', $row['Last Accessed']);
-                $account->institution_id = $user->bank->institution_id;
-                $account->user_id = $user->id;
-                $account->type = Account::$accountTypes['manual'];
-
-                // Check if the account already exists
-                $existingAccount = Account::where('user_id', $user->id)->where('id', $account->id)->first();
-                if ($existingAccount) {
-                    return Redirect::route('pages.profile.import.edit')->withErrors(['file_csv_accounts' => 'Duplicate account ID found: ' . $account->id]);
-                }
-
-                // Create the account
-                $account->save();
+            try {
+                Excel::import(new AccountImport(), $file_xlsx, null, \Maatwebsite\Excel\Excel::XLSX);
+            } catch (\Exception $e) {
+                return Redirect::route('profile.import.edit')->withErrors(['file_xlsx_accounts' => 'Error reading XLSX file: ' . $e->getMessage()]);
             }
         }
 
-        return Redirect::route('pages.profile.import.edit')->with('success', 'Cuentas importadas correctamente');
+        return Redirect::route('profile.import.edit')->with('success', 'Cuentas importadas correctamente');
     }
 
     public function transaction(Request $request): RedirectResponse
     {
         $request->validate([
-            'file' => ['required', 'mimes:csv,txt'],
+            'file_csv_transactions' => ['nullable', 'mimes:csv,txt'],
+            'file_xlsx_transactions' => ['nullable', 'mimes:xlsx,xls'],
         ]);
-        $file = $request->file('file');
-        $path = $file->store('csv');
 
-        $file = fopen(storage_path('app/'.$path), 'r');
+        if (!$request->file('file_csv_transactions') && !$request->file('file_xlsx_transactions')) {
+            return Redirect::route('profile.import.edit')->withErrors(['file_csv_transactions' => 'Please upload a CSV file.', 'file_xlsx_transactions' => 'Please upload an XLSX file.']);
+        }
 
-        $header = fgetcsv($file);
+        $file_csv = $request->file('file_csv_transactions');
+        $file_xlsx = $request->file('file_xlsx_transactions');
 
-        dd($header);
+        if ($file_csv) {
+            try {
+                Excel::import(new TransactionImport(), $file_csv, null, \Maatwebsite\Excel\Excel::CSV);
+            } catch (\Exception $e) {
+                return Redirect::route('profile.import.edit')->withErrors(['file_csv_transactions' => 'Error reading CSV file: ' . $e->getMessage()]);
+            }
+        }
 
-        return Redirect::route('pages.profile.import.edit')->with('status', 'account-imported');
+        if ($file_xlsx) {
+            try {
+                Excel::import(new TransactionImport(), $file_xlsx, null, \Maatwebsite\Excel\Excel::XLSX);
+            } catch (\Exception $e) {
+                return Redirect::route('profile.import.edit')->withErrors(['file_xlsx_transactions' => 'Error reading XLSX file: ' . $e->getMessage()]);
+            }
+        }
+
+        return Redirect::route('profile.import.edit')->with('success', 'account-imported');
     }
 
     public function balances(Request $request): RedirectResponse
     {
         $request->validate([
-            'file' => ['required', 'mimes:csv,txt'],
+            'file_csv_balances' => ['nullable', 'mimes:csv,txt'],
+            'file_xlsx_balances' => ['nullable', 'mimes:xlsx,xls'],
         ]);
-        $file = $request->file('file');
-        $path = $file->store('csv');
 
-        $file = fopen(storage_path('app/'.$path), 'r');
+        if (!$request->file('file_csv_balances') && !$request->file('file_xlsx_balances')) {
+            return Redirect::route('profile.import.edit')->withErrors(['file_csv_balances' => 'Please upload a CSV file.', 'file_xlsx_balances' => 'Please upload an XLSX file.']);
+        }
 
-        $header = fgetcsv($file);
+        $file_csv = $request->file('file_csv_balances');
+        $file_xlsx = $request->file('file_xlsx_balances');
 
-        dd($header);
+        if ($file_csv) {
+            try {
+                Excel::import(new BalanceImport(), $file_csv, null, \Maatwebsite\Excel\Excel::CSV);
+            } catch (\Exception $e) {
+                return Redirect::route('profile.import.edit')->withErrors(['file_csv_balances' => 'Error reading CSV file: ' . $e->getMessage()]);
+            }
+        }
 
-        return Redirect::route('pages.profile.import.edit')->with('status', 'account-imported');
+        if ($file_xlsx) {
+            try {
+                Excel::import(new BalanceImport(), $file_xlsx, null, \Maatwebsite\Excel\Excel::XLSX);
+            } catch (\Exception $e) {
+                return Redirect::route('profile.import.edit')->withErrors(['file_xlsx_balances' => 'Error reading XLSX file: ' . $e->getMessage()]);
+            }
+        }
+
+        return Redirect::route('profile.import.edit')->with('success', 'account-imported');
     }
 }
