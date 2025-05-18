@@ -18,7 +18,7 @@ class LangController extends Controller
      */
     public function index(string $locale): RedirectResponse
     {
-        if (in_array($locale, ['en', 'es'])) {
+        if (in_array($locale, ['es', 'en'])) {
             session(['locale' => $locale]);
             App::setLocale($locale);
         }
