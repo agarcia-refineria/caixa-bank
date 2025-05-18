@@ -1,4 +1,4 @@
-<nav class="bg-white dark:bg-[#1a1b1e] border-b border-gray-100 dark:border-gray-700">
+<nav class="bg-main2 border-b border-third">
     <!-- Primary Navigation Menu -->
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="flex justify-between h-16">

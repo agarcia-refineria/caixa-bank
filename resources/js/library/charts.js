@@ -1,5 +1,6 @@
 import $ from "jquery";
 import {Chart} from "chart.js";
+import tailwindConfig from '/tailwind.config.js';
 
 $(document).ready(function () {
     const categoryCtx = document.getElementById('categoryChart');
@@ -96,9 +97,9 @@ $(document).ready(function () {
                 labels: labels,
                 datasets: [{
                     data: values,
-                    borderColor: '#2d43b0',
+                    borderColor: tailwindConfig.theme.extend.colors.main3,
                     tension: 0.3,
-                    pointBackgroundColor: 'white',
+                    pointBackgroundColor: tailwindConfig.theme.extend.colors.primary,
                     fill: false
                 }]
             },
@@ -118,7 +119,7 @@ $(document).ready(function () {
             const legendItem = document.createElement('div');
             legendItem.className = 'legend-item';
             legendItem.innerHTML = `
-                <div class="legend-color-box" style="background-color:#2d43b0"></div>
+                <div class="legend-color-box" style="background-color:${tailwindConfig.theme.extend.colors.main3}"></div>
                 <span>${label} (${value} €)</span>
               `;
             legendItem.setAttribute('data-index', index);

@@ -1,6 +1,6 @@
 @props(['user', 'account'])
 
-<form @if (isset($account)) action="{{ route('profile.account.update') }}" data-id="{{ $account->code }}" @else action="{{ route('profile.account.create') }}" @endif method="POST" class="relative md:px-0 px-6 dark:bg-[#1c1d20] rounded-lg py-6">
+<form @if (isset($account)) action="{{ route('profile.account.update') }}" data-id="{{ $account->code }}" @else action="{{ route('profile.account.create') }}" @endif method="POST" class="relative md:px-0 px-6 bg-main2 rounded-lg py-6">
     @csrf
 
     @if (isset($account))
@@ -9,7 +9,7 @@
     @endif
 
     <!-- Show the bank logo and name -->
-    <h2 class="flex gap-4 items-center text-lg font-medium text-gray-900 dark:text-gray-100 w-full sm:px-6 lg:px-8 pb-3">
+    <h2 class="flex gap-4 items-center text-lg font-medium text-primary w-full sm:px-6 lg:px-8 pb-3">
         <img src="{{ $user->bank->institution->logo }}" alt="{{ $user->bank->institution->name }}" width="32" height="32" class="h-8 w-8 mr-2">
         @if (isset($account))
             {{ $account->institution?->name }} - {{ $account->iban }} <span class="md:block hidden">({{ $account->type }})</span>
@@ -63,11 +63,11 @@
             @csrf
             @method('delete')
 
-            <h2 class="text-lg font-medium text-gray-900 dark:text-gray-100">
+            <h2 class="text-lg font-medium text-primary">
                 {{ __('Are you sure you want to delete your account?') }}
             </h2>
 
-            <p class="mt-1 text-sm text-gray-600 dark:text-gray-400">
+            <p class="mt-1 text-sm text-secondary">
                 {{ __('Once your account is deleted, all of its resources and data will be permanently deleted. Please enter your password to confirm you would like to permanently delete your account.') }}
             </p>
 

@@ -1,13 +1,13 @@
 <x-app-layout>
     <x-site.top-bar text="{{ __('The total of the accounts balances is') }} {{ auth()->user()->totalAccountSum }} €" />
 
-    <div class="block md:flex min-h-screen bg-[#0e0f11] text-white">
+    <div class="block md:flex min-h-screen bg-main1 text-primary">
         @include('partials.dashboard.sidebar', [
             'accounts' => $accounts,
             'currentAccount' => $currentAccount,
         ])
 
-        <div class="min-h-screen w-full  text-white p-6">
+        <div class="min-h-screen w-full p-6">
             @if ($currentAccount)
                 @if ($balance)
                     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">

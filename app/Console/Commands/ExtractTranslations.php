@@ -24,7 +24,7 @@ class ExtractTranslations extends Command
     /**
      * Execute the console command.
      */
-    public function handle()
+    public function handle(): void
     {
         $translationKeys = [];
 
@@ -56,6 +56,5 @@ class ExtractTranslations extends Command
         File::put($jsonPath, json_encode($existingTranslations, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE));
 
         $this->info("Archivo en.json actualizado con " . count($translationKeys) . " claves.");
-
     }
 }

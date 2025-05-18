@@ -7,7 +7,7 @@
     'type' => 'static',
 ])
 
-<div class="bg-[#1c1d20] p-4 rounded-xl shadow">
+<div class="bg-main2 p-4 rounded-xl shadow">
     <table class="datatable min-w-full table-auto nowrap @if (!$noFooter) u-footer @endif" data-type="{{ $type }}" {{ $attributes->merge() }}>
         <thead>
             <tr>
@@ -30,7 +30,7 @@
                         <td class="py-2 dt-date" data-order="{{ $transaction->bookingDate->format('Y-m-d') }}">{{ $transaction->bookingDate->format('d-m-Y') }}</td>
                         <td class="py-2">{{ $transaction->debtorNameFormat }}</td>
                         <td class="py-2">{{ json_decode($transaction->remittanceInformationUnstructured) ? json_decode($transaction->remittanceInformationUnstructured)[0] : '--' }}</td>
-                        <td class="py-2 @if (number_format($transaction->transactionAmount_amount, 2, ',', '.') < 0) !text-red-600 @else !text-green-600 @endif">{{ number_format($transaction->transactionAmount_amount, 2, ',', '.') }} €</td>
+                        <td class="py-2 @if (number_format($transaction->transactionAmount_amount, 2, ',', '.') < 0) !text-error @else !text-success @endif">{{ number_format($transaction->transactionAmount_amount, 2, ',', '.') }} €</td>
 
                         @if ($actions)
                             <td class="py-2">

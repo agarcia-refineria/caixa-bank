@@ -1,5 +1,5 @@
-<header class="bg-[#1a1b1e] p-6 text-center">
-    <p class="text-gray-400">
+<header class="bg-main2 p-6 text-center">
+    <p class="text-secondary">
         {{ $text }}
     </p>
 </header>

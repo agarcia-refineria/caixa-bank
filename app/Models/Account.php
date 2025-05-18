@@ -11,6 +11,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Str;
+use App\Helpers\ColorHelper;
 
 /**
  * @property int $id
@@ -154,16 +155,41 @@ class Account extends Model
     }
 
     /**
-     * Generate a random color for the chart but with a palet of colors.
+     * Generate a random color for the chart but with a color from tailwind-colors.json.
      * @param $usedColors
      * @return string
      */
     public function getUsedColors(&$usedColors): string
     {
+        $colorsJson = file_get_contents(base_path('tailwind-colors.json'));
+        $colorsArray = json_decode($colorsJson, true);
+
+        $rgb = ColorHelper::hexToRgb($colorsArray['main3']);
+
         do {
-            $r = mt_rand(0, 100);
-            $g = mt_rand(0, 255);
-            $b = mt_rand(200, 255);
+            list($r, $g, $b) = $rgb;
+
+            // Switch the RGB values to see wich one is the most dominant
+            // and set the other two to random values between 0 and 255
+
+            switch (true) {
+                case $r > $g && $r > $b:
+                    // Red
+                    $g = rand(0, 255);
+                    $b = rand(0, 50);
+                    break;
+                case $g > $r && $g > $b:
+                    // Green
+                    $r = rand(0, 50);
+                    $b = rand(0, 255);
+                    break;
+                case $b > $r && $b > $g:
+                    // Blue
+                    $r = mt_rand(0, 50);
+                    $g = mt_rand(0, 255);
+                    break;
+            }
+
             $color = sprintf("#%02X%02X%02X", $r, $g, $b);
         } while (in_array($color, $usedColors));
         $usedColors[] = $color;

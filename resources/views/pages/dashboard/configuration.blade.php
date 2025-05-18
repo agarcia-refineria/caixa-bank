@@ -3,7 +3,7 @@
         <x-slot name="header">
             <div class="flex gap-4 items-center">
                 <img src="{{ $user->bank->institution->logo }}" alt="{{ $user->bank->institution->name }}" width="32" height="32" class="h-8 w-8 mr-2">
-                <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">
+                <h2 class="font-semibold text-xl text-primary leading-tight">
                     {{ $user->bank->institution->name }} API
                 </h2>
             </div>
@@ -14,7 +14,7 @@
         @if ($user->bank)
             <div class="py-6">
                 <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-                    <div class="bg-white dark:bg-[#1c1d20] px-4 md:px-0 overflow-hidden shadow-sm rounded-lg">
+                    <div class="bg-main2 px-4 md:px-0 overflow-hidden shadow-sm rounded-lg">
                         <x-box.item
                             :title="__('Session data')"
                             :description="__('This will make the session data needed to process the api!')"
@@ -39,7 +39,7 @@
             @if (session('callback_url'))
                 <div class="pb-6">
                     <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 grid lg:grid-cols-2 gap-4">
-                        <div class="w-full lg:gap-16 bg-white dark:bg-[#1c1d20] px-4 md:px-0 overflow-hidden shadow-sm rounded-lg">
+                        <div class="w-full lg:gap-16 bg-main2 px-4 md:px-0 overflow-hidden shadow-sm rounded-lg">
                             <x-box.item
                                 :title="__('Accounts update')"
                                 :description="__('This will add all the accounts!')"
@@ -47,7 +47,7 @@
                                 :link="session('callback_url')" />
                         </div>
                         @if ($showUpdateAccounts)
-                            <div class="w-full lg:gap-16 bg-white dark:bg-[#1c1d20] px-4 md:px-0 overflow-hidden shadow-sm rounded-lg">
+                            <div class="w-full lg:gap-16 bg-main2 px-4 md:px-0 overflow-hidden shadow-sm rounded-lg">
                                 <x-box.item
                                     :title="__('Transactions and balances update')"
                                     :description="__('This will add all the accounts balances and trasactions!')"
@@ -59,7 +59,7 @@
                 </div>
 
                 <div id="sortable-accounts" class="max-w-7xl mx-auto sm:px-6 lg:px-8 pb-4">
-                    <p class="mt-1 text-sm text-gray-600 dark:text-gray-400">
+                    <p class="mt-1 text-sm text-secondary">
                         {{ __("You can reorder the accounts!") }}
                     </p>
 

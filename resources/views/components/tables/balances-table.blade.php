@@ -7,7 +7,7 @@
     'type' => 'static',
 ])
 
-<div class="bg-[#1c1d20] p-4 rounded-xl shadow">
+<div class="bg-main2 p-4 rounded-xl shadow">
     <table class="datatable min-w-full table-auto nowrap text-left  @if (!$noFooter) u-footer @endif" data-type="{{ $type }}" {{ $attributes->merge() }}>
         <thead>
             <tr>
@@ -30,7 +30,7 @@
                         <td class="py-2">{{ $balance->reference_date->format('d-m-Y') }}</td>
                         <td class="py-2">{{ $balance->balance_type }}</td>
                         <td class="py-2">{{ $balance->currency }}</td>
-                        <td class="py-2 @if (number_format($balance->amount, 2, ',', '.') < 0) !text-red-600 @else !text-green-600 @endif">{{ $balance->amount }} €</td>
+                        <td class="py-2 @if (number_format($balance->amount, 2, ',', '.') < 0) !text-error @else !text-success @endif">{{ $balance->amount }} €</td>
 
                         @if ($actions)
                             <td class="py-2">

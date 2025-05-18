@@ -3,7 +3,8 @@
     "type": "module",
     "scripts": {
         "dev": "vite",
-        "build": "vite build"
+        "build": "npm run export:colors && vite build",
+        "export:colors": "node export-tailwind-colors.js"
     },
     "devDependencies": {
         "@tailwindcss/forms": "^0.5.2",

@@ -3,11 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Models\ScheduledTasks;
-use App\Models\User;
-use Illuminate\Contracts\View\Factory;
 use Illuminate\Contracts\View\View;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
-use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Auth;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 

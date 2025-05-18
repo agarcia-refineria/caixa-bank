@@ -21,7 +21,7 @@
         <input type="hidden" name="account_id" value="{{ $account->code }}" />
         <input type="hidden" name="transaction_id" value="{{ $transaction->code }}" />
 
-        <h2 class="text-lg font-medium text-gray-900 dark:text-gray-100">
+        <h2 class="text-lg font-medium text-primary">
             {{ __('Are you sure you want to delete your transaction?') }}
         </h2>
 

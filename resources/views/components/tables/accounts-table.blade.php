@@ -6,7 +6,7 @@
     'type' => 'static'
 ])
 
-<div class="bg-[#1c1d20] p-4 rounded-xl shadow">
+<div class="bg-main2 p-4 rounded-xl shadow">
     <table class="datatable min-w-full table-auto nowrap text-left @if (!$noFooter) u-footer @endif" data-type="{{ $type }}" {{ $attributes->merge() }}>
         <thead>
             <tr>
@@ -22,7 +22,7 @@
                     <tr class="" data-amount="{{ number_format($lastInstance ? $lastInstance->amount : 0, 2, ',', '.') }}">
                         <td class="py-2" width="25%">{{ $account->iban }}</td>
                         <td class="py-2">{{ $account->owner_name }}</td>
-                        <td class="py-2 @if (number_format($lastInstance ? $lastInstance->amount : 0, 2, ',', '.') < 0) !text-red-600 @else !text-green-600 @endif" width="25%">{{ number_format($lastInstance ? $lastInstance->amount : 0, 2, ',', '.') }} €</td>
+                        <td class="py-2 @if (number_format($lastInstance ? $lastInstance->amount : 0, 2, ',', '.') < 0) !text-error @else !text-success @endif" width="25%">{{ number_format($lastInstance ? $lastInstance->amount : 0, 2, ',', '.') }} €</td>
                     </tr>
                 @endforeach
             @endif

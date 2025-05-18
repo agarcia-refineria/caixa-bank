@@ -35,20 +35,13 @@
 }
 
 .dt-layout-row label select {
-    border: 1px solid rgb(55 65 81 / var(--tw-border-opacity, 1)) !important;
+    @apply border-third border-[1px] !important;
     border-radius: .375rem !important;
     min-width: 80px;
 }
 
 .dt-layout-row label select {
-    --tw-bg-opacity: 1;
-
-    background-color: #1c1d20 !important;
-    color: rgb(209 213 219 / var(--tw-text-opacity, 1)) !important;
-
-    --tw-shadow: 0 1px 2px 0 rgb(0 0 0 / .05) !important;
-    --tw-shadow-colored: 0 1px 2px 0 var(--tw-shadow-color) !important;
-    box-shadow: var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow) !important;
+    @apply text-primary bg-main2 !important;
 }
 
 .dt-length label {
@@ -70,20 +63,14 @@
 }
 
 .dt-search input {
-    border: 1px solid rgb(55 65 81 / var(--tw-border-opacity, 1)) !important;
+    @apply border-third border-[1px] !important;
+
     border-radius: .375rem !important;
     min-width: 80px;
 }
 
 .dt-search input {
-    --tw-bg-opacity: 1;
-
-    background-color: #1c1d20 !important;
-    color: rgb(209 213 219 / var(--tw-text-opacity, 1)) !important;
-
-    --tw-shadow: 0 1px 2px 0 rgb(0 0 0 / .05) !important;
-    --tw-shadow-colored: 0 1px 2px 0 var(--tw-shadow-color) !important;
-    box-shadow: var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow) !important;
+    @apply text-primary bg-main2 !important;
 }
 
 .dt-container .dataTables_info {
@@ -105,21 +92,18 @@
 }
 
 .dt-container .dt-paging .dt-paging-button {
+    @apply bg-main2 text-primary border-third border !important;
+
     padding: 0.5rem 1rem !important;
     border-radius: 0.375rem !important;
-    border: 1px solid rgb(55 65 81 / var(--tw-border-opacity, 1)) !important;
-    background-color: #1c1d20 !important;
-    color: rgb(209 213 219 / var(--tw-text-opacity, 1)) !important;
 }
 
 .dt-container .dt-paging .dt-paging-button.current {
-    background-color: #2d43b0 !important;
-    color: rgb(79 70 229 / var(--tw-border-opacity, 1));
+    @apply bg-main3 text-main3 !important;
 }
 
 .dt-container .dt-paging .dt-paging-button:hover {
-    background-color: #252626 !important;
-    color: rgb(209 213 219 / var(--tw-text-opacity, 1)) !important;
+    @apply bg-main2 text-primary !important;
 }
 
 .dt-layout-end {

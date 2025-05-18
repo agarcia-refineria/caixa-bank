@@ -1,5 +1,5 @@
 @php
-    $color = 'bg-green-800';
+    $color = 'bg-success';
 
     if (isset($defaultBg)) {
         $color = $defaultBg;
@@ -15,13 +15,13 @@
         }
 
         if ($count >= $maxTimes) {
-            $color = 'bg-red-800';
+            $color = 'bg-error';
         } elseif ($count >= $warningTimes) {
-            $color = 'bg-yellow-800';
+            $color = 'bg-warning';
         }
     }
 @endphp
 
-<span class="{{ $color }} text-xs font-semibold px-2.5 py-0.5 rounded-full">
+<span class="{{ $color }} text-main1 text-xs font-semibold px-2.5 py-0.5 rounded-full">
     {{ $count }} {{ __('times') }}
 </span>

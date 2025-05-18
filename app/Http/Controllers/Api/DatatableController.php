@@ -8,11 +8,20 @@ use App\Models\Balance;
 use App\Models\Transaction;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class DatatableController extends Controller
 {
+    /**
+     * Retrieves the user's accounts with pagination, searching, and ordering capabilities.
+     *
+     * @param Request $request The HTTP request containing pagination and filtering parameters.
+     * @return JsonResponse The JSON response containing account data, metadata, and total balances information.
+     */
     public function accounts(Request $request): JsonResponse
     {
+        $user = Auth::user();
+
         $page = $request->input('page', 1);
         $perPage = $request->input('per_page', 10);
         $search = $request->input('search', '');
@@ -25,7 +34,7 @@ class DatatableController extends Controller
             $orderBy = 'iban';
         }
 
-        $query = Account::query();
+        $query = Account::where('user_id', $user->id);
 
         if (!empty($search)) {
             $query->where(function ($q) use ($search) {
@@ -34,8 +43,12 @@ class DatatableController extends Controller
             });
         }
 
-        $recordsTotal = Account::count();
+        $recordsTotal = Account::where('user_id', $user->id)->count();
         $recordsFiltered = $query->count();
+
+        $totalAmount = number_format($query->with('balances')->get()->sum(function ($account) {;
+            return $account->balances()->balanceTypeForward()->lastInstance()->first() ? $account->balances()->balanceTypeForward()->lastInstance()->first()->amount : 0;
+        }), 2, ',', '.') . ' €';
 
         $data = $query->orderBy($orderBy, $orderDir)
             ->skip(($page - 1) * $perPage)
@@ -48,7 +61,7 @@ class DatatableController extends Controller
             'recordsFiltered' => $recordsFiltered,
             'data' => $data->map(function ($account) {
                 $lastInstance = $account->balances()->balanceTypeForward()->lastInstance()->first();
-                $color = $lastInstance && $lastInstance->amount > 0 ? 'green' : 'red';
+                $color = $lastInstance && $lastInstance->amount > 0 ? 'success' : 'error';
 
                 return [
                     'iban' => $account->iban,
@@ -56,14 +69,24 @@ class DatatableController extends Controller
                     'balance' => $this::toColor(number_format($lastInstance ? $lastInstance->amount : 0, 2, ',', '.') . ' €', $color),
                 ];
             }),
-            'totalAmount' => number_format($data->sum(function ($account) {
-                return $account->balances()->balanceTypeForward()->lastInstance()->first() ? $account->balances()->balanceTypeForward()->lastInstance()->first()->amount : 0;
-            }), 2, ',', '.') . ' €',
+            'totalAmount' => $totalAmount,
         ]);
     }
 
+    /**
+     * Retrieves and filters balance data for the authenticated user's accounts, based on provided parameters.
+     *
+     * Handles pagination, sorting, and searching functionalities. This method supports optional filtering by account ID
+     * and provides formatted data such as amounts with color-coded visual representation.
+     *
+     * @param Request $request Incoming HTTP request containing parameters such as 'page', 'per_page', 'search', 'order_by', and 'order_dir'.
+     * @param string|null $id Optional account ID for filtering balances by a specific account.
+     * @return JsonResponse Returns a JSON response containing the filtered balance data, total records, filtered records, and other metadata.
+     */
     public function balances(Request $request, string $id = null): JsonResponse
     {
+        $user = Auth::user();
+
         $page = $request->input('page', 1);
         $perPage = $request->input('per_page', 10);
         $search = $request->input('search', '');
@@ -77,10 +100,16 @@ class DatatableController extends Controller
         }
 
         if ($id) {
-            $query = Balance::where('account_id', $id);
+            $query = Balance::whereHas('account', function ($q) use ($user) {
+                $q->where('user_id', $user->id);
+            })->where('account_id', $id);;
         } else {
-            $query = Balance::query();
+            $query = Balance::whereHas('account', function ($q) use ($user) {
+                $q->where('user_id', $user->id);
+            });
         }
+
+        $recordsTotal = $query->count();
 
         if (!empty($search)) {
             $query->leftJoin('accounts', 'accounts.id', '=', 'balances.account_id');
@@ -94,8 +123,8 @@ class DatatableController extends Controller
             });
         }
 
-        $recordsTotal = Balance::count();
         $recordsFiltered = $query->count();
+        $totalAmount = number_format($query->sum('amount'), 2, ',', '.') . ' €';
 
         $data = $query->orderBy($orderBy, $orderDir)
             ->skip(($page - 1) * $perPage)
@@ -107,7 +136,7 @@ class DatatableController extends Controller
             'recordsTotal' => $recordsTotal,
             'recordsFiltered' => $recordsFiltered,
             'data' => $data->map(function ($balance) {
-                $color = $balance->amount > 0 ? 'green' : 'red';
+                $color = $balance->amount > 0 ? 'success' : 'error';
 
                 return [
                     'iban' => $balance->account->iban,
@@ -122,12 +151,25 @@ class DatatableController extends Controller
                     ])->render(),
                 ];
             }),
-            'totalAmount' => number_format($data->sum('amount'), 2, ',', '.') . ' €',
+            'totalAmount' => $totalAmount,
         ]);
     }
 
+    /**
+     * Retrieves and filters transaction data for the authenticated user's accounts, based on provided parameters.
+     *
+     * Handles pagination, sorting, and searching functionalities. This method supports optional filtering by account ID
+     * and provides formatted data such as transaction amounts with color-coded indicators. Includes metadata like total
+     * and filtered record counts and total transaction amounts.
+     *
+     * @param Request $request Incoming HTTP request containing parameters such as 'page', 'per_page', 'search', 'order_by', and 'order_dir'.
+     * @param string|null $id Optional account ID for filtering transactions by a specific account.
+     * @return JsonResponse Returns a JSON response containing the filtered transaction data, total records, filtered records, formatted data, and other metadata.
+     */
     public function transactions(Request $request, string $id = null): JsonResponse
     {
+        $user = Auth::user();
+
         $page = $request->input('page', 1);
         $perPage = $request->input('per_page', 10);
         $search = $request->input('search', '');
@@ -141,10 +183,17 @@ class DatatableController extends Controller
         }
 
         if ($id) {
-            $query = Transaction::where('account_id', $id);
+            $query = Transaction::whereHas('account', function ($q) use ($user) {
+                $q->where('user_id', $user->id);
+            })->where('account_id', $id);
         } else {
-            $query = Transaction::query();
+            $query = Transaction::whereHas('account', function ($q) use ($user) {
+                $q->where('user_id', $user->id);
+            });
         }
+
+        $recordsTotal = $query->count();
+        $totalAmount = number_format($query->sum('transactionAmount_amount'), 2, ',', '.') . ' €';
 
         if (!empty($search)) {
             $query->leftJoin('accounts', 'accounts.id', '=', 'transactions.account_id');
@@ -158,7 +207,6 @@ class DatatableController extends Controller
             });
         }
 
-        $recordsTotal = Transaction::count();
         $recordsFiltered = $query->count();
 
         $data = $query->orderBy($orderBy, $orderDir)
@@ -171,7 +219,7 @@ class DatatableController extends Controller
             'recordsTotal' => $recordsTotal,
             'recordsFiltered' => $recordsFiltered,
             'data' => $data->map(function ($transaction) {
-                $color = $transaction->transactionAmount_amount > 0 ? 'green' : 'red';
+                $color = $transaction->transactionAmount_amount > 0 ? 'success' : 'error';
 
                 return [
                     'iban' => $transaction->account->iban,
@@ -186,7 +234,7 @@ class DatatableController extends Controller
                     ])->render(),
                 ];
             }),
-            'totalAmount' => number_format($data->sum('transactionAmount_amount'), 2, ',', '.') . ' €',
+            'totalAmount' => $totalAmount,
         ]);
     }
 
@@ -199,6 +247,6 @@ class DatatableController extends Controller
      */
     public static function toColor(string $text, string $color): string
     {
-        return "<span style='color: {$color};'>{$text}</span>";
+        return "<span class='text-{$color}'>{$text}</span>";
     }
 }

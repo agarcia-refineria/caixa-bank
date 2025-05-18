@@ -24,7 +24,7 @@ class AccountsScheduleTasks extends Command
     /**
      * Execute the console command.
      */
-    public function handle()
+    public function handle(): void
     {
         $users = User::with('schedule')->get();
         $ahora = now()->format('H:i');
