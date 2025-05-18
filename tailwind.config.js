@@ -33,23 +33,23 @@ export default {
             colors: {
                 main1: '#0e0f11',
                 main2: '#1a1b1e',
-                main3: '#2d43b0',
+                main3: '#2d43b0', // Configurable
 
                 primary: '#FFFFFF',
                 secondary: '#9ca3af',
                 third: '#374151',
 
-                navActive: '#a5b4fc',
-                navActiveBg: '#312e8150',
+                navActive: '#a5b4fc', // Configurable
+                navActiveBg: '#312e8150', // Configurable
 
-                success: '#4CAF50',
-                error: '#F44336',
+                success: '#33c034',
+                error: '#d03022',
                 warning: '#FF9800',
                 info: '#055160'
             },
             dropShadow: {
-                primary: '0px 0px 5px #2d43b0',
-                secondary: '0px 0px 20px #2d43b0',
+                primary: '0px 0px 5px #2d43b0', // Configurable
+                secondary: '0px 0px 20px #2d43b0', // Configurable
             },
             fill: theme => ({
                 'main1': theme('colors.main1'),

@@ -7,8 +7,8 @@
   "third": "#374151",
   "navActive": "#a5b4fc",
   "navActiveBg": "#312e8150",
-  "success": "#4CAF50",
-  "error": "#F44336",
+  "success": "#33c034",
+  "error": "#d03022",
   "warning": "#FF9800",
   "info": "#055160"
 }
