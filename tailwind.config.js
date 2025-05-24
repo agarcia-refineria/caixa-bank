@@ -31,16 +31,16 @@ export default {
                 movingUp: 'moveUpDown 6s linear infinite',
             },
             colors: {
-                main1: '#0e0f11',
-                main2: '#1a1b1e',
-                main3: '#2d43b0', // Configurable
-
                 primary: '#FFFFFF',
                 secondary: '#9ca3af',
                 third: '#374151',
 
-                navActive: '#a5b4fc', // Configurable
-                navActiveBg: '#312e8150', // Configurable
+                main1: '#0e0f11',
+                main2: '#1a1b1e',
+                main3: '#49b02d',
+
+                navActive: '#b8fca5',
+                navActiveBg: '#257c0c',
 
                 success: '#33c034',
                 error: '#d03022',
@@ -48,8 +48,8 @@ export default {
                 info: '#055160'
             },
             dropShadow: {
-                primary: '0px 0px 5px #2d43b0', // Configurable
-                secondary: '0px 0px 20px #2d43b0', // Configurable
+                primary: '0px 0px 5px #49b02d', // Configurable
+                secondary: '0px 0px 20px #49b02d', // Configurable
             },
             fill: theme => ({
                 'main1': theme('colors.main1'),

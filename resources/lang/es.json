@@ -203,5 +203,20 @@
     "of": "de",
     "results": "resultados",
     "times": "veces",
-    "to": "hasta"
+    "to": "hasta",
+
+    "Categories": "Categorías",
+    "Create Category": "Crear Categoría",
+    "Update Category": "Actualizar Categoría",
+    "Delete Category": "Eliminar Categoría",
+    "Show Filters": "Mostrar Filtros",
+    "Create Filter": "Crear Filtro",
+    "Category Type": "Tipo de Categoría",
+    "Value": "Valor",
+    "Enabled": "Habilitado",
+    "Select Type": "Seleccionar Tipo",
+    "Exact": "Exacto",
+    "Contains": "Contiene",
+    "Starts With": "Empieza con",
+    "Ends With": "Termina con"
 }

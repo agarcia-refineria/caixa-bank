@@ -51,4 +51,15 @@ return [
         'transaction-deleted' => 'Transaction deleted successfully',
         'transaction-delete-failed' => 'An error occurred while deleting the transaction',
     ],
+    'categoriescontroller' => [
+        'create-category-success' => 'Category created successfully',
+        'create-category-failed' => 'An error occurred while creating the category',
+        'update-category-success' => 'Category updated successfully',
+        'update-category-not-found' => 'Category not found for update',
+        'update-category-failed' => 'An error occurred while updating the category',
+        'delete-category-success' => 'Category deleted successfully',
+        'delete-category-failed' => 'An error occurred while deleting the category',
+        'delete-category-not-found' => 'Category not found for deletion',
+        'unauthorized-action' => 'Unauthorized action',
+    ],
 ];

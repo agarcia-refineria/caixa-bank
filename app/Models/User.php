@@ -114,6 +114,11 @@ class User extends Authenticatable
         return $this->hasMany(ScheduledTasks::class, 'user_id');
     }
 
+    public function categories(): HasMany
+    {
+        return $this->hasMany(Category::class, 'user_id');
+    }
+
     /**
      * Get the count of bank data syncs for all accounts
      *

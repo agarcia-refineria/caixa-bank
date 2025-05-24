@@ -51,4 +51,15 @@ return [
         'transaction-deleted' => 'Transacción eliminada exitosamente',
         'transaction-delete-failed' => 'Ocurrió un error al eliminar la transacción',
     ],
+    'categoriescontroller' => [
+        'create-category-success' => 'Categoría creada exitosamente',
+        'create-category-failed' => 'Ocurrió un error al crear la categoría',
+        'update-category-success' => 'Categoría actualizada exitosamente',
+        'update-category-not-found' => 'Categoría no encontrada para actualizar',
+        'update-category-failed' => 'Ocurrió un error al actualizar la categoría',
+        'delete-category-success' => 'Categoría eliminada exitosamente',
+        'delete-category-failed' => 'Ocurrió un error al eliminar la categoría',
+        'delete-category-not-found' => 'No se encontró la categoría a eliminar',
+        'unauthorized-action' => 'Acción no autorizada',
+    ],
 ];

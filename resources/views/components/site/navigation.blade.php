@@ -58,7 +58,7 @@
                     </x-slot>
 
                     <x-slot name="content">
-                        @if (!request()->routeIs(['profile.edit', 'profile.bank.edit', 'profile.accounts.edit', 'profile.import.edit']))
+                        @if (!request()->routeIs(['profile.edit', 'profile.bank.edit', 'profile.accounts.edit', 'profile.import.edit', 'profile.categories']))
                             <x-inputs.dropdown-link :href="route('profile.edit')">
                                 {{ __('Profile') }}
                             </x-inputs.dropdown-link>
@@ -71,8 +71,8 @@
                                 {{ __('Accounts') }}
                             </x-inputs.dropdown-link>
 
-                            <x-inputs.dropdown-link :href="route('profile.import.edit')">
-                                {{ __('Import') }}
+                            <x-inputs.dropdown-link :href="route('profile.categories')">
+                                {{ __('Categories') }}
                             </x-inputs.dropdown-link>
                         @endif
 
@@ -146,7 +146,7 @@
             </div>
 
             <div class="mt-3 space-y-1">
-                @if (!request()->routeIs(['profile.edit', 'profile.bank.edit', 'profile.accounts.edit', 'profile.import.edit']))
+                @if (!request()->routeIs(['profile.edit', 'profile.bank.edit', 'profile.accounts.edit', 'profile.import.edit', 'profile.categories']))
                     <x-links.responsive-nav-link :href="route('profile.edit')">
                         {{ __('Profile') }}
                     </x-links.responsive-nav-link>
@@ -159,8 +159,8 @@
                         {{ __('Accounts') }}
                     </x-links.responsive-nav-link>
 
-                    <x-links.responsive-nav-link :href="route('profile.import.edit')">
-                        {{ __('Import') }}
+                    <x-links.responsive-nav-link :href="route('profile.categories')">
+                        {{ __('Categories') }}
                     </x-links.responsive-nav-link>
                 @endif
 

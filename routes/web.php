@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\CategoriesController;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\NordigenController;
@@ -68,6 +69,17 @@ Route::middleware('auth')->group(function () {
     Route::post('/profile/import/accounts', [ImportController::class, 'accounts'])->name('profile.import.accounts');
     Route::post('/profile/import/transactions', [ImportController::class, 'transaction'])->name('profile.import.transactions');
     Route::post('/profile/import/balances', [ImportController::class, 'balances'])->name('profile.import.balances');
+
+    // Profile [Categories routes]
+    Route::get('/profile/categories', [CategoriesController::class, 'show'])->name('profile.categories');
+    Route::post('/profile/categories', [CategoriesController::class, 'create'])->name('profile.category.create');
+    Route::patch('/profile/categories/{id}', [CategoriesController::class, 'update'])->name('profile.category.update');
+    Route::delete('/profile/categories/{id}', [CategoriesController::class, 'destroy'])->name('profile.category.destroy');
+
+    // Profile [Categories filter routes]
+    Route::post('/profile/categories/filter', [CategoriesController::class, 'createFilter'])->name('profile.categories.filter');
+    Route::patch('/profile/categories/filter/{id}', [CategoriesController::class, 'updateFilter'])->name('profile.categories.filter.update');
+    Route::delete('/profile/categories/filter/{id}', [CategoriesController::class, 'destroyFilter'])->name('profile.category.filter.destroy');
 
     // Profile [Datatable routes]
     Route::get('/datatable/accounts', [DatatableController::class, 'accounts'])->name('api.datatable.accounts');

@@ -73,11 +73,17 @@ class Transaction extends Model
         'debtorName',
         'debtorAccount',
         'account_id',
+        'category_id',
     ];
 
     public function account(): BelongsTo
     {
         return $this->belongsTo(Account::class, 'account_id', 'id');
+    }
+
+    public function category(): BelongsTo
+    {
+        return $this->belongsTo(Category::class, 'category_id', 'id');
     }
 
     /**
@@ -112,6 +118,51 @@ class Transaction extends Model
     public function getDebtorNameFormatAttribute(): string
     {
         return $this->attributes['debtorName'] ? str_replace(';', ' ', $this->attributes['debtorName']) : '--';
+    }
+
+    public static function getCategoryId(string $value): ?int
+    {
+        $user = auth()->user();
+        $categories = $user->categories;
+
+        if ($categories->isEmpty()) {
+            return null;
+        }
+
+        foreach ($categories as $category) {
+            $filters = $category->filters()->isEnabled()->get();
+
+            foreach ($filters as $filter) {
+                switch ($filter->type) {
+                    case 'exact':
+                        // Check if the value matches exactly
+                        if (strcasecmp($value, $filter->value) === 0) {
+                            return $category->id;
+                        }
+                        break;
+                    case 'contains':
+                        // Check if the value contains the filter value
+                        if (stripos($value, $filter->value) !== false) {
+                            return $category->id;
+                        }
+                        break;
+                    case 'starts_with':
+                        // Check if the value starts with the filter value
+                        if (str_starts_with($value, $filter->value)) {
+                            return $category->id;
+                        }
+                        break;
+                    case 'ends_with':
+                        // Check if the value ends with the filter value
+                        if (str_ends_with($value, $filter->value)) {
+                            return $category->id;
+                        }
+                        break;
+                }
+            }
+        }
+
+        return null;
     }
 
     public static function getExampleModel(): Transaction

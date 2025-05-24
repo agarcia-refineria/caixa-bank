@@ -17,14 +17,14 @@
                 </div>
 
                 <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
-                    <x-links.nav-link :href="route('profile.accounts.edit')" :active="request()->routeIs(['profile.accounts.edit', 'profile.transaction.edit', 'profile.balance.edit'])">
+                    <x-links.nav-link :href="route('profile.accounts.edit')" :active="request()->routeIs(['profile.accounts.edit', 'profile.transaction.edit', 'profile.balance.edit' ,'profile.import.edit'])">
                         {{ __('Accounts') }}
                     </x-links.nav-link>
                 </div>
 
                 <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
-                    <x-links.nav-link :href="route('profile.import.edit')" :active="request()->routeIs(['profile.import.edit'])">
-                        {{ __('Import') }}
+                    <x-links.nav-link :href="route('profile.categories')" :active="request()->routeIs(['profile.categories'])">
+                        {{ __('Categories') }}
                     </x-links.nav-link>
                 </div>
             </div>
@@ -44,14 +44,14 @@
                 </div>
 
                 <div class="pt-2 pb-3 space-y-1">
-                    <x-links.responsive-nav-link :href="route('profile.accounts.edit')" :active="request()->routeIs(['profile.accounts.edit', 'profile.transaction.edit', 'profile.balance.edit'])">
+                    <x-links.responsive-nav-link :href="route('profile.accounts.edit')" :active="request()->routeIs(['profile.accounts.edit', 'profile.transaction.edit', 'profile.balance.edit', 'profile.import.edit'])">
                         {{ __('Accounts') }}
                     </x-links.responsive-nav-link>
                 </div>
 
                 <div class="pt-2 pb-3 space-y-1">
-                    <x-links.responsive-nav-link :href="route('profile.import.edit')" :active="request()->routeIs(['profile.import.edit'])">
-                        {{ __('Import') }}
+                    <x-links.responsive-nav-link :href="route('profile.categories')" :active="request()->routeIs(['profile.categories'])">
+                        {{ __('Categories') }}
                     </x-links.responsive-nav-link>
                 </div>
             </div>
