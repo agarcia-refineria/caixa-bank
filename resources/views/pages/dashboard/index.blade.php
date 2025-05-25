@@ -17,19 +17,31 @@
                     </div>
 
                     <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
-                        <x-charts.chart-card
-                            id="categoryChart"
-                            :title="__('Expenses by Category')"
-                            :data-values="$currentAccount->chartTransactionsValues"
-                            :data-labels="$currentAccount->chartTransactionsLabels"
-                            :data-colors="$currentAccount->chartTransactionsColors"
-                            container-class="col-span-1" />
+                        @if (auth()->user()->chars == "all")
+                            <x-charts.chart-card
+                                id="categoryChart"
+                                :title="__('All Expenses')"
+                                :data-values="$currentAccount->chartTransactionsValues"
+                                :data-labels="$currentAccount->chartTransactionsLabels"
+                                :data-colors="$currentAccount->chartTransactionsColors"
+                                container-class="col-span-1" />
+                        @else
+                            <x-charts.chart-card
+                                id="categoryChart"
+                                :data-default-label="__('Sin Categoria')"
+                                :title="__('Expenses by Category')"
+                                :data-values="$currentAccount->chartTransactionsValuesCategory"
+                                :data-labels="$currentAccount->chartTransactionsLabelsCategory"
+                                :data-colors="$currentAccount->chartTransactionsColorsCategory"
+                                container-class="col-span-1" />
+                        @endif
 
                         <x-charts.chart-card
                             id="balanceChart"
                             :title="__('Balance History')"
                             :data-values="$currentAccount->chartBalancesValues"
                             :data-labels="$currentAccount->chartBalancesLabels"
+                            :data-color="auth()->user()->themeMain3"
                             container-class="col-span-1 lg:col-span-2"
                         />
                     </div>

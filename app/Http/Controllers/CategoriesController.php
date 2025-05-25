@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Models\Category;
 use App\Models\CategoryFilter;
+use App\Models\Transaction;
+use Illuminate\Auth\AuthenticationException;
 use Illuminate\Contracts\View\Factory;
 use Illuminate\Contracts\View\View;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
@@ -179,5 +181,52 @@ class CategoriesController extends Controller
         $filter->delete();
 
         return redirect()->route('profile.categories')->with('success', __('status.categoriescontroller.delete-filter-success') );
+    }
+
+    /**
+     * Update the category of all transactions for the authenticated user's accounts.
+     *
+     * The method iterates through all accounts of the authenticated user and their transactions.
+     * It attempts to determine a category for each transaction based on the remittance information,
+     * and updates the transaction's category if it is found.
+     *
+     * @param Request $request The incoming HTTP request.
+     *
+     * @return RedirectResponse Redirects to the categories page with a success or informational message.
+     *
+     * @throws AuthenticationException If the user is not authenticated.
+     */
+    public function setAllCategoriesFilter(Request $request): RedirectResponse
+    {
+        $accounts = auth()->user()->accounts()->get();
+        $updatedCount = 0;
+        $totalTransactions = 0;
+
+        foreach ($accounts as $account) {
+            $transactions = $account->transactions()->get();
+            $totalTransactions += $transactions->count();
+
+            if ($transactions->isEmpty()) {
+                continue;
+            }
+
+            foreach ($transactions as $transaction) {
+                $categoryId = Transaction::getCategoryId($transaction->remittanceInformationUnstructured);
+
+                if ($categoryId) {
+                    $transaction->update(['category_id' => $categoryId]);
+                    $updatedCount++;
+                }
+            }
+        }
+
+        if ($updatedCount > 0) {
+            return redirect()->route('profile.categories')->with('success', __('status.categoriescontroller.update-transactions-categories-success', [
+                'updatedCount' => $updatedCount,
+                'totalTransactions' => $totalTransactions
+            ]));
+        }
+
+        return redirect()->route('profile.categories')->with('info', __('status.categoriescontroller.no-transactions-categories') );
     }
 }

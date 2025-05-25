@@ -23,6 +23,10 @@ return [
     'bankcontroller' => [
         'update-account-success' => 'La cuenta fue actualizada exitosamente',
         'update-account-failed' => 'Ocurrió un error al actualizar la cuenta',
+        'chars-updated' => 'Caracteres del banco actualizados exitosamente',
+        'chars-error' => 'Ocurrió un error al actualizar los caracteres del banco',
+        'theme-updated' => 'Tema del banco actualizado exitosamente',
+        'theme-error' => 'Ocurrió un error al actualizar el tema del banco',
         'schedule-updated' => 'Tareas programadas actualizadas exitosamente',
         'schedule-error' => 'Ocurrió un error al programar las tareas',
     ],
@@ -61,5 +65,7 @@ return [
         'delete-category-failed' => 'Ocurrió un error al eliminar la categoría',
         'delete-category-not-found' => 'No se encontró la categoría a eliminar',
         'unauthorized-action' => 'Acción no autorizada',
+        'update-transactions-categories-success' => 'Se actualizaron :updatedCount de :totalTransactions transacciones',
+        'no-transactions-categories' => 'No hay transacciones para actualizar las categorías',
     ],
 ];

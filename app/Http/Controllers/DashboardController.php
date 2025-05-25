@@ -141,4 +141,22 @@ class DashboardController extends Controller
 
         return view('pages.dashboard.configuration', compact('user', 'accounts', 'showUpdateAccounts'));
     }
+
+    /**
+     * Returns a view displaying the documentation page for the authenticated user.
+     *
+     * @return View The rendered view of the documentation page.
+     *
+     * @throws HttpException Thrown when the authenticated user cannot be found (HTTP 403).
+     */
+    public function docs(): View
+    {
+        $user = Auth::user();
+
+        if (!$user) {
+            abort(403);
+        }
+
+        return view('pages.dashboard.docs');
+    }
 }

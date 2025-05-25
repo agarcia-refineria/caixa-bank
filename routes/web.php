@@ -42,6 +42,8 @@ Route::middleware('auth')->group(function () {
     // Profile [Bank routes]
     Route::get('/profile/bank', [BankController::class, 'edit'])->name('profile.bank.edit');
     Route::patch('/profile/bank', [BankController::class, 'update'])->name('profile.bank.update');
+    Route::patch('/profile/bank/chars', [BankController::class, 'chars'])->name('profile.bank.chars');
+    Route::patch('/profile/bank/theme', [BankController::class, 'theme'])->name('profile.bank.theme');
     Route::patch('/profile/schedule', [BankController::class, 'schedule'])->name('profile.accounts.schedule');
     Route::post('/profile/schedule/check', [BankController::class, 'scheduleTasks'])->name('profile.accounts.scheduleTasks');
 
@@ -75,6 +77,7 @@ Route::middleware('auth')->group(function () {
     Route::post('/profile/categories', [CategoriesController::class, 'create'])->name('profile.category.create');
     Route::patch('/profile/categories/{id}', [CategoriesController::class, 'update'])->name('profile.category.update');
     Route::delete('/profile/categories/{id}', [CategoriesController::class, 'destroy'])->name('profile.category.destroy');
+    Route::post('/profile/transactions-categories/update', [CategoriesController::class, 'setAllCategoriesFilter'])->name('profile.categories.update-transactions');
 
     // Profile [Categories filter routes]
     Route::post('/profile/categories/filter', [CategoriesController::class, 'createFilter'])->name('profile.categories.filter');
@@ -98,6 +101,9 @@ Route::middleware('auth')->group(function () {
 
     // Panel [Configuration routes]
     Route::get('/configuration', [DashboardController::class, 'configuration'])->name('dashboard.configuration');
+
+    // Panel [Docs routes]
+    Route::get('/docs', [DashboardController::class, 'docs'])->name('dashboard.docs');
 
     // Nordigen API routes
     Route::get('/nordigen/connect', [NordigenController::class, 'authenticate'])->name('nordigen.auth');

@@ -20,6 +20,27 @@
 
         @vite(['resources/css/select2.css'])
         @vite(['resources/css/datatable.css'])
+
+        <style>
+            /** Custom styles for the application */
+            @if (auth()->user()->themeMain3)
+                :root {
+                    --color-main3: {{ auth()->user()->themeMain3 }} !important;
+                }
+            @endif
+
+            @if (auth()->user()->themeNavActive)
+                :root {
+                    --color-navActive: {{ auth()->user()->themeNavActive }} !important;
+                }
+            @endif
+
+            @if (auth()->user()->themeNavActiveBg)
+                :root {
+                    --color-navActiveBg: {{ auth()->user()->themeNavActiveBg }} !important;
+                }
+            @endif
+        </style>
     </head>
     <body class="font-Inter antialiased">
         <div class="min-h-screen bg-main1">
@@ -36,7 +57,7 @@
             @endif
 
             <!-- Page Content -->
-            <main>
+            <main class="relative">
                 {{ $slot }}
             </main>
         </div>

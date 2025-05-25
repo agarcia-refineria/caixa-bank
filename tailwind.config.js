@@ -37,10 +37,10 @@ export default {
 
                 main1: '#0e0f11',
                 main2: '#1a1b1e',
-                main3: '#49b02d',
+                main3: 'var(--color-main3)',
 
-                navActive: '#b8fca5',
-                navActiveBg: '#257c0c',
+                navActive: 'var(--color-navActive)',
+                navActiveBg: 'var(--color-navActiveBg)',
 
                 success: '#33c034',
                 error: '#d03022',
@@ -48,8 +48,8 @@ export default {
                 info: '#055160'
             },
             dropShadow: {
-                primary: '0px 0px 5px #49b02d', // Configurable
-                secondary: '0px 0px 20px #49b02d', // Configurable
+                primary: '0px 0px 5px var(--color-main3)',
+                secondary: '0px 0px 20px var(--color-main3)',
             },
             fill: theme => ({
                 'main1': theme('colors.main1'),

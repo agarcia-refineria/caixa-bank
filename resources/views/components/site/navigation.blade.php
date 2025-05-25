@@ -34,6 +34,12 @@
                         {{ __('Configuration') }}
                     </x-links.nav-link>
                 </div>
+
+                <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
+                    <x-links.nav-link :href="route('dashboard.docs')" :active="request()->routeIs('dashboard.docs')">
+                        {{ __('Docs') }}
+                    </x-links.nav-link>
+                </div>
             </div>
 
             <!-- Settings Dropdown -->
@@ -135,6 +141,12 @@
         <div class="pt-2 pb-3 space-y-1">
             <x-links.responsive-nav-link :href="route('dashboard.configuration')" :active="request()->routeIs('dashboard.configuration')">
                 {{ __('Configuration') }}
+            </x-links.responsive-nav-link>
+        </div>
+
+        <div class="pt-2 pb-3 space-y-1">
+            <x-links.responsive-nav-link :href="route('dashboard.docs')" :active="request()->routeIs('dashboard.docs')">
+                {{ __('Docs') }}
             </x-links.responsive-nav-link>
         </div>
 

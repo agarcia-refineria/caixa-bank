@@ -23,6 +23,10 @@ return [
     'bankcontroller' => [
         'update-account-success' => 'The account was updated successfully',
         'update-account-failed' => 'An error occurred while updating the account',
+        'chars-updated' => 'Bank characters updated successfully',
+        'chars-error' => 'An error occurred while updating bank characters',
+        'theme-updated' => 'Bank theme updated successfully',
+        'theme-error' => 'An error occurred while updating the bank theme',
         'schedule-updated' => 'Scheduled tasks updated successfully',
         'schedule-error' => 'An error occurred while scheduling tasks',
     ],
@@ -61,5 +65,7 @@ return [
         'delete-category-failed' => 'An error occurred while deleting the category',
         'delete-category-not-found' => 'Category not found for deletion',
         'unauthorized-action' => 'Unauthorized action',
+        'update-transactions-categories-success' => ':updatedCount of :totalTransactions transactions were updated',
+        'no-transactions-categories' => 'No transactions to update categories',
     ],
 ];

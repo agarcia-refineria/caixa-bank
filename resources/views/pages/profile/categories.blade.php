@@ -9,6 +9,13 @@
                     x-data=""
                     x-on:click.prevent="$dispatch('open-modal', 'confirm-create-category')"
                 >{{ __('Create Category') }}</x-buttons.primary-button>
+                <form id="update-transactions-form" action="{{ route('profile.categories.update-transactions') }}" method="POST" style="display: none;">
+                    @csrf
+                </form>
+
+                <x-buttons.secondary-button class="py-2" onclick="document.getElementById('update-transactions-form').submit();">
+                    {{ __('Update Transactions') }}
+                </x-buttons.secondary-button>
             </div>
 
             <x-ui.modal name="confirm-create-category" focusable>
@@ -65,4 +72,31 @@
             @endif
         </div>
     </div>
+
+    <script>
+        function ajaxUpdateTransactions()
+        {
+            const url = "{{ route('profile.categories.update-transactions') }}";
+
+            fetch(url, {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                },
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.status === 'success') {
+                    alert(data.message);
+                } else {
+                    alert(data.message);
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('{{ __('An error occurred while updating transactions.') }}');
+            });
+        }
+    </script>
 </x-app-layout>

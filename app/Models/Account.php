@@ -12,6 +12,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Str;
 use App\Helpers\ColorHelper;
+use function PHPUnit\Framework\isEmpty;
 
 /**
  * @property int $id
@@ -161,10 +162,23 @@ class Account extends Model
      */
     public function getUsedColors(&$usedColors): string
     {
-        $colorsJson = file_get_contents(base_path('tailwind-colors.json'));
-        $colorsArray = json_decode($colorsJson, true);
+        //$colorsJson = file_get_contents(base_path('tailwind-colors.json'));
+        //$colorsArray = json_decode($colorsJson, true);
+        $mainColor = auth()->user()->themeMain3;
 
-        $rgb = ColorHelper::hexToRgb($colorsArray['main3']);
+        if (empty($usedColors)) {
+            $usedColors[] = $mainColor;
+            return $mainColor;
+        }
+
+        $rgb = ColorHelper::hexToRgb($mainColor);
+
+        // If color is white or black, generate a random color
+        if ($rgb[0] == 255 && $rgb[1] == 255 && $rgb[2] == 255) {
+            $rgb = [rand(0, 255), rand(0, 255), rand(0, 255)];
+        } elseif ($rgb[0] == 0 && $rgb[1] == 0 && $rgb[2] == 0) {
+            $rgb = [rand(0, 255), rand(0, 255), rand(0, 255)];
+        }
 
         do {
             list($r, $g, $b) = $rgb;
@@ -189,6 +203,9 @@ class Account extends Model
                     $g = mt_rand(0, 255);
                     break;
             }
+
+            // Ensure there is no infinite loop
+
 
             $color = sprintf("#%02X%02X%02X", $r, $g, $b);
         } while (in_array($color, $usedColors));
@@ -461,6 +478,51 @@ class Account extends Model
         $usedColors = [];
         return $this->transactionsExpensesCurrentMonth
             ->groupBy('remittanceInformationUnstructured')
+            ->map(function ($group, $key) use (&$usedColors) {
+                return $this->getUsedColors($usedColors);
+            })->implode(',');
+    }
+
+    /**
+     * Get the chart transactions values for the current month group by category.
+     *
+     * @noinspection PhpUnused
+     * @return mixed
+     */
+    public function getChartTransactionsValuesCategoryAttribute(): mixed
+    {
+        return $this->transactionsExpensesCurrentMonth
+            ->groupBy('category.name')
+            ->map(fn($group) => $group->sum('transactionAmount_amount'))
+            ->implode(',');
+    }
+
+    /**
+     * Get the chart transactions labels for the current month group by category.
+     *
+     * @noinspection PhpUnused
+     * @return mixed
+     */
+    public function getChartTransactionsLabelsCategoryAttribute(): mixed
+    {
+        return $this->transactionsExpensesCurrentMonth
+            ->groupBy('category.name')
+            ->keys()
+            ->map(fn($key) => trim((string) $key, '[]"'))
+            ->implode(',');
+    }
+
+    /**
+     * Get the chart transactions colors for the current month group by category.
+     *
+     * @noinspection PhpUnused
+     * @return mixed
+     */
+    public function getChartTransactionsColorsCategoryAttribute(): mixed
+    {
+        $usedColors = [];
+        return $this->transactionsExpensesCurrentMonth
+            ->groupBy('category')
             ->map(function ($group, $key) use (&$usedColors) {
                 return $this->getUsedColors($usedColors);
             })->implode(',');

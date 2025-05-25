@@ -120,12 +120,12 @@ class Transaction extends Model
         return $this->attributes['debtorName'] ? str_replace(';', ' ', $this->attributes['debtorName']) : '--';
     }
 
-    public static function getCategoryId(string $value): ?int
+    public static function getCategoryId(string $value = null): ?int
     {
         $user = auth()->user();
         $categories = $user->categories;
 
-        if ($categories->isEmpty()) {
+        if ($categories->isEmpty() && is_null($value)) {
             return null;
         }
 

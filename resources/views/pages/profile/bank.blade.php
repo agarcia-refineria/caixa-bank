@@ -11,6 +11,14 @@
 
             @if ($bank)
                 <div class="p-4 sm:p-8 bg-main2 shadow rounded-lg">
+                    @include('partials.bank.update-profile-chars')
+                </div>
+
+                <div class="p-4 sm:p-8 bg-main2 shadow rounded-lg">
+                    @include('partials.bank.update-profile-theme')
+                </div>
+
+                <div class="p-4 sm:p-8 bg-main2 shadow rounded-lg">
                     @include('partials.bank.update-profile-accounts')
                 </div>
 
