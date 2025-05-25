@@ -1,5 +1,5 @@
 <aside class="relative md:w-56 bg-main2 p-6">
-    <div class="sticky z-20 top-[20px] left-0">
+    <div class="sticky z-20 top-[20px] left-0" id="index-dashboard-sidebar" shepherd-text="{{ trans('shepherd.index-dashboard-sidebar') }}">
         <h2 class="text-xl mb-6 font-semibold">{{ __('Dashboard') }}</h2>
         <nav class="md:block flex justify-center gap-4 space-y-3">
             @foreach($accounts as $account)

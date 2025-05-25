@@ -102,9 +102,6 @@ Route::middleware('auth')->group(function () {
     // Panel [Configuration routes]
     Route::get('/configuration', [DashboardController::class, 'configuration'])->name('dashboard.configuration');
 
-    // Panel [Docs routes]
-    Route::get('/docs', [DashboardController::class, 'docs'])->name('dashboard.docs');
-
     // Nordigen API routes
     Route::get('/nordigen/connect', [NordigenController::class, 'authenticate'])->name('nordigen.auth');
     Route::get('/nordigen/create-requisition', [NordigenController::class, 'createRequisition'])->name('nordigen.create-requisition');
