@@ -67,5 +67,7 @@ return [
         'unauthorized-action' => 'Acción no autorizada',
         'update-transactions-categories-success' => 'Se actualizaron :updatedCount de :totalTransactions transacciones',
         'no-transactions-categories' => 'No hay transacciones para actualizar las categorías',
+        'update-filter-success' => 'Filtro actualizado exitosamente',
+        'create-filter-success' => 'Filtro creado exitosamente',
     ],
 ];

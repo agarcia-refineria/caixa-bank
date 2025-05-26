@@ -28,7 +28,7 @@
 
         <div class="col-span-3 md:col-span-1 flex !flex-col">
             <x-inputs.input-label for="enabled" value="{{ __('Enabled') }}" />
-            <x-inputs.checkbox id="enabled{{ $filter ? '-'.$filter->id : ''}}" class="mt-2" name="enabled" :active="isset($filter) ? $filter->enabled : false" />
+            <x-inputs.checkbox id="enabled{{ $filter ? '-'.$filter->id : $category->id.'-'.$category->filters()->count() }}" class="mt-2" name="enabled" :active="isset($filter) ? $filter->enabled : false" />
             <x-inputs.input-error :messages="isset($errors) ? $errors->get('enabled') : null" class="mt-2" />
         </div>
     </div>

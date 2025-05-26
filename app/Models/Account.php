@@ -165,6 +165,7 @@ class Account extends Model
         //$colorsJson = file_get_contents(base_path('tailwind-colors.json'));
         //$colorsArray = json_decode($colorsJson, true);
         $mainColor = auth()->user()->themeMain3;
+        $minDistance = 10;
 
         if (empty($usedColors)) {
             $usedColors[] = $mainColor;
@@ -189,28 +190,43 @@ class Account extends Model
             switch (true) {
                 case $r > $g && $r > $b:
                     // Red
+                    $r = rand(200, 255);
                     $g = rand(0, 255);
-                    $b = rand(0, 50);
+                    $b = rand(0, 0);
                     break;
                 case $g > $r && $g > $b:
                     // Green
-                    $r = rand(0, 50);
+                    $r = rand(0, 0);
+                    $g = rand(200, 255);
                     $b = rand(0, 255);
                     break;
                 case $b > $r && $b > $g:
                     // Blue
-                    $r = mt_rand(0, 50);
+                    $r = mt_rand(0, 0);
                     $g = mt_rand(0, 255);
+                    $b = mt_rand(200, 255);
                     break;
             }
 
-            // Ensure there is no infinite loop
-
+            $isTooSimilar = false;
+            foreach ($usedColors as $used) {
+                if ($this->colorDistance([$r, $g, $b], ColorHelper::hexToRgb($used)) < $minDistance) {
+                    $isTooSimilar = true;
+                    break;
+                }
+            }
 
             $color = sprintf("#%02X%02X%02X", $r, $g, $b);
-        } while (in_array($color, $usedColors));
+        } while ($isTooSimilar);
         $usedColors[] = $color;
         return $color;
+    }
+
+    public function colorDistance($c1, $c2) {
+        list($r1, $g1, $b1) = $c1;
+        list($r2, $g2, $b2) = $c2;
+
+        return sqrt(pow($r1 - $r2, 2) + pow($g1 - $g2, 2) + pow($b1 - $b2, 2));
     }
 
     /**

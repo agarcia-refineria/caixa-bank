@@ -136,6 +136,13 @@ class Transaction extends Model
                 switch ($filter->type) {
                     case 'exact':
                         // Check if the value matches exactly
+                        // Remove [] from the value if it exists
+                        $value = str_replace(['[', ']'], '', $value);
+
+                        // Remove " from the value if it exists
+                        $value = str_replace('"', '', $value);
+
+                        // Compare the value with the filter value
                         if (strcasecmp($value, $filter->value) === 0) {
                             return $category->id;
                         }

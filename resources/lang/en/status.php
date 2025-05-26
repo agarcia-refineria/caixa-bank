@@ -67,5 +67,7 @@ return [
         'unauthorized-action' => 'Unauthorized action',
         'update-transactions-categories-success' => ':updatedCount of :totalTransactions transactions were updated',
         'no-transactions-categories' => 'No transactions to update categories',
+        'update-filter-success' => 'Filter updated successfully',
+        'create-filter-success' => 'Filter created successfully',
     ],
 ];
