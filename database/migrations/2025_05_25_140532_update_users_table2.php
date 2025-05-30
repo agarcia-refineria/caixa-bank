@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::table('users', function (Blueprint $table) {
             $table->string('chars')->default('all');
-            $table->text('theme')->default(null);
+            $table->text('theme')->nullable();
         });
     }
 

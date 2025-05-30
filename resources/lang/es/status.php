@@ -39,6 +39,7 @@ return [
         'schedule-error' => 'Ocurrió un error al programar las tareas',
         'institutions-updated' => 'Instituciones actualizadas exitosamente',
         'institutions-error' => 'Ocurrió un error al actualizar las instituciones',
+        'missing-credentials' => 'Faltan credenciales de Nordigen',
     ],
     'profilecontroller' => [
         'profile-updated' => 'Perfil actualizado exitosamente',

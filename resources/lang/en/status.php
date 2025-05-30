@@ -39,6 +39,7 @@ return [
         'schedule-error' => 'An error occurred while scheduling tasks',
         'institutions-updated' => 'Institutions updated successfully',
         'institutions-error' => 'An error occurred while updating institutions',
+        'missing-credentials' => 'Missing credentials for Nordigen',
     ],
     'profilecontroller' => [
         'profile-updated' => 'Profile updated successfully',

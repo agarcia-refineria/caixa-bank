@@ -111,7 +111,7 @@
     "Password": "Contraseña",
     "Payment Required": "Pago Requerido",
     "Please add a bank account to see the session data.": "Por favor agrega una cuenta bancaria en el perfil para ver los datos de sesión.",
-    "Please add a bank from profile to see the accounts.": "Por favor agrega un banco desde el perfil para ver las cuentas.",
+    "Please add a bank from profile to see the accounts.": "Por favor agrega un banco desde el perfil -> banco, para ver las cuentas.",
     "Please add a bank from update bank.": "Por favor agrega un banco desde actualizar banco.",
     "Please add an account from update accounts.": "Por favor agrega una cuenta desde actualizar cuentas.",
     "Please click the button below to verify your email address.": "Por favor haz clic en el botón de abajo para verificar tu dirección de correo electrónico.",
@@ -237,5 +237,6 @@
     "Nav Active Background Color": "Color de Fondo Activo de Navegación",
     "Next": "Siguiente",
     "Ayuda": "Ayuda",
-    "Close": "Cerrar"
+    "Close": "Cerrar",
+    "You need to set the secret id and key in the .env file to update the accounts!": "Necesitas establecer el ID secreto y la clave en el archivo .env para actualizar las cuentas!"
 }

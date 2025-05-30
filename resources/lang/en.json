@@ -237,5 +237,6 @@
     "Nav Active Background Color": "Nav Active Background Color",
     "Next": "Next",
     "Ayuda": "Help",
-    "Close": "Close"
+    "Close": "Close",
+    "You need to set the secret id and key in the .env file to update the accounts!": "You need to set the secret id and key in the .env file to update the accounts!"
 }

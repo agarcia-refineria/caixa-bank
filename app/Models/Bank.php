@@ -31,6 +31,11 @@ class Bank extends Model
 {
     use HasFactory;
 
+    protected $fillable = [
+        'user_id',
+        'institution_id',
+    ];
+
     protected $table = 'banks';
 
     public function institution(): BelongsTo
