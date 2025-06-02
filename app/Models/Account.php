@@ -106,7 +106,8 @@ class Account extends Model
         'last_accessed',
         'institution_id',
         'type',
-        'user_id'
+        'user_id',
+        'order'
     ];
 
     /**
@@ -583,10 +584,14 @@ class Account extends Model
      */
     public function getShowUpdateAllAttribute(): bool
     {
-        return $this->bankDataSync()
-            ->where('created_at', '>=', now()->subDays(7))
-            ->where('created_at', '<=', now())
-            ->count() >= ScheduledTasks::$MAX_TIMES;
+        if ($this->is_api) {
+            return !$this->transactionsDisabled
+                && !$this->balanceDisabled
+                && $this->bankDataSyncTransactionsCount <= ScheduledTasks::$MAX_TIMES
+                && $this->bankDataSyncBalancesCount <= ScheduledTasks::$MAX_TIMES;
+        }
+
+        return false;
     }
 
     /**

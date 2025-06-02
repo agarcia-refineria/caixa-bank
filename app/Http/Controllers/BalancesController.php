@@ -65,11 +65,16 @@ class BalancesController extends Controller
     {
         $validated = $request->validate([
             'account_id' => 'required|exists:accounts,id',
-            'amount' => 'required|numeric|min:0|decimal:0,2',
-            'currency' => 'required|string|size:3',
-            'balance_type' => 'required|string|in:' . implode(',', Balance::$balanceTypes),
-            'reference_date' => 'required|date_format:Y-m-d',
         ]);
+
+        $validated = array_merge($validated, $request->validate([
+            'newBalance.amount' => 'required|numeric|min:0|decimal:0,2',
+            'newBalance.currency' => 'required|string|size:3',
+            'newBalance.balance_type' => 'required|string|in:' . implode(',', Balance::$balanceTypes),
+            'newBalance.reference_date' => 'required|date_format:Y-m-d',
+        ]));
+
+        $balanceData = $validated['newBalance'];
 
         try {
             DB::beginTransaction();
@@ -78,10 +83,10 @@ class BalancesController extends Controller
 
             Balance::create([
                 'account_id' => $account->code,
-                'amount' => $validated['amount'],
-                'currency' => $validated['currency'],
-                'balance_type' => $validated['balance_type'],
-                'reference_date' => Carbon::createFromFormat('Y-m-d', $validated['reference_date']),
+                'amount' => $balanceData['amount'],
+                'currency' => $balanceData['currency'],
+                'balance_type' => $balanceData['balance_type'],
+                'reference_date' => Carbon::createFromFormat('Y-m-d', $balanceData['reference_date']),
             ]);
 
             DB::commit();
@@ -120,21 +125,28 @@ class BalancesController extends Controller
     {
         $request->validate([
             'balance_id' => 'required|exists:balances,id',
-            'amount' => 'required|numeric',
-            'currency' => 'required|string|size:3',
-            'balance_type' => 'required|string|in:' . implode(',', Balance::$balanceTypes),
-            'reference_date' => 'required|date_format:Y-m-d',
+        ]);
+
+        $key = $request->input('balance_id');
+
+        $request->validate([
+            "Balance.$key.amount" => 'required|numeric',
+            "Balance.$key.currency" => 'required|string|size:3',
+            "Balance.$key.balance_type" => 'required|string|in:' . implode(',', Balance::$balanceTypes),
+            "Balance.$key.reference_date" => 'required|date_format:Y-m-d',
         ]);
 
         try {
-            $balance = Balance::findOrFail($request->input('balance_id'));
+            $balance = Balance::findOrFail($key);
 
-            DB::transaction(function () use ($request, $balance) {
+            $balanceData = $request->input('Balance')[$key];
+
+            DB::transaction(function () use ($request, $balance, $balanceData) {
                 $balance->update([
-                    'amount' => $request->input('amount'),
-                    'currency' => strtoupper($request->input('currency')),
-                    'balance_type' => $request->input('balance_type'),
-                    'reference_date' => Carbon::createFromFormat('Y-m-d', $request->input('reference_date')),
+                    'amount' => $balanceData['amount'],
+                    'currency' => strtoupper($balanceData['currency']),
+                    'balance_type' => $balanceData['balance_type'],
+                    'reference_date' => Carbon::createFromFormat('Y-m-d', $balanceData['reference_date']),
                 ]);
             });
 
@@ -183,6 +195,12 @@ class BalancesController extends Controller
                 ->findOrFail($request->input('balance_id'));
 
             $account = Account::onlyManual()->findOrFail($balance->account_id);
+
+            // Ensure the balance belongs to the authenticated user's account
+            if ($account->user_id !== Auth::id()) {
+                return Redirect::route('profile.accounts.edit')
+                    ->with('error', __('You do not have permission to delete this balance.'));
+            }
 
             DB::transaction(function () use ($balance) {
                 $balance->delete();

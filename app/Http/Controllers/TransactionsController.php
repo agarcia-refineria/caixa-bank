@@ -64,39 +64,44 @@ class TransactionsController extends Controller
     {
         try {
             $validated = $request->validate([
-                'account_id' => 'required|exists:accounts,id',
-                'bookingDate' => 'required|date',
-                'transactionAmount_amount' => 'required|numeric',
-                'valueDate' => 'nullable|date',
-                'transactionAmount_currency' => 'nullable|string|size:3',
-                'entryReference' => 'nullable|string|max:255',
-                'checkId' => 'nullable|string|max:255',
-                'remittanceInformationUnstructured' => 'nullable|string|max:1000',
-                'bankTransactionCode' => 'nullable|string|max:255',
-                'proprietaryBankTransactionCode' => 'nullable|string|max:255',
-                'internalTransactionId' => 'nullable|string|max:255',
-                'debtorName' => 'nullable|string|max:255',
-                'debtorAccount' => 'nullable|string|max:255',
+                'account_id' => 'required|exists:accounts,id'
             ]);
+
+            $validated = array_merge($validated, $request->validate([
+                'newTransaction.bookingDate' => 'required|date',
+                'newTransaction.transactionAmount_amount' => 'required|numeric',
+                'newTransaction.valueDate' => 'nullable|date',
+                'newTransaction.transactionAmount_currency' => 'nullable|string|size:3',
+                'newTransaction.entryReference' => 'nullable|string|max:255',
+                'newTransaction.checkId' => 'nullable|string|max:255',
+                'newTransaction.remittanceInformationUnstructured' => 'nullable|string|max:1000',
+                'newTransaction.bankTransactionCode' => 'nullable|string|max:255',
+                'newTransaction.proprietaryBankTransactionCode' => 'nullable|string|max:255',
+                'newTransaction.internalTransactionId' => 'nullable|string|max:255',
+                'newTransaction.debtorName' => 'nullable|string|max:255',
+                'newTransaction.debtorAccount' => 'nullable|string|max:255',
+            ]));
 
             $account = Account::onlyManual()->findOrFail($validated['account_id']);
 
+            $transactionData = $validated['newTransaction'];
+
             Transaction::create([
                 'id' => Str::uuid(),
-                'entryReference' => $validated['entryReference'] ?? null,
-                'checkId' => $validated['checkId'] ?? null,
-                'bookingDate' => $validated['bookingDate'],
-                'valueDate' => $validated['valueDate'] ?? $validated['bookingDate'],
-                'transactionAmount_amount' => $validated['transactionAmount_amount'],
-                'transactionAmount_currency' => $validated['transactionAmount_currency'] ?? 'EUR',
-                'remittanceInformationUnstructured' => $validated['remittanceInformationUnstructured'] ?? null,
-                'bankTransactionCode' => $validated['bankTransactionCode'] ?? null,
-                'proprietaryBankTransactionCode' => $validated['proprietaryBankTransactionCode'] ?? null,
-                'internalTransactionId' => $validated['internalTransactionId'] ?? null,
-                'debtorName' => $validated['debtorName'] ?? null,
-                'debtorAccount' => $validated['debtorAccount'] ?? null,
+                'entryReference' => $transactionData['entryReference'] ?? null,
+                'checkId' => $transactionData['checkId'] ?? null,
+                'bookingDate' => $transactionData['bookingDate'],
+                'valueDate' => $transactionData['valueDate'] ?? $transactionData['bookingDate'],
+                'transactionAmount_amount' => $transactionData['transactionAmount_amount'],
+                'transactionAmount_currency' => $transactionData['transactionAmount_currency'] ?? 'EUR',
+                'remittanceInformationUnstructured' => Transaction::setRemittanceInformationUnstructuredFormat($transactionData['remittanceInformationUnstructured']),
+                'bankTransactionCode' => $transactionData['bankTransactionCode'] ?? null,
+                'proprietaryBankTransactionCode' => $transactionData['proprietaryBankTransactionCode'] ?? null,
+                'internalTransactionId' => $transactionData['internalTransactionId'] ?? null,
+                'debtorName' => $transactionData['debtorName'] ?? null,
+                'debtorAccount' => $transactionData['debtorAccount'] ?? null,
                 'account_id' => $account->code,
-                'category_id' => Transaction::getCategoryId($validated['remittanceInformationUnstructured'] ?? null),
+                'category_id' => Transaction::getCategoryId($transactionData['remittanceInformationUnstructured'] ?? null),
             ]);
 
             return Redirect::route('profile.transaction.edit', ['id' => $account->code])
@@ -130,12 +135,27 @@ class TransactionsController extends Controller
     {
         $request->validate([
             'transaction_id' => 'required|exists:transactions,id',
-            'account_id' => 'required|exists:accounts,id',
-            'bookingDate' => 'required|date',
-            'transactionAmount_amount' => 'required|numeric',
-            'transactionAmount_currency' => 'nullable|string|size:3',
-            'valueDate' => 'nullable|date',
+            "account_id" => 'required|exists:accounts,id',
         ]);
+
+        $key = $request->input('transaction_id');
+
+        $request->validate([
+            "Transaction.$key.entryReference" => 'nullable|string|max:255',
+            "Transaction.$key.checkId" => 'nullable|string|max:255',
+            "Transaction.$key.bookingDate" => 'required|date',
+            "Transaction.$key.valueDate" => 'nullable|date',
+            "Transaction.$key.transactionAmount_amount" => 'required|numeric',
+            "Transaction.$key.transactionAmount_currency" => 'nullable|string|size:3',
+            "Transaction.$key.remittanceInformationUnstructured" => 'nullable|string|max:1000',
+            "Transaction.$key.bankTransactionCode" => 'nullable|string|max:255',
+            "Transaction.$key.proprietaryBankTransactionCode" => 'nullable|string|max:255',
+            "Transaction.$key.internalTransactionId" => 'nullable|string|max:255',
+            "Transaction.$key.debtorName" => 'nullable|string|max:255',
+            "Transaction.$key.debtorAccount" => 'nullable|string|max:255',
+        ]);
+
+        $transactionData = $request->input("Transaction.$key");
 
         try {
             $account = Account::onlyManual()->findOrFail($request->input('account_id'));
@@ -144,20 +164,20 @@ class TransactionsController extends Controller
             DB::beginTransaction();
 
             $transaction->update([
-                'entryReference' => $request->input('entryReference'),
-                'checkId' => $request->input('checkId'),
-                'bookingDate' => $request->input('bookingDate'),
-                'valueDate' => $request->input('valueDate'),
-                'transactionAmount_amount' => $request->input('transactionAmount_amount'),
-                'transactionAmount_currency' => $request->input('transactionAmount_currency', 'EUR'),
-                'remittanceInformationUnstructured' => $request->input('remittanceInformationUnstructured'),
-                'bankTransactionCode' => $request->input('bankTransactionCode'),
-                'proprietaryBankTransactionCode' => $request->input('proprietaryBankTransactionCode'),
-                'internalTransactionId' => $request->input('internalTransactionId'),
-                'debtorName' => $request->input('debtorName'),
-                'debtorAccount' => $request->input('debtorAccount'),
+                'entryReference' => $transactionData['entryReference'],
+                'checkId' => $transactionData['checkId'],
+                'bookingDate' => $transactionData['bookingDate'],
+                'valueDate' => $transactionData['valueDate'] ?? $transactionData['bookingDate'],
+                'transactionAmount_amount' => $transactionData['transactionAmount_amount'],
+                'transactionAmount_currency' => $transactionData['transactionAmount_currency'] ?? 'EUR',
+                'remittanceInformationUnstructured' => Transaction::setRemittanceInformationUnstructuredFormat($transactionData['remittanceInformationUnstructured']),
+                'bankTransactionCode' => $transactionData['bankTransactionCode'],
+                'proprietaryBankTransactionCode' => $transactionData['proprietaryBankTransactionCode'],
+                'internalTransactionId' =>$transactionData['internalTransactionId'],
+                'debtorName' => $transactionData['debtorName'],
+                'debtorAccount' => $transactionData['debtorAccount'],
                 'account_id' => $account->code,
-                'category_id' => Transaction::getCategoryId($request->input('remittanceInformationUnstructured')),
+                'category_id' => Transaction::getCategoryId($transactionData['remittanceInformationUnstructured']),
             ]);
 
             DB::commit();
@@ -199,6 +219,12 @@ class TransactionsController extends Controller
 
         $transaction = Transaction::findOrFail($validated['transaction_id']);
         $account = Account::onlyManual()->findOrFail($validated['account_id']);
+
+        // Ensure the transaction belongs to the account
+        if ($account->user_id !== Auth::id()) {
+            return Redirect::route('profile.transaction.edit', ['id' => $account->code])
+                ->with('error', __('status.transactionscontroller.transaction-not-found'));
+        }
 
         DB::transaction(function () use ($transaction) {
             $transaction->delete();

@@ -120,6 +120,31 @@ class Transaction extends Model
         return $this->attributes['debtorName'] ? str_replace(';', ' ', $this->attributes['debtorName']) : '--';
     }
 
+    public function getRemittanceInformationUnstructuredFormatAttribute(): string
+    {
+        $value = json_decode($this->attributes['remittanceInformationUnstructured']) ?? '--';
+
+        // If the value is an array, convert it to a string
+        if (is_array($value)) {
+            return implode(', ', $value);
+        }
+        // If the value is a string, return it as is
+        if (is_string($value)) {
+            // Remove " from the value if it exists
+            return str_replace('"', '', $value);
+        }
+
+        return '--';
+    }
+
+    public static function setRemittanceInformationUnstructuredFormat($attribute): mixed
+    {
+        // remove [ and ] and " from the attribute
+        $attribute = str_replace(['[', ']', '"'], '', $attribute);
+
+        return "[\"" . $attribute ."\"]";
+    }
+
     public static function getCategoryId(string $value = null): ?int
     {
         $user = auth()->user();

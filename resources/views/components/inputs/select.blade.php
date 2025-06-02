@@ -7,5 +7,5 @@
             @if ($required)required="required"@endif>
         {{ $slot }}
     </select>
-    <x-inputs.input-error :messages="isset($errors) ? $errors->get($name) : null" class="mt-2" />
+    <x-inputs.input-error :messages="isset($errors) ? $errors->get($errorName ?? $name) : null" class="mt-2" />
 </div>

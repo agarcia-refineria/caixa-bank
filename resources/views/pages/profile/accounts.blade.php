@@ -8,8 +8,9 @@
                     <x-buttons.primary-button
                         class="py-2"
                         x-data=""
-                        x-on:click.prevent="$dispatch('open-modal', 'confirm-user-create')"
-                    >{{ __('Create Account') }}</x-buttons.primary-button>
+                        x-on:click.prevent="$dispatch('open-modal', 'confirm-user-create')">
+                        {{ __('Create Account') }}
+                    </x-buttons.primary-button>
 
                     <x-links.nav-link class="uppercase px-4" :href="route('profile.import.edit')" :active="request()->routeIs(['profile.import.edit'])">
                         {{ __('Import') }}
@@ -17,14 +18,17 @@
                 </div>
 
 
-                <x-ui.modal name="confirm-user-create" focusable>
+                <x-ui.modal name="confirm-user-create" :show="$errors->get('newAccount.owner_name') || $errors->get('newAccount.iban')" focusable>
                     @include('partials.profile.account', ['user' => $user])
                 </x-ui.modal>
 
                 <!-- Show the accounts -->
                 @if (count($accounts) > 0)
                     @foreach ($accounts as $account)
-                        @include('partials.profile.account', ['user' => $user, 'account' => $account])
+                        @include('partials.profile.account', [
+                            'user' => $user,
+                            'account' => $account
+                        ])
                     @endforeach
                 @else
                     <x-ui.empty

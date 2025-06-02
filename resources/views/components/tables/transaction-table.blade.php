@@ -30,7 +30,7 @@
                         <td class="py-2">{{ $transaction->account->iban }}</td>
                         <td class="py-2 dt-date" data-order="{{ $transaction->bookingDate->format('Y-m-d') }}">{{ $transaction->bookingDate->format('d-m-Y') }}</td>
                         <td class="py-2">{{ $transaction->debtorNameFormat }}</td>
-                        <td class="py-2">{{ json_decode($transaction->remittanceInformationUnstructured) ? json_decode($transaction->remittanceInformationUnstructured)[0] : '--' }}</td>
+                        <td class="py-2">{{ $transaction->remittanceInformationUnstructuredFormat }}</td>
                         <td class="py-2">{{ $transaction->category?->name ?? __('Sin Categoria') }}</td>
                         <td class="py-2 @if (number_format($transaction->transactionAmount_amount, 2, ',', '.') < 0) !text-error @else !text-success @endif">{{ number_format($transaction->transactionAmount_amount, 2, ',', '.') }} €</td>
 

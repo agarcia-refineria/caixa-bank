@@ -51,24 +51,27 @@ class AccountsController extends Controller
     public function create(Request $request): RedirectResponse
     {
         $request->validate([
-            'owner_name' => ['required', 'string', 'max:255'],
-            'bban' => ['nullable', 'string', 'max:255'],
-            'iban' => ['required', 'string', 'max:255'],
-            'status' => ['nullable', 'string'],
+            'newAccount.owner_name' => ['required', 'string', 'max:255'],
+            'newAccount.bban' => ['nullable', 'string', 'max:255'],
+            'newAccount.iban' => ['required', 'string', 'max:255'],
+            'newAccount.status' => ['nullable', 'string'],
         ]);
+
+        $accountData = $request->input('newAccount');
 
         try {
             $user = Auth::user();
 
             Account::create([
                 'id' => Str::uuid()->toString(),
-                'iban' => $request->input('iban'),
-                'bban' => $request->input('bban'),
-                'status' => $request->input('status', 'active'),
-                'owner_name' => $request->input('owner_name'),
+                'iban' => $accountData['iban'],
+                'bban' => $accountData['bban'],
+                'status' =>$accountData['status'] ?? 'active',
+                'owner_name' => $accountData['owner_name'],
                 'institution_id' => $user->bank->institution_id,
                 'user_id' => $user->id,
-                'type' => Account::$accountTypes['manual']
+                'type' => Account::$accountTypes['manual'],
+                'order' => Account::where('user_id', $user->id)->max('order') + 1,
             ]);
 
             return redirect()->route('profile.accounts.edit')
@@ -90,11 +93,18 @@ class AccountsController extends Controller
     {
         $validated = $request->validate([
             'id' => ['required', 'exists:accounts,id'],
-            'owner_name' => ['required', 'string', 'max:255'],
-            'bban' => ['nullable', 'string', 'max:255'],
-            'iban' => ['required', 'string', 'max:255'],
-            'status' => ['nullable', 'string', 'max:255'],
         ]);
+
+        $key = $request->input('id');
+
+        $validated = array_merge($validated, $request->validate([
+            "Account.$key.owner_name" => ['required', 'string', 'max:255'],
+            "Account.$key.bban" => ['nullable', 'string', 'max:255'],
+            "Account.$key.iban" => ['required', 'string', 'max:255'],
+            "Account.$key.status" => ['nullable', 'string'],
+        ]));
+
+        $accountData = $validated['Account'][$key];
 
         try {
             $account = Account::where('user_id', Auth::id())
@@ -102,10 +112,10 @@ class AccountsController extends Controller
                 ->firstOrFail();
 
             $account->update([
-                'owner_name' => $validated['owner_name'],
-                'bban' => $validated['bban'],
-                'iban' => $validated['iban'],
-                'status' => $validated['status'],
+                'owner_name' => $accountData["owner_name"],
+                'bban' => $accountData['bban'],
+                'iban' => $accountData['iban'],
+                'status' => $accountData['status'],
             ]);
 
             return Redirect::route('profile.accounts.edit')
@@ -131,8 +141,10 @@ class AccountsController extends Controller
      */
     public function destroy(Request $request, string $id): RedirectResponse
     {
+        $key = array_key_first($request->input('Account'));
+
         $request->validateWithBag('userDeletion', [
-            'password' => ['required', 'current_password'],
+            "Account.$key.password" => ['required', 'current_password'],
         ]);
 
         try {

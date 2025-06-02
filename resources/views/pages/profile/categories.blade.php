@@ -23,18 +23,16 @@
             </x-ui.modal>
 
             @if (count($categories) > 0)
-                @foreach ($categories as $category)
-                    <div class=" border-main3 border-2 bg-main2 shadow rounded-lg">
-                        @include('partials.profile.categories.form', [
-                            'category' => $category,
-                            'user' => $user,
-                        ])
-                    </div>
+                <div class="grid grid-cols-12 gap-4">
+                    @foreach ($categories as $category)
+                        <div x-data="{ show: false }" class="col-span-12 lg:col-span-6 flex flex-col gap-4">
+                            <div class="bg-main2 border-main3 drop-shadow-primary border-2 shadow rounded-lg">
+                                @include('partials.profile.categories.form', [
+                                    'category' => $category,
+                                    'user' => $user,
+                                ])
 
-                    <div class="shadow rounded-lg" x-data="{ show: false }">
-                        <div class="flex gap-4 items-center justify-start">
-                            <div class="pb-4 flex flex-col w-full justify-center md:justify-start gap-4">
-                                <div class="flex gap-4">
+                                <div class="flex justify-center gap-4 pb-4">
                                     @if (count($category->filters) > 0)
                                         <x-buttons.primary-button x-on:click="show = !show">
                                             {{ __('Show Filters') }}
@@ -44,25 +42,29 @@
                                         {{ __('Create Filter') }}
                                     </x-buttons.primary-button>
                                 </div>
+                            </div>
 
-                                <div class="w-full" x-show="show">
-                                    @if (count($category->filters) > 0)
-                                        <div class="grid grid-cols-1 gap-4 w-full">
-                                            @foreach($category->filters as $filter)
-                                                <div class="bg-main2 border-primary border-2 p-4 shadow rounded-lg">
-                                                    @include('partials.profile.categories.filter-form', [
-                                                        'category' => $category,
-                                                        'filter' => $filter
-                                                    ])
-                                                </div>
-                                            @endforeach
-                                        </div>
-                                    @endif
+                            <div class="shadow rounded-lg">
+                                <div class="flex flex-col w-full justify-center gap-4">
+                                    <div class="w-full" x-show="show">
+                                        @if (count($category->filters) > 0)
+                                            <div class="grid grid-cols-1 gap-4 w-full">
+                                                @foreach($category->filters as $filter)
+                                                    <div class="bg-main2 border-primary border-2 p-4 shadow rounded-lg">
+                                                        @include('partials.profile.categories.filter-form', [
+                                                            'category' => $category,
+                                                            'filter' => $filter
+                                                        ])
+                                                    </div>
+                                                @endforeach
+                                            </div>
+                                        @endif
+                                    </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
-                @endforeach
+                    @endforeach
+                </div>
             @else
                 <div class="bg-main2 shadow rounded-lg">
                     <x-ui.empty

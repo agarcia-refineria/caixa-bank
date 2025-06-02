@@ -1,6 +1,6 @@
 @props(['user', 'account'])
 
-<form @if (isset($account)) action="{{ route('profile.account.update') }}" data-id="{{ $account->code }}" @else action="{{ route('profile.account.create') }}" @endif method="POST" class="relative md:px-0 px-6 bg-main2 rounded-lg py-6">
+<form @if (isset($account)) action="{{ route('profile.account.update') }}" data-id="{{ $account->code }}" @else action="{{ route('profile.account.create') }}" @endif method="POST" class="relative md:px-0 px-6 bg-main2 rounded-lg py-6 @if (isset($account) && $account->isManual) border-2 border-main3 !drop-shadow-primary @endif ">
     @csrf
 
     @if (isset($account))
@@ -20,11 +20,11 @@
 
     <!-- Show the account buttons -->
     <div class="grid grid-cols-2 gap-4 py-6 sm:px-6 lg:px-8 w-full">
-        <x-inputs.input required="required" :value="isset($account) ? $account->owner_name : null" type="text" name="owner_name" :label="__('Owner name')"/>
-        <x-inputs.input required="required" :value="isset($account) ? $account->institution?->name : $user->bank->institution?->name" type="text" name="institution" :label="__('Institution')" disabled="disabled" />
-        <x-inputs.input required="required" :value="isset($account) ? $account->iban : null" type="text" name="iban" :label="__('Iban')" />
-        <x-inputs.input :value="isset($account) ? $account->bban : null" type="text" name="bban" :label="__('bban')" />
-        <x-inputs.input :value="isset($account) ? $account->status : null" type="text" name="status" :label="__('Status')" />
+        <x-inputs.input required="required" :errorName="isset($account) ? 'Account.'.$account->code.'.owner_name' : 'newAccount.owner_name'" :value="isset($account) ? $account->owner_name : null" type="text" name="{{ isset($account) ? 'Account['. $account->code .'][owner_name]' : 'newAccount[owner_name]' }}" :label="__('Owner name')"/>
+        <x-inputs.input required="required" :errorName="isset($account) ? 'Account.'.$account->code.'.institution' : 'newAccount.institution'" :value="isset($account) ? $account->institution?->name : $user->bank->institution?->name" type="text" name="{{ isset($account) ? 'Account['. $account->code .'][institution]' : 'newAccount[institution]' }}" :label="__('Institution')" disabled="disabled" />
+        <x-inputs.input required="required" :errorName="isset($account) ? 'Account.'.$account->code.'.iban' : 'newAccount.iban'" :value="isset($account) ? $account->iban : null" type="text" name="{{ isset($account) ? 'Account['. $account->code .'][iban]' : 'newAccount[iban]' }}" :label="__('Iban')" />
+        <x-inputs.input :errorName="isset($account) ? 'Account.'.$account->code.'.bban' : 'newAccount.bban'" :value="isset($account) ? $account->bban : null" type="text" name="{{ isset($account) ? 'Account['. $account->code .'][bban]' : 'newAccount[bban]' }}" :label="__('bban')" />
+        <x-inputs.input :errorName="isset($account) ? 'Account.'.$account->code.'.status' : 'newAccount.status'" :value="isset($account) ? $account->status : null" type="text" name="{{ isset($account) ? 'Account['. $account->code .'][status]' : 'newAccount[status]' }}" :label="__('Status')" />
     </div>
 
     @if (isset($account))
@@ -58,7 +58,7 @@
 </form>
 
 @if (isset($account))
-    <x-ui.modal name="confirm-account-{{ $account->code }}-deletion" :show="$errors->userDeletion->isNotEmpty()" focusable>
+    <x-ui.modal name="confirm-account-{{ $account->code }}-deletion" :show="$errors->userDeletion->isNotEmpty() && $errors->userDeletion->get('Account.'.$account->code.'.password')" focusable>
         <form method="post" action="{{ route('profile.account.destroy', ['id' => $account->code]) }}" class="p-6">
             @csrf
             @method('delete')
@@ -76,13 +76,13 @@
 
                 <x-inputs.text-input
                     id="password"
-                    name="password"
+                    name="Account[{{ $account->code }}][password]"
                     type="password"
                     class="mt-1 block w-3/4"
                     placeholder="{{ __('Password') }}"
                 />
 
-                <x-inputs.input-error :messages="$errors->userDeletion->get('password')" class="mt-2" />
+                <x-inputs.input-error :messages="$errors->userDeletion->get('Account.'.$account->code.'.password')" class="mt-2" />
             </div>
 
             <div class="mt-6 flex justify-end">
