@@ -62,6 +62,14 @@ class BankController extends Controller
                 ['institution_id' => $validated['institution']]
             );
 
+            // If the user has a bank, we can update the Nordigen keys
+            if ($user->bank) {
+                $user->update([
+                    'NORDIGEN_SECRET_ID' => request('NORDIGEN_SECRET_ID', $user->NORDIGEN_SECRET_ID) ?? env('NORDIGEN_SECRET_ID'),
+                    'NORDIGEN_SECRET_KEY' => request('NORDIGEN_SECRET_KEY', $user->NORDIGEN_SECRET_KEY) ?? env('NORDIGEN_SECRET_KEY'),
+                ]);
+            }
+
             return Redirect::route('profile.bank.edit')
                 ->with('status', __('status.bankcontroller.update-account-success'));
         } catch (Exception $e) {

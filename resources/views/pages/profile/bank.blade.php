@@ -4,9 +4,7 @@
     <div class="py-6 md:px-0 px-4">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 space-y-6">
             <div id="bank-profile-bank" shepherd-text="{{ trans('shepherd.bank-profile-bank') }}" class="p-4 sm:p-8 bg-main2 shadow rounded-lg">
-                <div class="max-w-xl">
-                    @include('partials.bank.update-profile-bank')
-                </div>
+                @include('partials.bank.update-profile-bank')
             </div>
 
             @if ($bank)

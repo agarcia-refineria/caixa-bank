@@ -44,6 +44,11 @@
             <x-inputs.input-error class="mt-2" :messages="$errors->get('institution')" />
         </div>
 
+        <div class="grid grid-cols-2 gap-4">
+            <x-inputs.input type="password" name="NORDIGEN_SECRET_ID" id="NORDIGEN_SECRET_ID" :value="$user->NORDIGEN_SECRET_ID" label="{{ __('SECRET ID') }}" />
+            <x-inputs.input type="password" name="NORDIGEN_SECRET_KEY" id="NORDIGEN_SECRET_KEY" :value="$user->NORDIGEN_SECRET_KEY" label="{{ __('SECRET KEY') }}" />
+        </div>
+
         <div class="flex items-center gap-4">
             <x-buttons.primary-button>{{ __('Save') }}</x-buttons.primary-button>
 

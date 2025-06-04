@@ -83,7 +83,9 @@ class User extends Authenticatable
         'schedule_times',
         'execute_login',
         'chars',
-        'theme'
+        'theme',
+        'NORDIGEN_SECRET_ID',
+        'NORDIGEN_SECRET_KEY'
     ];
 
 
@@ -95,6 +97,8 @@ class User extends Authenticatable
     protected $hidden = [
         'password',
         'remember_token',
+        'NORDIGEN_SECRET_ID',
+        'NORDIGEN_SECRET_KEY'
     ];
 
     /**
@@ -218,6 +222,16 @@ class User extends Authenticatable
 
             return $latestBalance?->amount ?? 0;
         });
+    }
+
+    public function getNordigenSecretIdReturnAttribute(): string
+    {
+        return $this->NORDIGEN_SECRET_ID ?? env('NORDIGEN_SECRET_ID');
+    }
+
+    public function getNordigenSecretKeyReturnAttribute(): string
+    {
+        return $this->NORDIGEN_SECRET_KEY ?? env('NORDIGEN_SECRET_KEY');
     }
 
     /**

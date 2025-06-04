@@ -12,7 +12,7 @@
     @endif
 
     <div class="md:px-0 px-4">
-        @if (env('NORDIGEN_SECRET_ID') && env('NORDIGEN_SECRET_KEY'))
+        @if ($user->NordigenSecretIdReturn && $user->NordigenSecretKeyReturn)
             @if ($user->bank)
                 <div class="py-6">
                     <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
