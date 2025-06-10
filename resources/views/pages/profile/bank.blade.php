@@ -8,6 +8,10 @@
             </div>
 
             @if ($bank)
+                <div id="bank-profile-lang" shepherd-text="{{ trans('shepherd.bank-profile-lang') }}" class="p-4 sm:p-8 bg-main2 shadow rounded-lg">
+                    @include('partials.bank.update-profile-lang')
+                </div>
+
                 <div id="bank-profile-chars" shepherd-text="{{ trans('shepherd.bank-profile-chars') }}" class="p-4 sm:p-8 bg-main2 shadow rounded-lg">
                     @include('partials.bank.update-profile-chars')
                 </div>

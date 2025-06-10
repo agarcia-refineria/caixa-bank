@@ -8,6 +8,7 @@ use App\Http\Requests\Auth\LoginRequest;
 use App\Providers\RouteServiceProvider;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\View\View;
 
@@ -40,6 +41,11 @@ class AuthenticatedSessionController extends Controller
 
             $logger->info("✅ Ejecutando tarea programada para {$user->email} al iniciar sesión");
         }
+
+        // Set the locale if it exists in the session
+        $locale = $user->lang ?? session('locale', 'es');
+        session(['locale' => $locale]);
+        App::setLocale($locale);
 
         return redirect()->intended(RouteServiceProvider::HOME);
     }

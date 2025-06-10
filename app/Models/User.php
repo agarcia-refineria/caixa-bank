@@ -66,6 +66,11 @@ class User extends Authenticatable
 {
     use HasApiTokens, HasFactory, Notifiable;
 
+    public static array $langs = [
+        'es',
+        'en',
+    ];
+
     public static array $charsTypes = [
         'all',
         'categories'
@@ -85,7 +90,8 @@ class User extends Authenticatable
         'chars',
         'theme',
         'NORDIGEN_SECRET_ID',
-        'NORDIGEN_SECRET_KEY'
+        'NORDIGEN_SECRET_KEY',
+        'lang'
     ];
 
 

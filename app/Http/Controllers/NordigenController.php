@@ -21,6 +21,9 @@ class NordigenController extends Controller
 
     public function __construct()
     {
+        $this->secretId = null;
+        $this->secretKey = null;
+
         $this->middleware(function ($request, $next) {
             $this->secretId = Auth::user()->NordigenSecretIdReturn;
             $this->secretKey = Auth::user()->NordigenSecretKeyReturn;
@@ -41,24 +44,23 @@ class NordigenController extends Controller
             return Redirect::route('dashboard.configuration')->with('error', __('status.nordigencontroller.missing-credentials'));
         }
 
+        session(['access_token' => $this->getAccessToken()]);
+        session(['requisition_id' => $this->getRequisition()]);
+
+        return redirect()->route('dashboard.configuration');
+    }
+
+    public function getAccessToken(): string|null
+    {
         $response = Http::post("{$this->baseUrl}/token/new/", [
             'secret_id' => $this->secretId,
             'secret_key' => $this->secretKey
         ]);
 
-        session(['access_token' => $response['access']]);
-
-        return redirect()->route('nordigen.create-requisition');
+        return isset($response['access']) ? $response['access'] : null;
     }
 
-    /**
-     * Creates a new requisition by sending a POST request to the specified endpoint
-     * using the access token stored in the session. The requisition-related data is
-     * stored in the session for further use. Redirects the user to the bank configuration route.
-     *
-     * @return RedirectResponse
-     */
-    public function createRequisition(): RedirectResponse
+    public function getRequisition(): string|null
     {
         $user = Auth::user();
         $accessToken = session('access_token');
@@ -77,11 +79,7 @@ class NordigenController extends Controller
             'user_language' => 'ES'
         ]);
 
-        session(['requisition_id' => $response['id']]);
-
-        session(['callback_url' => $response['link']]);
-
-        return redirect()->route('dashboard.configuration');
+        return isset($response['id']) ? $response['id'] : null;
     }
 
     /**
@@ -334,12 +332,11 @@ class NordigenController extends Controller
     public function update(Request $request, string $accountId): RedirectResponse
     {
         if (!session('access_token')) {
-            $response = Http::post("{$this->baseUrl}/token/new/", [
-                'secret_id' => $this->secretId,
-                'secret_key' => $this->secretKey
-            ]);
+            session('access_token', $this->getAccessToken());
 
-            session(['access_token' => $response['access']]);
+            if (!session('access_token')) {
+                return Redirect::route('dashboard.configuration')->with('error', __('status.nordigencontroller.token-error'));
+            }
         }
 
         $this->transactions($accountId);
@@ -364,12 +361,11 @@ class NordigenController extends Controller
     public function updateAll(Request $request): RedirectResponse
     {
         if (!session('access_token')) {
-            $response = Http::post("{$this->baseUrl}/token/new/", [
-                'secret_id' => $this->secretId,
-                'secret_key' => $this->secretKey
-            ]);
+            session(['access_token' => $this->getAccessToken()]);
 
-            session(['access_token' => $response['access']]);
+            if (!session('access_token')) {
+                return Redirect::route('dashboard.configuration')->with('error', __('status.nordigencontroller.token-error'));
+            }
         }
 
         $user = Auth::user();
@@ -409,14 +405,9 @@ class NordigenController extends Controller
         $accessToken = session('access_token');
 
         if (!$accessToken) {
-            $response = Http::post("{$this->baseUrl}/token/new/", [
-                'secret_id' => $this->secretId,
-                'secret_key' => $this->secretKey
-            ]);
+            session('access_token', $this->getAccessToken());
 
-            session(['access_token' => $response['access']]);
-
-            $accessToken = $response['access'];
+            $accessToken = session('access_token');
         }
 
         $response = Http::withToken($accessToken)->get("{$this->baseUrl}/institutions/");

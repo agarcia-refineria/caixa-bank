@@ -44,4 +44,5 @@ return [
     'bank-profile-theme' => "Ajustes del tema, donde el usuario puede seleccionar el tema visual del Panel de Control, personalizando la apariencia según sus preferencias.",
     'bank-profile-accounts-update' => "Ajustes de actualización de cuentas, permitiendo al usuario actualizar la información de sus cuentas bancarias desde la API por tareas programmadas.",
     'bank-profile-accounts-info' => "Informacion de las cuentas bancarias, con el total de cuentras api y manuales, ademas de la cantidad de sincronizaciones realizadas en el dia actual.",
+    'bank-profile-lang' => "Ajustes de idioma, permitiendo al usuario seleccionar el idioma de la interfaz según sus preferencias.",
 ];

@@ -114,6 +114,23 @@ class BankController extends Controller
         }
     }
 
+    public function lang(Request $request): RedirectResponse
+    {
+        $validated = $request->validate([
+            'lang' => ['required', 'string', 'max:2'],
+        ]);
+
+        try {
+            $user = Auth::user();
+            $user->update(['lang' => $validated['lang']]);
+
+            return redirect()->route('profile.bank.edit')->with('status', __('status.bankcontroller.lang-updated'));
+        } catch (Exception $e) {
+            Log::error('Error al actualizar el idioma del banco: ' . $e->getMessage());
+            return redirect()->route('profile.bank.edit')->with('error', __('status.bankcontroller.lang-error'));
+        }
+    }
+
     /**
      * Schedule tasks for the authenticated user.
      *

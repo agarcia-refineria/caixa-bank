@@ -44,4 +44,5 @@ return [
     'bank-profile-theme' => "Theme settings, where the user can select the visual theme of the Control Panel, customizing the appearance according to their preferences.",
     'bank-profile-accounts-update' => "Account update settings, allowing the user to update their bank account information from the API through scheduled tasks.",
     'bank-profile-accounts-info' => "Bank account information, with the total of API and manual accounts, plus the number of synchronizations performed on the current day.",
+    'bank-profile-lang' => "Language settings, allowing the user to select the interface language according to their preferences.",
 ];

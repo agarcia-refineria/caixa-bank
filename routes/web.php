@@ -44,6 +44,7 @@ Route::middleware('auth')->group(function () {
     Route::patch('/profile/bank', [BankController::class, 'update'])->name('profile.bank.update');
     Route::patch('/profile/bank/chars', [BankController::class, 'chars'])->name('profile.bank.chars');
     Route::patch('/profile/bank/theme', [BankController::class, 'theme'])->name('profile.bank.theme');
+    Route::patch('/profile/bank/lang', [BankController::class, 'lang'])->name('profile.bank.lang');
     Route::patch('/profile/schedule', [BankController::class, 'schedule'])->name('profile.accounts.schedule');
     Route::post('/profile/schedule/check', [BankController::class, 'scheduleTasks'])->name('profile.accounts.scheduleTasks');
 
@@ -104,7 +105,6 @@ Route::middleware('auth')->group(function () {
 
     // Nordigen API routes
     Route::get('/nordigen/connect', [NordigenController::class, 'authenticate'])->name('nordigen.auth');
-    Route::get('/nordigen/create-requisition', [NordigenController::class, 'createRequisition'])->name('nordigen.create-requisition');
     Route::get('/nordigen/callback', [NordigenController::class, 'callback'])->name('nordigen.callback');
 
     Route::get('/nordigen/transactions/{accountId}', [NordigenController::class, 'transactions'])->name('nordigen.transactions');

@@ -29,6 +29,8 @@ return [
         'theme-error' => 'Ocurrió un error al actualizar el tema del banco',
         'schedule-updated' => 'Tareas programadas actualizadas exitosamente',
         'schedule-error' => 'Ocurrió un error al programar las tareas',
+        'lang-updated' => 'Idioma del banco actualizado exitosamente',
+        'lang-error' => 'Ocurrió un error al actualizar el idioma del banco',
     ],
     'nordigencontroller' => [
         'callback-success' => 'Callback recibido exitosamente',
@@ -40,6 +42,7 @@ return [
         'institutions-updated' => 'Instituciones actualizadas exitosamente',
         'institutions-error' => 'Ocurrió un error al actualizar las instituciones',
         'missing-credentials' => 'Faltan credenciales de Nordigen',
+        'token-error' => 'Ocurrió un error al obtener el token de Nordigen',
     ],
     'profilecontroller' => [
         'profile-updated' => 'Perfil actualizado exitosamente',

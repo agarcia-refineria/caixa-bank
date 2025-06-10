@@ -33,20 +33,21 @@
                                                              autocomplete="access_token"/>
                                         <x-inputs.input-error class="mt-2" :messages="$errors->get('access_token')"/>
                                     </div>
-                                    <div class="w-full">
+                                    <!--<div class="w-full">
                                         <x-inputs.input-label for="requisition" :value="__('Requisition')"/>
                                         <x-inputs.text-input id="requisition" name="requisition" type="text"
                                                              class="mt-1 block w-full"
                                                              :value="old('name', session('requisition_id'))" required
                                                              autocomplete="requisition"/>
                                         <x-inputs.input-error class="mt-2" :messages="$errors->get('requisition')"/>
-                                    </div>
+                                    </div>-->
                                 </div>
                             </x-box.item>
                         </div>
                     </div>
                 </div>
-                @if (session('callback_url'))
+
+                @if (session('access_token') && session('requisition_id'))
                     <div class="pb-6">
                         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 grid lg:grid-cols-2 gap-4">
                             <div class="w-full lg:gap-16 bg-main2 px-4 md:px-0 overflow-hidden shadow-sm rounded-lg">
@@ -56,8 +57,9 @@
                                     :title="__('Accounts update')"
                                     :description="__('This will add all the accounts!')"
                                     :button="__('UPDATE Accounts')"
-                                    :link="session('callback_url')"/>
+                                    :link="route('nordigen.callback')"/>
                             </div>
+
                             @if ($showUpdateAccounts)
                                 <div
                                     class="w-full lg:gap-16 bg-main2 px-4 md:px-0 overflow-hidden shadow-sm rounded-lg">

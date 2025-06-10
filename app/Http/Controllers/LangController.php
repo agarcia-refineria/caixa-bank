@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\User;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\App;
 
@@ -18,7 +19,7 @@ class LangController extends Controller
      */
     public function index(string $locale): RedirectResponse
     {
-        if (in_array($locale, ['es', 'en'])) {
+        if (in_array($locale, User::$langs)) {
             session(['locale' => $locale]);
             App::setLocale($locale);
         }
