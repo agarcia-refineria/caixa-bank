@@ -63,7 +63,7 @@
                     <div class="w-full lg:gap-16 bg-main2 px-4 md:px-0 overflow-hidden shadow-sm rounded-lg">
                         <x-ui.empty
                             :title="__('Accounts update')"
-                            :description="__('You need to set the secret id and key in the .env file to update the accounts!')"/>
+                            :description="__('You need to set the secret id and key on Profile -> Bank!')"/>
                     </div>
                 </div>
             </div>

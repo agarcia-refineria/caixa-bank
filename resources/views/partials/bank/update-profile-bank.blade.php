@@ -5,13 +5,10 @@
         </h2>
 
         <p class="mt-1 text-sm text-secondary">
-            {{ __("If there is no banks please, click update list for banks to be added.") }}
-        </p>
-        <p class="mt-1 mb-2 text-sm text-warning">
             Sino te aparece ningun entidad bancaria, debes de ir a <strong>GoCardless</strong> y iniciar session, despues ir a Developers -> User Secrets y crear o usar una cuenta para el Secret Id y Secret Key. Una vez hecho, vuelve a esta página y inserta estos datos en los inputs de bajado y guardalo. Ahora te aparezera el boton <strong>Actualizar lista</strong>, una vez le des click te mostrara la todas las entidades bancarias.
         </p>
 
-        <div class="flex gap-4">
+        <div class="flex gap-4 mt-4">
             @if ($user->NORDIGEN_SECRET_ID && $user->NORDIGEN_SECRET_KEY)
                 <form method="post" action="{{ route('nordigen.institutions') }}">
                     @csrf
@@ -20,7 +17,7 @@
             @endif
 
             <x-links.nav-link href="https://bankaccountdata.gocardless.com/overview/" target="_blank">
-                GoCardless {{ __('Update') }}
+                GoCardless
             </x-links.nav-link>
         </div>
     </header>
