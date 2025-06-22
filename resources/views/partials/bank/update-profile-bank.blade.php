@@ -8,14 +8,16 @@
             {{ __("If there is no banks please, click update list for banks to be added.") }}
         </p>
         <p class="mt-1 mb-2 text-sm text-warning">
-            Si te aparece un mensaje de error al intentar actualizar la lista de bancos, por favor, asegúrate de que tu cuenta de GoCardless esté activa y que hayas configurado correctamente la integración con Nordigen. Si el problema persiste, contacta con el soporte técnico para obtener ayuda adicional.
+            Sino te aparece ningun entidad bancaria, debes de ir a <strong>GoCardless</strong> y iniciar session, despues ir a Developers -> User Secrets y crear o usar una cuenta para el Secret Id y Secret Key. Una vez hecho, vuelve a esta página y inserta estos datos en los inputs de bajado y guardalo. Ahora te aparezera el boton <strong>Actualizar lista</strong>, una vez le des click te mostrara la todas las entidades bancarias.
         </p>
 
         <div class="flex gap-4">
-            <form method="post" action="{{ route('nordigen.institutions') }}">
-                @csrf
-                <x-buttons.primary-button class="mt-2">{{ __('Update List') }}</x-buttons.primary-button>
-            </form>
+            @if ($user->NORDIGEN_SECRET_ID && $user->NORDIGEN_SECRET_KEY)
+                <form method="post" action="{{ route('nordigen.institutions') }}">
+                    @csrf
+                    <x-buttons.primary-button class="mt-2">{{ __('Update List') }}</x-buttons.primary-button>
+                </form>
+            @endif
 
             <x-links.nav-link href="https://bankaccountdata.gocardless.com/overview/" target="_blank">
                 GoCardless {{ __('Update') }}
@@ -33,7 +35,7 @@
 
         <div>
             <x-inputs.input-label for="name" :value="__('Institution')" />
-            <select data-default="{{ __('-- Select an option --') }}" id="institution" name="institution" class="select2 form-control border-third bg-main2 text-primary rounded-md shadow-sm mt-1 block w-full" required>
+            <select data-default="{{ __('-- Select an option --') }}" id="institution" name="institution" class="select2 form-control border-third bg-main2 text-primary rounded-md shadow-sm mt-1 block w-full">
                 <option value="" disabled selected>{{ __('Select an institution') }}</option>
                 @foreach (\App\Models\Institution::all() as $institution)
                     <option value="{{ $institution->id }}" {{ $user->bank && $user->bank?->institution_id == $institution->id ? 'selected' : '' }}>

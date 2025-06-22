@@ -21,8 +21,8 @@ class NordigenController extends Controller
 
     public function __construct()
     {
-        $this->secretId = null;
-        $this->secretKey = null;
+        $this->secretId = env('NORDIGEN_SECRET_ID');
+        $this->secretKey = env('NORDIGEN_SECRET_KEY');;
 
         $this->middleware(function ($request, $next) {
             $this->secretId = Auth::user()->NordigenSecretIdReturn;
@@ -45,9 +45,15 @@ class NordigenController extends Controller
         }
 
         session(['access_token' => $this->getAccessToken()]);
-        session(['requisition_id' => $this->getRequisition()]);
+        $requisitionId = $this->getRequisition();
+        $link = session('callback_url');
 
-        return redirect()->route('dashboard.configuration');
+        if ($requisitionId && $link) {
+            session(['requisition_id' => $requisitionId]);
+            return redirect()->away($link);
+        }
+
+        return Redirect::route('dashboard.configuration')->with('error', __('status.nordigencontroller.missing-credentials'));
     }
 
     public function getAccessToken(): string|null
@@ -63,7 +69,7 @@ class NordigenController extends Controller
     public function getRequisition(): string|null
     {
         $user = Auth::user();
-        $accessToken = session('access_token');
+        $accessToken = session('access_token',$this->getAccessToken());
         $bank = $user->bank;
 
         $institutionId = $bank->institution->code;
@@ -78,6 +84,8 @@ class NordigenController extends Controller
             'reference' => uniqid(),
             'user_language' => 'ES'
         ]);
+
+        session(['callback_url' => $response['link']]);
 
         return isset($response['id']) ? $response['id'] : null;
     }
@@ -95,9 +103,10 @@ class NordigenController extends Controller
     public function callback(): RedirectResponse
     {
         $accessToken = session('access_token');
-        $requisitionId = session('requisition_id');
+        $requisitionId = session('requisition_id');;
 
-        $requisition = Http::withToken($accessToken)->get("{$this->baseUrl}/requisitions/{$requisitionId}");
+        $requisition = Http::withToken($accessToken)->get("{$this->baseUrl}/requisitions/{$requisitionId}")->json();
+
         $accounts = $requisition['accounts'];
         $user = Auth::user();
 
@@ -164,7 +173,7 @@ class NordigenController extends Controller
      */
     public function transactions(string $accountId): RedirectResponse
     {
-        $accessToken = session('access_token');
+        $accessToken = session('access_token', $this->getAccessToken());
 
         $account = Account::where('id', $accountId)->onlyApi()->first();
         if ($account && !$account->transactionsDisabled) {
@@ -248,7 +257,7 @@ class NordigenController extends Controller
      */
     public function balances(string $accountId): RedirectResponse
     {
-        $accessToken = session('access_token');
+        $accessToken = session('access_token', $this->getAccessToken());
 
         $account = Account::where('id', $accountId)->onlyApi()->first();
         if ($account && !$account->balanceDisabled) {
@@ -331,14 +340,6 @@ class NordigenController extends Controller
      */
     public function update(Request $request, string $accountId): RedirectResponse
     {
-        if (!session('access_token')) {
-            session('access_token', $this->getAccessToken());
-
-            if (!session('access_token')) {
-                return Redirect::route('dashboard.configuration')->with('error', __('status.nordigencontroller.token-error'));
-            }
-        }
-
         $this->transactions($accountId);
         $this->balances($accountId);
 
@@ -360,14 +361,6 @@ class NordigenController extends Controller
      */
     public function updateAll(Request $request): RedirectResponse
     {
-        if (!session('access_token')) {
-            session(['access_token' => $this->getAccessToken()]);
-
-            if (!session('access_token')) {
-                return Redirect::route('dashboard.configuration')->with('error', __('status.nordigencontroller.token-error'));
-            }
-        }
-
         $user = Auth::user();
         $accounts = Account::where('user_id', $user->id)->onlyApi()->get();
 
@@ -402,13 +395,7 @@ class NordigenController extends Controller
      */
     public function insertInstitutions(): RedirectResponse
     {
-        $accessToken = session('access_token');
-
-        if (!$accessToken) {
-            session('access_token', $this->getAccessToken());
-
-            $accessToken = session('access_token');
-        }
+        $accessToken = session('access_token', $this->getAccessToken());
 
         $response = Http::withToken($accessToken)->get("{$this->baseUrl}/institutions/");
 
