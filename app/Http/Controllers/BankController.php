@@ -53,8 +53,8 @@ class BankController extends Controller
         }
 
         $user->update([
-            'NORDIGEN_SECRET_ID' => request('NORDIGEN_SECRET_ID', $user->NORDIGEN_SECRET_ID) ?? env('NORDIGEN_SECRET_ID'),
-            'NORDIGEN_SECRET_KEY' => request('NORDIGEN_SECRET_KEY', $user->NORDIGEN_SECRET_KEY) ?? env('NORDIGEN_SECRET_KEY'),
+            'NORDIGEN_SECRET_ID' => request('NORDIGEN_SECRET_ID', $user->NORDIGEN_SECRET_ID),
+            'NORDIGEN_SECRET_KEY' => request('NORDIGEN_SECRET_KEY', $user->NORDIGEN_SECRET_KEY),
         ]);
         $user->save();
 

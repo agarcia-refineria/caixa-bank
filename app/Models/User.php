@@ -232,12 +232,12 @@ class User extends Authenticatable
 
     public function getNordigenSecretIdReturnAttribute(): string
     {
-        return $this->NORDIGEN_SECRET_ID ?? env('NORDIGEN_SECRET_ID');
+        return $this->NORDIGEN_SECRET_ID;
     }
 
     public function getNordigenSecretKeyReturnAttribute(): string
     {
-        return $this->NORDIGEN_SECRET_KEY ?? env('NORDIGEN_SECRET_KEY');
+        return $this->NORDIGEN_SECRET_KEY;
     }
 
     /**

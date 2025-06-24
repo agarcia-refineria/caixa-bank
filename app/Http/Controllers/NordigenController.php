@@ -21,8 +21,8 @@ class NordigenController extends Controller
 
     public function __construct()
     {
-        $this->secretId = env('NORDIGEN_SECRET_ID');
-        $this->secretKey = env('NORDIGEN_SECRET_KEY');;
+        $this->secretId = null;
+        $this->secretKey = null;
 
         $this->middleware(function ($request, $next) {
             $this->secretId = Auth::user()->NordigenSecretIdReturn;
