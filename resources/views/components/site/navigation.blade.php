@@ -11,44 +11,44 @@
                 </div>
 
                 <!-- Navigation Links -->
-                <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
+                <div class="hidden space-x-8 lg:-my-px lg:ms-10 lg:flex">
                     <x-links.nav-link id="navigation-panel-control" :shepherd-text="trans('shepherd.navigation-panel-control')" :href="route('dashboard.index')" :active="request()->routeIs(['dashboard.index', 'dashboard.show'])">
                         {{ __('Dashboard') }}
                     </x-links.nav-link>
                 </div>
 
-                <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
+                <div class="hidden space-x-8 lg:-my-px lg:ms-10 lg:flex">
                     <x-links.nav-link id="navigation-history" :shepherd-text="trans('shepherd.navigation-history')" :href="route('dashboard.history')" :active="request()->routeIs('dashboard.history')">
                         {{ __('See History') }}
                     </x-links.nav-link>
                 </div>
 
-                <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
+                <div class="hidden space-x-8 lg:-my-px lg:ms-10 lg:flex">
+                    <x-links.nav-link id="navigation-calculator" :shepherd-text="trans('shepherd.navigation-calculator')" :href="route('dashboard.calculator')" :active="request()->routeIs('dashboard.calculator')">
+                        {{ __('Calculator') }}
+                    </x-links.nav-link>
+                </div>
+
+                <div class="hidden space-x-8 lg:-my-px lg:ms-10 lg:flex">
                     <x-links.nav-link id="navigation-clock" :shepherd-text="trans('shepherd.navigation-clock')" :href="route('dashboard.clock')" :active="request()->routeIs('dashboard.clock')">
                         {{ __('Clock') }}
                     </x-links.nav-link>
                 </div>
 
-                <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
+                <div class="hidden space-x-8 lg:-my-px lg:ms-10 lg:flex">
                     <x-links.nav-link id="navigation-configuration" :shepherd-text="trans('shepherd.navigation-configuration')" :href="route('dashboard.configuration')" :active="request()->routeIs('dashboard.configuration')">
                         {{ __('Configuration') }}
-                    </x-links.nav-link>
-                </div>
-
-                <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
-                    <x-links.nav-link onclick="startTour()" class="cursor-pointer">
-                        {{ __('Ayuda') }}
                     </x-links.nav-link>
                 </div>
             </div>
 
             <!-- Settings Dropdown -->
-            <div class="hidden sm:flex gap-4 sm:items-center sm:ms-6">
+            <div class="hidden lg:flex gap-4 lg:items-center lg:ms-6">
                 @if (request()->routeIs(['dashboard.index', 'dashboard.show']))
-                    <x-ui.month-selector id="navigation-month-selector" :shepherd-text="trans('shepherd.navigation-month-selector')" class="sm:flex sm:items-center sm:ms-6" />
+                    <x-ui.month-selector id="navigation-month-selector" :shepherd-text="trans('shepherd.navigation-month-selector')" class="lg:flex lg:items-center lg:ms-6" />
                 @endif
 
-                <x-ui.lang-selector id="navigation-lang-selector" :shepherd-text="trans('shepherd.navigation-lang-selector')" class="sm:flex sm:items-center" />
+                <x-ui.lang-selector id="navigation-lang-selector" :shepherd-text="trans('shepherd.navigation-lang-selector')" class="lg:flex lg:items-center" />
 
                 <x-inputs.dropdown align="right" width="48">
                     <x-slot name="trigger">
@@ -97,7 +97,7 @@
             </div>
 
             <!-- Hamburger -->
-            <div class="-me-2 flex items-center sm:hidden">
+            <div class="-me-2 flex items-center lg:hidden">
                 <div class="pt-4 pb-3 px-4 flex -md:gap-2">
                     @foreach(['es', 'en'] as $lang)
                         <x-inputs.dropdown-link href="{{ route('lang.switch', $lang) }}" :active="app()->getLocale() == $lang" class="rounded-lg uppercase md:!w-12 c-lang">
@@ -106,7 +106,7 @@
                     @endforeach
                 </div>
 
-                <x-ui.month-selector class="sm:flex sm:items-center sm:ms-6" />
+                <x-ui.month-selector class="lg:flex lg:items-center lg:ms-6" />
 
                 <button @click="open = ! open" class="line-through inline-flex items-center justify-center p-2 rounded-md text-secondary hover:text-primary transition duration-150 ease-in-out">
                     <svg class="h-6 w-6" stroke="currentColor" fill="none" viewBox="0 0 24 24">
@@ -119,7 +119,7 @@
     </div>
 
     <!-- Responsive Navigation Menu -->
-    <div :class="{'block': open, 'hidden': ! open}" class="hidden sm:hidden">
+    <div :class="{'block': open, 'hidden': ! open}" class="hidden lg:hidden">
         <div class="pt-2 pb-3 space-y-1">
             <x-links.responsive-nav-link :href="route('dashboard.index')" :active="request()->routeIs(['dashboard.index', 'dashboard.show'])">
                 {{ __('Dashboard') }}
@@ -129,6 +129,12 @@
         <div class="pt-2 pb-3 space-y-1">
             <x-links.responsive-nav-link :href="route('dashboard.history')" :active="request()->routeIs('dashboard.history')">
                 {{ __('See History') }}
+            </x-links.responsive-nav-link>
+        </div>
+
+        <div class="pt-2 pb-3 space-y-1">
+            <x-links.responsive-nav-link :href="route('dashboard.calculator')" :active="request()->routeIs('dashboard.calculator')">
+                {{ __('Calculator') }}
             </x-links.responsive-nav-link>
         </div>
 

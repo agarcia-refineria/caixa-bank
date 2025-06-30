@@ -104,6 +104,28 @@ class DashboardController extends Controller
     }
 
     /**
+     * Displays a view of the user's accounts in a calculator dashboard.
+     *
+     * @return View The rendered view of the calculator page with user's accounts data.
+     *
+     * @throws HttpException Thrown when the authenticated user cannot be found (HTTP 403).
+     */
+    public function calculator(): View
+    {
+        $user = Auth::user();
+
+        if (!$user) {
+            abort(403);
+        }
+
+        $accounts = $user->accounts()
+            ->orderBy('order')
+            ->get();
+
+        return view('pages.dashboard.calculator', compact('user', 'accounts'));
+    }
+
+    /**
      * Clocks the user's schedule and returns a view displaying the clock data.
      *
      * @return View The rendered view of the clock page with user's schedule data.

@@ -97,6 +97,9 @@ Route::middleware('auth')->group(function () {
     // Panel [History routes]
     Route::get('/history', [DashboardController::class, 'history'])->name('dashboard.history');
 
+    // Panel [Calculator routes]
+    Route::get('/calculator', [DashboardController::class, 'calculator'])->name('dashboard.calculator');
+
     // Panel [Clock routes]
     Route::get('/clock', [DashboardController::class, 'clock'])->name('dashboard.clock');
 

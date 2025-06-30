@@ -36,10 +36,11 @@
             }
         </style>
     </head>
-    <body id="default-step" shepherd-text="{{trans('shepherd.default')}}" class="font-Inter antialiased">
+    <body id="default-step" shepherd-text="{{trans('shepherd.default')}}" class="font-Inter antialiased overflow-x-hidden">
         <div class="min-h-screen bg-main1">
             <x-site.flash-messages />
             <x-site.navigation />
+            <x-site.helper />
 
             <!-- Page Heading -->
             @if (isset($header))
