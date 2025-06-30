@@ -14,10 +14,10 @@
         @method('patch')
 
         <div class="grid grid-cols-2 gap-4">
-            <x-inputs.input type="color" name="theme[main3]" id="theme[main3]" :value="$user->themeMain3" label="{{ __('Main Color') }}" />
+            <x-inputs.input type="color" name="theme[main3]" id="theme[main3]" :value="$user->theme_main3" label="{{ __('Main Color') }}" />
             <div></div>
-            <x-inputs.input type="color" name="theme[navActive]" id="theme[navActive]" :value="$user->themeNavActive" label="{{ __('Nav Active Color') }}" />
-            <x-inputs.input type="color" name="theme[navActiveBg]" id="theme[navActiveBg]" :value="$user->themeNavActiveBg" label="{{ __('Nav Active Background Color') }}" />
+            <x-inputs.input type="color" name="theme[navActive]" id="theme[navActive]" :value="$user->theme_nav_active" label="{{ __('Nav Active Color') }}" />
+            <x-inputs.input type="color" name="theme[navActiveBg]" id="theme[navActiveBg]" :value="$user->theme_nav_active_bg" label="{{ __('Nav Active Background Color') }}" />
         </div>
 
         <div class="flex items-center gap-4">

@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Category;
 use App\Models\CategoryFilter;
 use App\Models\Transaction;
+use Auth;
 use Illuminate\Auth\AuthenticationException;
 use Illuminate\Contracts\View\Factory;
 use Illuminate\Contracts\View\View;
@@ -27,7 +28,8 @@ class CategoriesController extends Controller
     public function show(): View|Application|Factory|\Illuminate\Contracts\Foundation\Application
     {
         // Get all categories from accounts transactions of the current user
-        $categories = auth()->user()->categories()
+        $categories = Auth::user()
+            ->categories()
             ->with(['transactions', 'filters'])
             ->get();
         $user = auth()->user();
@@ -42,7 +44,6 @@ class CategoriesController extends Controller
      *
      * @return RedirectResponse Redirects to the categories page with a success message after creation.
      *
-     * @throws ValidationException If the request validation fails.
      */
     public function create(Request $request): RedirectResponse
     {
@@ -50,7 +51,7 @@ class CategoriesController extends Controller
             'name' => 'required|string|max:255|unique:categories,name,NULL,id,user_id,' . auth()->id(),
         ]);
 
-        auth()->user()->categories()->create([
+        Auth::user()->categories()->create([
             'name' => $request->input('name'),
         ]);
 
@@ -65,16 +66,15 @@ class CategoriesController extends Controller
      *
      * @return RedirectResponse Redirects to the categories page with a success message.
      *
-     * @throws ValidationException If the request validation fails.
      * @throws ModelNotFoundException If the category is not found for the authenticated user.
      */
-    public function update(Request $request, $id): RedirectResponse
+    public function update(Request $request, int $id): RedirectResponse
     {
         $request->validate([
             'name' => 'required|string|max:255|unique:categories,name,' . $id . ',id,user_id,' . auth()->id(),
         ]);
 
-        $category = auth()->user()->categories()->findOrFail($id);
+        $category = Auth::user()->categories()->findOrFail($id);
         $category->update([
             'name' => $request->input('name'),
         ]);
@@ -91,17 +91,21 @@ class CategoriesController extends Controller
      *
      * @throws ModelNotFoundException If the category ID does not exist for the authenticated user.
      */
-    public function destroy($id): RedirectResponse
+    public function destroy(int $id): RedirectResponse
     {
-        $category = auth()->user()->categories()->findOrFail($id);
+        $category = Auth::user()->categories()->findOrFail($id);
 
-        // Delete all filters associated with the category
-        $category->filters()->delete();
+        if ($category instanceof Category) {
+            // Delete all filters associated with the category
+            $category->filters()->delete();
 
-        // Delete the category itself
-        $category->delete();
+            // Delete the category itself
+            $category->delete();
 
-        return redirect()->route('profile.categories')->with('success', __('status.categoriescontroller.delete-category-success') );
+            return redirect()->route('profile.categories')->with('success', __('status.categoriescontroller.delete-category-success') );
+        }
+
+        return redirect()->route('profile.categories')->with('success', __('status.categoriescontroller.delete-category-failed') );
     }
 
     /**
@@ -111,7 +115,6 @@ class CategoriesController extends Controller
      *
      * @return RedirectResponse Redirects to the categories page with success or error messages.
      *
-     * @throws ValidationException If the request validation fails.
      * @throws ModelNotFoundException If the specified category ID does not exist.
      */
     public function createFilter(Request $request): RedirectResponse
@@ -144,7 +147,6 @@ class CategoriesController extends Controller
      *
      * @return RedirectResponse Redirects to the categories page with success or error messages.
      *
-     * @throws ValidationException If the request validation fails.
      * @throws ModelNotFoundException If the filter ID does not exist.
      */
     public function updateFilter(Request $request, int $id): RedirectResponse
@@ -175,9 +177,9 @@ class CategoriesController extends Controller
      * @param int|string $id The unique identifier of the filter to be deleted.
      * @return RedirectResponse Redirects to the profile categories route with a success message after deletion.
      */
-    public function destroyFilter($id): RedirectResponse
+    public function destroyFilter(int|string $id): RedirectResponse
     {
-        $filter = auth()->user()->filters()->findOrFail($id);
+        $filter = CategoryFilter::findOrFail($id);
         $filter->delete();
 
         return redirect()->route('profile.categories')->with('success', __('status.categoriescontroller.delete-filter-success') );
@@ -190,15 +192,14 @@ class CategoriesController extends Controller
      * It attempts to determine a category for each transaction based on the remittance information,
      * and updates the transaction's category if it is found.
      *
-     * @param Request $request The incoming HTTP request.
      *
-     * @return RedirectResponse Redirects to the categories page with a success or informational message.
+     * @return RedirectResponse Redirects to the category page with a success or informational message.
      *
      * @throws AuthenticationException If the user is not authenticated.
      */
-    public function setAllCategoriesFilter(Request $request): RedirectResponse
+    public function setAllCategoriesFilter(): RedirectResponse
     {
-        $accounts = auth()->user()->accounts()->get();
+        $accounts = Auth::user()->accounts()->get();
         $updatedCount = 0;
         $totalTransactions = 0;
 

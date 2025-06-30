@@ -22,7 +22,7 @@
     <p class="mt-1 text-sm text-secondary flex gap-2 items-center">
         {{ __("Syncs total") }}
         <x-ui.times
-            :count="$user->bankDataSyncCount"
+            :count="$user->bank_data_sync_count"
             :maxTimes="(\App\Models\ScheduledTasks::$MAX_TIMES * 2) * $user->accounts()->onlyApi()->count()"
             :warningTimes="(\App\Models\ScheduledTasks::$WARNING_TIMES * 2) * $user->accounts()->onlyApi()->count()" />
     </p>

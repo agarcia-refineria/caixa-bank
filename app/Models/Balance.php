@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use DateTime;
 use Eloquent;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -32,6 +33,7 @@ use Illuminate\Support\Carbon;
  * @method static Builder|Balance whereCurrency($value)
  * @method static Builder|Balance whereId($value)
  * @method static Builder|Balance whereReferenceDate($value)
+ * @method static Builder|Balance orderDate()
  * @mixin Eloquent
  */
 class Balance extends Model
@@ -72,7 +74,7 @@ class Balance extends Model
     public function scopeCurrentMonth($query): mixed
     {
         $date = session('month') ?? now()->format('m-Y');
-        $date = \DateTime::createFromFormat('m-Y', $date);
+        $date = DateTime::createFromFormat('m-Y', $date);
 
         if ($date === false) {
             return null;

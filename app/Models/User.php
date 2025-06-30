@@ -60,6 +60,21 @@ use Monolog\Logger;
  * @method static Builder|User whereRememberToken($value)
  * @method static Builder|User whereScheduleTimes($value)
  * @method static Builder|User whereUpdatedAt($value)
+ * @property string $chars
+ * @property array|null $theme
+ * @property string|null $NORDIGEN_SECRET_ID
+ * @property string|null $NORDIGEN_SECRET_KEY
+ * @property string $lang
+ * @property-read Collection<int, Category> $categories
+ * @property-read int|null $categories_count
+ * @property-read string $theme_main3
+ * @property-read string $theme_nav_active
+ * @property-read string $theme_nav_active_bg
+ * @method static Builder|User whereChars($value)
+ * @method static Builder|User whereLang($value)
+ * @method static Builder|User whereNORDIGENSECRETID($value)
+ * @method static Builder|User whereNORDIGENSECRETKEY($value)
+ * @method static Builder|User whereTheme($value)
  * @mixin Eloquent
  */
 class User extends Authenticatable
@@ -138,16 +153,28 @@ class User extends Authenticatable
         return $this->hasMany(Category::class, 'user_id');
     }
 
+    /**
+     * @noinspection PhpUnused
+     * @property-read string $theme_main3
+     */
     public function getThemeMain3Attribute(): string
     {
         return $this->theme['main3'] ?? '#364791';
     }
 
+    /**
+     * @noinspection PhpUnused
+     * @property-read string $theme_nav_active
+     */
     public function getThemeNavActiveAttribute(): string
     {
         return $this->theme['navActive'] ?? '#f0f0f0';
     }
 
+    /**
+     * @noinspection PhpUnused
+     * @property-read string $theme_nav_active_bg
+     */
     public function getThemeNavActiveBgAttribute(): string
     {
         return $this->theme['navActiveBg'] ?? '#3b3b3b';
@@ -205,8 +232,8 @@ class User extends Authenticatable
      */
     public function getLoggerAttribute(): Logger
     {
-        $logger = new Logger("user_{$this->id}");
-        $logPath = storage_path("logs/user_{$this->id}.log");
+        $logger = new Logger("user_$this->id");
+        $logPath = storage_path("logs/user_$this->id.log");
         $logger->pushHandler(new StreamHandler($logPath, Logger::INFO));
 
         return $logger;
@@ -239,7 +266,7 @@ class User extends Authenticatable
         $nordigen = new NordigenController();
 
         foreach ($this->accounts as $account) {
-            $nordigen->update(new Request(), $account->code);
+            $nordigen->update($account->code);
         }
     }
 }

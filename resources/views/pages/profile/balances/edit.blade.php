@@ -14,7 +14,7 @@
             </x-links.nav-link>
         </div>
 
-        @if ($account->isManual)
+        @if ($account->is_manual)
             <x-buttons.primary-button
                 class="py-2 mb-4"
                 x-data=""
@@ -27,7 +27,7 @@
         @endif
 
         <div class="space-y-6 text-white">
-            <x-tables.balances-table :balances="$balances" :account="$account" :user="$user" :noFooter="true" :actions="$account->isManual" />
+            <x-tables.balances-table :balances="$balances" :account="$account" :user="$user" :noFooter="true" :actions="$account->is_manual" />
         </div>
     </div>
 </x-app-layout>

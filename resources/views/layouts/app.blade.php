@@ -23,25 +23,17 @@
         @vite(['resources/css/select2.css'])
         @vite(['resources/css/datatable.css'])
 
+        @php
+            /* Authentication check to ensure the user is logged in */
+            $user = Auth::user();
+        @endphp
         <style>
             /** Custom styles for the application */
-            @if (auth()->user()->themeMain3)
-                :root {
-                    --color-main3: {{ auth()->user()->themeMain3 }} !important;
-                }
-            @endif
-
-            @if (auth()->user()->themeNavActive)
-                :root {
-                    --color-navActive: {{ auth()->user()->themeNavActive }} !important;
-                }
-            @endif
-
-            @if (auth()->user()->themeNavActiveBg)
-                :root {
-                    --color-navActiveBg: {{ auth()->user()->themeNavActiveBg }} !important;
-                }
-            @endif
+            :root {
+                --color-main3: {{ $user->theme_main3 }} !important;
+                --color-navActive: {{ $user->theme_nav_active }} !important;
+                --color-navActiveBg: {{ $user->theme_nav_active_bg }} !important;
+            }
         </style>
     </head>
     <body id="default-step" shepherd-text="{{trans('shepherd.default')}}" class="font-Inter antialiased">

@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Auth;
 use Eloquent;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -45,6 +46,10 @@ use Illuminate\Support\Carbon;
  * @method static Builder|Transaction whereTransactionAmountAmount($value)
  * @method static Builder|Transaction whereTransactionAmountCurrency($value)
  * @method static Builder|Transaction whereValueDate($value)
+ * @property int|null $category_id
+ * @property-read Category|null $category
+ * @property-read string $remittance_information_unstructured_format
+ * @method static Builder|Transaction whereCategoryId($value)
  * @mixin Eloquent
  */
 class Transaction extends Model
@@ -120,6 +125,17 @@ class Transaction extends Model
         return $this->attributes['debtorName'] ? str_replace(';', ' ', $this->attributes['debtorName']) : '--';
     }
 
+    /**
+     * Accessor for the `remittance_information_unstructured_format` attribute.
+     *
+     * This accessor processes the `remittanceInformationUnstructured` attribute,
+     * handling its JSON-decoded value. If the decoded value is an array, it is
+     * converted to a string with elements separated by commas. If it is a string,
+     * any double quotes are removed. If neither, it defaults to '--'.
+     *
+     * @noinspection PhpUnused
+     * @return string The formatted remittance information or a fallback value.
+     */
     public function getRemittanceInformationUnstructuredFormatAttribute(): string
     {
         $value = json_decode($this->attributes['remittanceInformationUnstructured']) ?? '--';
@@ -137,7 +153,16 @@ class Transaction extends Model
         return '--';
     }
 
-    public static function setRemittanceInformationUnstructuredFormat($attribute): mixed
+    /**
+     * Sets a formatted representation of the remittance information unstructured attribute.
+     *
+     * The method removes specific characters ('[', ']', and '"') from the input attribute
+     * and wraps the processed value in properly formatted quotation marks and square brackets.
+     *
+     * @param mixed $attribute The original attribute to be formatted.
+     * @return string The formatted attribute.
+     */
+    public static function setRemittanceInformationUnstructuredFormat(mixed $attribute): string
     {
         // remove [ and ] and " from the attribute
         $attribute = str_replace(['[', ']', '"'], '', $attribute);
@@ -145,9 +170,22 @@ class Transaction extends Model
         return "[\"" . $attribute ."\"]";
     }
 
+    /**
+     * Retrieve the category ID based on the given value and the authenticated user's associated categories and filters.
+     *
+     * This method iterates over the categories and their filters of the currently authenticated user
+     *  to determine if the provided value matches any filter condition. It supports multiple
+     * types of filters such as 'exact', 'contains', 'starts_with', and 'ends_with'.
+     *
+     * If a match is found, it returns the corresponding category ID. If no match is found or no value
+     * is provided and the user has no associated categories, it returns null.
+     *
+     * @param string|null $value The input value to compare against the filters.
+     * @return int|null The matched category ID or null if no match is found.
+     */
     public static function getCategoryId(string $value = null): ?int
     {
-        $user = auth()->user();
+        $user = Auth::user();
         $categories = $user->categories;
 
         if ($categories->isEmpty() && is_null($value)) {
@@ -155,7 +193,10 @@ class Transaction extends Model
         }
 
         foreach ($categories as $category) {
-            $filters = $category->filters()->isEnabled()->get();
+            $filters = $category
+                ->filters()
+                ->where('enabled', true)
+                ->get();
 
             foreach ($filters as $filter) {
                 switch ($filter->type) {

@@ -2,9 +2,13 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Account;
 use App\Models\ScheduledTasks;
+use Illuminate\Contracts\Foundation\Application;
+use Illuminate\Contracts\View\Factory;
 use Illuminate\Contracts\View\View;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Auth;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 
@@ -31,25 +35,24 @@ class DashboardController extends Controller
                 $query->balanceTypeForward()
                       ->lastInstance();
             }])
-            ->sortOrder()
+            ->orderBy('order')
             ->get();
 
         $currentAccount = $accounts->first();
         $balance = $currentAccount?->balances->first();
 
-        return view('pages.dashboard.index', compact('accounts', 'currentAccount', 'balance'));
+        return view('pages.dashboard.index', compact('user', 'accounts', 'currentAccount', 'balance'));
     }
 
     /**
      * Displays the dashboard view with user accounts and the current account's balance data.
      *
      * @param string $id The ID of the current account to display.
-     * @return View The rendered dashboard view with accounts, current account, and balance details.
      *
      * @throws HttpException If the authenticated user is not found.
      * @throws ModelNotFoundException If the specified account ID is not found.
      */
-    public function show(string $id): View
+    public function show(string $id): View|\Illuminate\Foundation\Application|Factory|Application|RedirectResponse
     {
         $user = Auth::user();
 
@@ -57,16 +60,23 @@ class DashboardController extends Controller
             abort(401);
         }
 
-        $accounts = $user->accounts()->sortOrder()->get();
+        $accounts = $user->accounts()
+            ->orderBy('order')
+            ->get();
+
         $currentAccount = $user->accounts()
             ->with(['balances' => function ($query) {
                 $query->balanceTypeForward()->lastInstance();
             }])
             ->findOrFail($id);
 
-        $balance = $currentAccount->balances->first();
+        if ($currentAccount instanceof Account) {
+            $balance = $currentAccount->balances->first();
 
-        return view('pages.dashboard.index', compact('accounts', 'currentAccount', 'balance'));
+            return view('pages.dashboard.index', compact('user', 'accounts', 'currentAccount', 'balance'));
+        }
+
+        return redirect()->route('dashboard.index')->withErrors(['account' => 'Account not found.']);
     }
 
     /**
@@ -87,7 +97,7 @@ class DashboardController extends Controller
         $transactions = $user->transactions;
         $balances = $user->balances;
         $accounts = $user->accounts()
-            ->sortOrder()
+            ->orderBy('order')
             ->get();
 
         return view('pages.dashboard.history', compact('user', 'transactions', 'accounts', 'balances'));
@@ -110,7 +120,7 @@ class DashboardController extends Controller
 
         $schedules = $user->schedule;
 
-        return view('pages.dashboard.clock', compact('schedules'));
+        return view('pages.dashboard.clock', compact('user', 'schedules'));
     }
 
 
@@ -129,7 +139,11 @@ class DashboardController extends Controller
             abort(403);
         }
 
-        $apiAccounts = $user->accounts()->onlyApi()->sortOrder()->get();
+        $apiAccounts = tap($user->accounts()->getQuery())
+            ->onlyApi()
+            ->sortOrder()
+            ->get();
+
         $showUpdateAccounts = $apiAccounts->isNotEmpty() && $apiAccounts->every(function ($account) {
             return !$account->transactionsDisabled
                 && !$account->balanceDisabled
@@ -137,7 +151,9 @@ class DashboardController extends Controller
                 && $account->bankDataSyncBalancesCount <= ScheduledTasks::$MAX_TIMES;
         });
 
-        $accounts = $user->accounts()->sortOrder()->get();
+        $accounts = $user->accounts()
+            ->orderBy('order')
+            ->get();
 
         return view('pages.dashboard.configuration', compact('user', 'accounts', 'showUpdateAccounts'));
     }

@@ -36,7 +36,7 @@ class TransactionsController extends Controller
             ->findOrFail($accountId);
 
         $transactions = $account->transactions()
-            ->orderDate()
+            ->orderBy('bookingDate', 'desc')
             ->get();
 
         return view('pages.profile.transactions.edit', [

@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Imports\AccountImport;
 use App\Imports\BalanceImport;
 use App\Imports\TransactionImport;
+use Exception;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Redirect;
@@ -64,7 +65,7 @@ class ImportController extends Controller
         if ($file_csv) {
             try {
                 Excel::import(new AccountImport(), $file_csv, null, \Maatwebsite\Excel\Excel::CSV);
-            } catch (\Exception $e) {
+            } catch (Exception $e) {
                 return Redirect::route('profile.import.edit')->withErrors(['file_csv_accounts' => 'Error reading CSV file: ' . $e->getMessage()]);
             }
         }
@@ -72,7 +73,7 @@ class ImportController extends Controller
         if ($file_xlsx) {
             try {
                 Excel::import(new AccountImport(), $file_xlsx, null, \Maatwebsite\Excel\Excel::XLSX);
-            } catch (\Exception $e) {
+            } catch (Exception $e) {
                 return Redirect::route('profile.import.edit')->withErrors(['file_xlsx_accounts' => 'Error reading XLSX file: ' . $e->getMessage()]);
             }
         }
@@ -109,7 +110,7 @@ class ImportController extends Controller
         if ($file_csv) {
             try {
                 Excel::import(new TransactionImport(), $file_csv, null, \Maatwebsite\Excel\Excel::CSV);
-            } catch (\Exception $e) {
+            } catch (Exception $e) {
                 return Redirect::route('profile.import.edit')->withErrors(['file_csv_transactions' => 'Error reading CSV file: ' . $e->getMessage()]);
             }
         }
@@ -117,7 +118,7 @@ class ImportController extends Controller
         if ($file_xlsx) {
             try {
                 Excel::import(new TransactionImport(), $file_xlsx, null, \Maatwebsite\Excel\Excel::XLSX);
-            } catch (\Exception $e) {
+            } catch (Exception $e) {
                 return Redirect::route('profile.import.edit')->withErrors(['file_xlsx_transactions' => 'Error reading XLSX file: ' . $e->getMessage()]);
             }
         }
@@ -154,7 +155,7 @@ class ImportController extends Controller
         if ($file_csv) {
             try {
                 Excel::import(new BalanceImport(), $file_csv, null, \Maatwebsite\Excel\Excel::CSV);
-            } catch (\Exception $e) {
+            } catch (Exception $e) {
                 return Redirect::route('profile.import.edit')->withErrors(['file_csv_balances' => 'Error reading CSV file: ' . $e->getMessage()]);
             }
         }
@@ -162,7 +163,7 @@ class ImportController extends Controller
         if ($file_xlsx) {
             try {
                 Excel::import(new BalanceImport(), $file_xlsx, null, \Maatwebsite\Excel\Excel::XLSX);
-            } catch (\Exception $e) {
+            } catch (Exception $e) {
                 return Redirect::route('profile.import.edit')->withErrors(['file_xlsx_balances' => 'Error reading XLSX file: ' . $e->getMessage()]);
             }
         }

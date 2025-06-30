@@ -7,11 +7,11 @@
                 {{ $account->institution?->name }} - {{ $account->iban }} <span class="md:block hidden">({{ $account->type }})</span>
             </h2>
 
-            @if ($account->isApi)
+            @if ($account->is_api)
                 <!-- Show the account buttons -->
                 <div class="flex md:flex-row flex-col gap-4 py-6 sm:px-6 lg:px-8">
                     <!-- Show the update all button -->
-                    @if ($account->showUpdateAll)
+                    @if ($account->show_update_all)
                         <x-box.item
                             :title="__('Update all')"
                             :description="__('This will add all the transactions and balances at the same time')"
@@ -22,7 +22,7 @@
 
                     <!-- Show the transactions buttons -->
                     <div class="bg-main2 overflow-hidden shadow-sm rounded-lg">
-                        @if ($account->transactionsDisabled)
+                        @if ($account->transactions_disabled)
                             <x-box.danger
                                 text="[{{ __('Rate limit exceeded') }}: {{ $account->transactions_disabled_date->format('d-m-Y H:i:s') }}]" />
                         @endif
@@ -33,8 +33,8 @@
                             'button' => __('UPDATE INFORMATION'),
 
                             'account' => $account,
-                            'dataSyncCount' => $account->bankDataSyncTransactionsCount,
-                            'disabled' => $account->transactionsDisabled,
+                            'dataSyncCount' => $account->bank_data_sync_transactions_count,
+                            'disabled' => $account->transactions_disabled,
                             'last' => $account->bankDataSync()->dataTypeTransaction()->latest()->first() ? $account->bankDataSync()->dataTypeTransaction()->latest()->first()->created_at->format('d-m-Y H:i:s') : __('No transactions found'),
                             'link' => route('nordigen.transactions', ['accountId' => $account->code]),
                         ])
@@ -42,7 +42,7 @@
 
                     <!-- Show the balances buttons -->
                     <div class="bg-main2 overflow-hidden shadow-sm rounded-lg">
-                        @if ($account->balanceDisabled)
+                        @if ($account->balance_disabled)
                             <x-box.danger
                                 text="[{{ __('Rate limit exceeded') }}: {{ $account->balance_disabled_date->format('d-m-Y H:i:s') }}]" />
                         @endif
@@ -53,8 +53,8 @@
                             'button' => __('UPDATE INFORMATION'),
 
                             'account' => $account,
-                            'dataSyncCount' => $account->bankDataSyncBalancesCount,
-                            'disabled' => $account->balanceDisabled,
+                            'dataSyncCount' => $account->bank_data_sync_balances_count,
+                            'disabled' => $account->balance_disabled,
                             'last' => $account->bankDataSync()->dataTypeBalance()->latest()->first() ? $account->bankDataSync()->dataTypeBalance()->latest()->first()->created_at->format('d-m-Y H:i:s') : __('No balances found'),
                             'link' => route('nordigen.balances', ['accountId' => $account->code]),
                         ])

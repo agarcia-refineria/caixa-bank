@@ -1,5 +1,5 @@
 <x-app-layout>
-    <x-site.top-bar id="index-total-amount" :shepherd-text="trans('shepherd.index-total-amount')" text="{{ __('The total of the accounts balances is') }} {{ auth()->user()->totalAccountSum }} €" />
+    <x-site.top-bar id="index-total-amount" :shepherd-text="trans('shepherd.index-total-amount')" text="{{ __('The total of the accounts balances is') }} {{ $user->total_account_sum }} €" />
 
     <div class="block md:flex min-h-screen bg-main1 text-primary">
         @include('partials.dashboard.sidebar', [
@@ -17,14 +17,14 @@
                     </div>
 
                     <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
-                        @if (auth()->user()->chars == "all")
+                        @if ($user->chars == "all")
                             <x-charts.chart-card
                                 id="categoryChart"
                                 :shepherd-text="trans('shepherd.index-category-chart-all')"
                                 :title="__('All Expenses')"
-                                :data-values="$currentAccount->chartTransactionsValues"
-                                :data-labels="$currentAccount->chartTransactionsLabels"
-                                :data-colors="$currentAccount->chartTransactionsColors"
+                                :data-values="$currentAccount->chart_transactions_values"
+                                :data-labels="$currentAccount->chart_transactions_labels"
+                                :data-colors="$currentAccount->chart_transactions_colors"
                                 container-class="col-span-1" />
                         @else
                             <x-charts.chart-card
@@ -32,9 +32,9 @@
                                 :shepherd-text="trans('shepherd.index-category-chart-category')"
                                 :data-default-label="__('Sin Categoria')"
                                 :title="__('Expenses by Category')"
-                                :data-values="$currentAccount->chartTransactionsValuesCategory"
-                                :data-labels="$currentAccount->chartTransactionsLabelsCategory"
-                                :data-colors="$currentAccount->chartTransactionsColorsCategory"
+                                :data-values="$currentAccount->chart_transactions_values_category"
+                                :data-labels="$currentAccount->chart_transactions_labels_category"
+                                :data-colors="$currentAccount->chart_transactions_colors_category"
                                 container-class="col-span-1" />
                         @endif
 
@@ -42,14 +42,14 @@
                             id="balanceChart"
                             :shepherd-text="trans('shepherd.index-balance-chart')"
                             :title="__('Balance History')"
-                            :data-values="$currentAccount->chartBalancesValues"
-                            :data-labels="$currentAccount->chartBalancesLabels"
-                            :data-color="auth()->user()->themeMain3"
+                            :data-values="$currentAccount->chart_balances_values"
+                            :data-labels="$currentAccount->chart_balances_labels"
+                            :data-color="$user->theme_main3"
                             container-class="col-span-1 lg:col-span-2"
                         />
                     </div>
 
-                    <x-tables.transaction-table id="index-transactions-table" :shepherd-text="trans('shepherd.index-transactions-table')" :transactions="$currentAccount->transactionsCurrentMonth" />
+                    <x-tables.transaction-table id="index-transactions-table" :shepherd-text="trans('shepherd.index-transactions-table')" :transactions="$currentAccount->transactions_current_month" />
                 @else
                     <x-ui.empty-state
                         :title="__('No Balance Data Available')"

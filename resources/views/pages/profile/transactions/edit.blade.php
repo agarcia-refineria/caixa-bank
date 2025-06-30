@@ -14,7 +14,7 @@
             </x-links.nav-link>
         </div>
 
-        @if ($account->isManual)
+        @if ($account->is_manual)
             <x-buttons.primary-button
                 class="py-2 mb-4"
                 x-data=""
@@ -34,7 +34,7 @@
                 :user="$user"
                 type="request"
                 data-url="{{ route('api.datatable.transactions', ['id' => $account->code]) }}"
-                :actions="$account->isManual" />
+                :actions="$account->is_manual" />
         </div>
     </div>
 </x-app-layout>

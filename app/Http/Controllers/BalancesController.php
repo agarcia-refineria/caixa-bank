@@ -194,20 +194,22 @@ class BalancesController extends Controller
             $balance = Balance::with('account')
                 ->findOrFail($request->input('balance_id'));
 
-            $account = Account::onlyManual()->findOrFail($balance->account_id);
+            if ($balance instanceof Balance) {
+                $account = Account::onlyManual()->findOrFail($balance->account_id);
 
-            // Ensure the balance belongs to the authenticated user's account
-            if ($account->user_id !== Auth::id()) {
-                return Redirect::route('profile.accounts.edit')
-                    ->with('error', __('You do not have permission to delete this balance.'));
+                // Ensure the balance belongs to the authenticated user's account
+                if ($account->user_id !== Auth::id()) {
+                    return Redirect::route('profile.accounts.edit')
+                        ->with('error', __('You do not have permission to delete this balance.'));
+                }
+
+                DB::transaction(function () use ($balance) {
+                    $balance->delete();
+                });
+
+                return Redirect::route('profile.balance.edit', ['id' => $account->code])
+                    ->with('success', __('Balance deleted successfully.'));
             }
-
-            DB::transaction(function () use ($balance) {
-                $balance->delete();
-            });
-
-            return Redirect::route('profile.balance.edit', ['id' => $account->code])
-                ->with('success', __('Balance deleted successfully.'));
         } catch (Exception $e) {
             Log::error('Error deleting balance', [
                 'balance_id' => $request->input('balance_id'),
@@ -216,5 +218,7 @@ class BalancesController extends Controller
             return Redirect::route('profile.accounts.edit')
                 ->with('error', __('Error deleting balance.'));
         }
+        return Redirect::route('profile.accounts.edit')
+            ->with('error', __('Error deleting balance.'));
     }
 }

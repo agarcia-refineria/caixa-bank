@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Auth;
 use Eloquent;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
@@ -74,6 +75,10 @@ use App\Helpers\ColorHelper;
  * @method static Builder|Account whereTransactionsDisabledDate($value)
  * @method static Builder|Account whereType($value)
  * @method static Builder|Account whereUserId($value)
+ * @property-read mixed $chart_transactions_colors_category
+ * @property-read mixed $chart_transactions_labels_category
+ * @property-read mixed $chart_transactions_values_category
+ * @property-read bool $show_update_all
  * @mixin Eloquent
  */
 class Account extends Model
@@ -164,7 +169,7 @@ class Account extends Model
     {
         //$colorsJson = file_get_contents(base_path('tailwind-colors.json'));
         //$colorsArray = json_decode($colorsJson, true);
-        $mainColor = auth()->user()->themeMain3;
+        $mainColor = Auth::user()->theme_main3;
         $minDistance = 10;
 
         if (empty($usedColors)) {
@@ -222,7 +227,8 @@ class Account extends Model
         return $color;
     }
 
-    public function colorDistance($c1, $c2) {
+    public function colorDistance($c1, $c2): float
+    {
         list($r1, $g1, $b1) = $c1;
         list($r2, $g2, $b2) = $c2;
 
@@ -307,7 +313,8 @@ class Account extends Model
         $todayStart = now()->startOfDay();
         $todayEnd = now()->endOfDay();
 
-        return $this->bankDataSync()->dataTypeTransaction()
+        return tap($this->bankDataSync()->getQuery())
+            ->dataTypeTransaction()
             ->where('created_at', '>=', $todayStart)
             ->where('created_at', '<=', $todayEnd)
             ->count();
@@ -324,7 +331,8 @@ class Account extends Model
         $todayStart = now()->startOfDay();
         $todayEnd = now()->endOfDay();
 
-        return $this->bankDataSync()->dataTypeBalance()
+        return tap($this->bankDataSync()->getQuery())
+            ->dataTypeBalance()
             ->where('created_at', '>=', $todayStart)
             ->where('created_at', '<=', $todayEnd)
             ->count();
@@ -356,19 +364,19 @@ class Account extends Model
      * Get the transactions for the current month.
      *
      * @noinspection PhpUnused
-     * @return mixed
+     * @return \Illuminate\Support\Collection
      */
-    public function getTransactionsCurrentMonthAttribute(): mixed
+    public function getTransactionsCurrentMonthAttribute(): \Illuminate\Support\Collection
     {
         $date = session('month') ?? now()->format('m-Y');
         $parsedDate = \Carbon\Carbon::createFromFormat('m-Y', $date);
 
-        $startOfMonth = $parsedDate->copy()->startOfMonth()->startOfDay();
-        $endOfMonth = $parsedDate->copy()->endOfMonth()->endOfDay();
+        $startOfMonth = $parsedDate->copy()->startOfMonth();
+        $endOfMonth = $parsedDate->copy()->endOfMonth();
 
         return $this->transactions()
             ->whereBetween('bookingDate', [$startOfMonth, $endOfMonth])
-            ->orderDate()
+            ->orderBy('bookingDate', 'desc')
             ->get();
     }
 
@@ -376,20 +384,20 @@ class Account extends Model
      * Get the transactions for the current month that are expenses.
      *
      * @noinspection PhpUnused
-     * @return mixed
+     * @return \Illuminate\Support\Collection
      */
-    public function getTransactionsExpensesCurrentMonthAttribute(): mixed
+    public function getTransactionsExpensesCurrentMonthAttribute(): \Illuminate\Support\Collection
     {
         $date = session('month') ?? now()->format('m-Y');
         $parsedDate = \Carbon\Carbon::createFromFormat('m-Y', $date);
 
-        $startOfMonth = $parsedDate->copy()->startOfMonth()->startOfDay();
-        $endOfMonth = $parsedDate->copy()->endOfMonth()->endOfDay();
+        $startOfMonth = $parsedDate->copy()->startOfMonth();
+        $endOfMonth = $parsedDate->copy()->endOfMonth();
 
         return $this->transactions()
             ->whereBetween('bookingDate', [$startOfMonth, $endOfMonth])
             ->where('transactionAmount_amount', '<', 0)
-            ->orderDate()
+            ->orderBy('bookingDate', 'desc')
             ->get();
     }
 
@@ -397,20 +405,20 @@ class Account extends Model
      * Get the transactions for the current month that are income.
      *
      * @noinspection PhpUnused
-     * @return mixed
+     * @return \Illuminate\Support\Collection
      */
-    public function getTransactionsIncomeCurrentMonthAttribute(): mixed
+    public function getTransactionsIncomeCurrentMonthAttribute(): \Illuminate\Support\Collection
     {
         $date = session('month') ?? now()->format('m-Y');
         $parsedDate = \Carbon\Carbon::createFromFormat('m-Y', $date);
 
-        $startOfMonth = $parsedDate->copy()->startOfMonth()->startOfDay();
-        $endOfMonth = $parsedDate->copy()->endOfMonth()->endOfDay();
+        $startOfMonth = $parsedDate->copy()->startOfMonth();
+        $endOfMonth = $parsedDate->copy()->endOfMonth();
 
         return $this->transactions()
             ->whereBetween('bookingDate', [$startOfMonth, $endOfMonth])
             ->where('transactionAmount_amount', '>', 0)
-            ->orderDate()
+            ->orderBy('bookingDate', 'desc')
             ->get();
     }
 
@@ -425,8 +433,8 @@ class Account extends Model
         $date = session('month') ?? now()->format('m-Y');
         $parsedDate = \Carbon\Carbon::createFromFormat('m-Y', $date);
 
-        $startOfMonth = $parsedDate->copy()->startOfMonth()->startOfDay();
-        $endOfMonth = $parsedDate->copy()->endOfMonth()->endOfDay();
+        $startOfMonth = $parsedDate->copy()->startOfMonth();
+        $endOfMonth = $parsedDate->copy()->endOfMonth();
 
         return $this->transactions()
             ->whereBetween('bookingDate', [$startOfMonth, $endOfMonth])
@@ -445,8 +453,8 @@ class Account extends Model
         $date = session('month') ?? now()->format('m-Y');
         $parsedDate = \Carbon\Carbon::createFromFormat('m-Y', $date);
 
-        $startOfMonth = $parsedDate->copy()->startOfMonth()->startOfDay();
-        $endOfMonth = $parsedDate->copy()->endOfMonth()->endOfDay();
+        $startOfMonth = $parsedDate->copy()->startOfMonth();
+        $endOfMonth = $parsedDate->copy()->endOfMonth();
 
         return $this->transactions()
             ->whereBetween('bookingDate', [$startOfMonth, $endOfMonth])
@@ -462,7 +470,7 @@ class Account extends Model
      */
     public function getChartTransactionsValuesAttribute(): mixed
     {
-        return $this->transactionsExpensesCurrentMonth
+        return $this->transactions_expenses_current_month
             ->groupBy('remittanceInformationUnstructured')
             ->map(fn($group) => $group->sum('transactionAmount_amount'))
             ->implode(',');
@@ -476,7 +484,7 @@ class Account extends Model
      */
     public function getChartTransactionsLabelsAttribute(): mixed
     {
-        return $this->transactionsExpensesCurrentMonth
+        return $this->transactions_expenses_current_month
             ->groupBy('remittanceInformationUnstructured')
             ->keys()
             ->map(fn($key) => trim((string) $key, '[]"'))
@@ -492,9 +500,9 @@ class Account extends Model
     public function getChartTransactionsColorsAttribute(): mixed
     {
         $usedColors = [];
-        return $this->transactionsExpensesCurrentMonth
+        return $this->transactions_expenses_current_month
             ->groupBy('remittanceInformationUnstructured')
-            ->map(function ($group, $key) use (&$usedColors) {
+            ->map(function () use (&$usedColors) {
                 return $this->getUsedColors($usedColors);
             })->implode(',');
     }
@@ -507,7 +515,7 @@ class Account extends Model
      */
     public function getChartTransactionsValuesCategoryAttribute(): mixed
     {
-        return $this->transactionsExpensesCurrentMonth
+        return $this->transactions_expenses_current_month
             ->groupBy('category.name')
             ->map(fn($group) => $group->sum('transactionAmount_amount'))
             ->implode(',');
@@ -521,7 +529,7 @@ class Account extends Model
      */
     public function getChartTransactionsLabelsCategoryAttribute(): mixed
     {
-        return $this->transactionsExpensesCurrentMonth
+        return $this->transactions_expenses_current_month
             ->groupBy('category.name')
             ->keys()
             ->map(fn($key) => trim((string) $key, '[]"'))
@@ -537,9 +545,9 @@ class Account extends Model
     public function getChartTransactionsColorsCategoryAttribute(): mixed
     {
         $usedColors = [];
-        return $this->transactionsExpensesCurrentMonth
+        return $this->transactions_expenses_current_month
             ->groupBy('category')
-            ->map(function ($group, $key) use (&$usedColors) {
+            ->map(function () use (&$usedColors) {
                 return $this->getUsedColors($usedColors);
             })->implode(',');
     }
@@ -552,7 +560,7 @@ class Account extends Model
      */
     public function getChartBalancesValuesAttribute(): mixed
     {
-        return $this->balances()
+        return tap($this->balances()->getQuery())
             ->balanceTypeForward()
             ->currentMonth()
             ->pluck('amount')
@@ -567,7 +575,7 @@ class Account extends Model
      */
     public function getChartBalancesLabelsAttribute(): mixed
     {
-        return $this->balances()
+        return tap($this->balances()->getQuery())
             ->balanceTypeForward()
             ->currentMonth()
             ->pluck('reference_date')
@@ -584,10 +592,10 @@ class Account extends Model
     public function getShowUpdateAllAttribute(): bool
     {
         if ($this->is_api) {
-            return !$this->transactionsDisabled
-                && !$this->balanceDisabled
-                && $this->bankDataSyncTransactionsCount <= ScheduledTasks::$MAX_TIMES
-                && $this->bankDataSyncBalancesCount <= ScheduledTasks::$MAX_TIMES;
+            return !$this->transactions_disabled
+                && !$this->balance_disabled
+                && $this->bank_data_sync_transactions_count <= ScheduledTasks::$MAX_TIMES
+                && $this->bank_data_sync_balances_count <= ScheduledTasks::$MAX_TIMES;
         }
 
         return false;

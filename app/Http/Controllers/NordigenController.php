@@ -67,7 +67,7 @@ class NordigenController extends Controller
      */
     public function getAccessToken(): string|null
     {
-        $response = Http::post("{$this->baseUrl}/token/new/", [
+        $response = Http::post("$this->baseUrl/token/new/", [
             'secret_id' => decrypt($this->secretId),
             'secret_key' => decrypt($this->secretKey)
         ]);
@@ -105,7 +105,7 @@ class NordigenController extends Controller
             return Redirect::route('dashboard.configuration')->with('error', __('status.nordigencontroller.missing-credentials'));
         }
 
-        $response = Http::withToken($accessToken)->post("{$this->baseUrl}/requisitions/", [
+        $response = Http::withToken($accessToken)->post("$this->baseUrl/requisitions/", [
             'redirect' => route('nordigen.callback'),
             'institution_id' => $institutionId,
             'reference' => uniqid(),
@@ -130,9 +130,9 @@ class NordigenController extends Controller
     public function callback(): RedirectResponse
     {
         $accessToken = session('access_token');
-        $requisitionId = session('requisition_id');;
+        $requisitionId = session('requisition_id');
 
-        $requisition = Http::withToken($accessToken)->get("{$this->baseUrl}/requisitions/{$requisitionId}")->json();
+        $requisition = Http::withToken($accessToken)->get("$this->baseUrl/requisitions/$requisitionId")->json();
 
         $accounts = $requisition['accounts'];
         $user = Auth::user();
@@ -143,8 +143,8 @@ class NordigenController extends Controller
             return Redirect::route('dashboard.configuration')->with('error', __('status.nordigencontroller.callback-failed'));
         }
 
-        foreach ($accounts as $i => $accountId) {
-            $accountData = Http::withToken($accessToken)->get("{$this->baseUrl}/accounts/{$accountId}")->json();
+        foreach ($accounts as $accountId) {
+            $accountData = Http::withToken($accessToken)->get("$this->baseUrl/accounts/$accountId")->json();
             $account = Account::where('id', $accountId)->first();
 
             if ($account) {
@@ -182,7 +182,7 @@ class NordigenController extends Controller
             ]);
         }
 
-        return redirect()->route('dashboard.configuration')->with('success', __('status.nordigencontroller.callback-success'));;
+        return redirect()->route('dashboard.configuration')->with('success', __('status.nordigencontroller.callback-success'));
     }
 
     /**
@@ -207,7 +207,7 @@ class NordigenController extends Controller
             $account->transactions_disabled_date = null;
             $account->save();
 
-            $transactions = Http::withToken($accessToken)->get("{$this->baseUrl}/accounts/{$accountId}/transactions/")->json();
+            $transactions = Http::withToken($accessToken)->get("$this->baseUrl/accounts/$accountId/transactions/")->json();
 
             if (isset($transactions['detail'])) {
                 $account->transactions_disabled_date = $this->getSecondsFromString($transactions['detail']);
@@ -291,7 +291,7 @@ class NordigenController extends Controller
             $account->balance_disabled_date = null;
             $account->save();
 
-            $balances = Http::withToken($accessToken)->get("{$this->baseUrl}/accounts/{$accountId}/balances/")->json();
+            $balances = Http::withToken($accessToken)->get("$this->baseUrl/accounts/$accountId/balances/")->json();
 
             if (isset($balances['detail'])) {
                 $account->balance_disabled_date = $this->getSecondsFromString($balances['detail']);
@@ -360,12 +360,11 @@ class NordigenController extends Controller
      * It then updates the account's transactions and balances by invoking the appropriate methods.
      * Finally, it redirects the user to the bank configuration page with a success message upon successful update.
      *
-     * @param Request $request The incoming HTTP request containing session and user information.
      * @param string $accountId The unique identifier of the account to be updated.
      *
      * @return RedirectResponse Redirects to the bank configuration page with a status message.
      */
-    public function update(Request $request, string $accountId): RedirectResponse
+    public function update(string $accountId): RedirectResponse
     {
         $this->transactions($accountId);
         $this->balances($accountId);
@@ -382,11 +381,10 @@ class NordigenController extends Controller
      * the respective methods.
      * Once the process is complete, the user is redirected to the bank configuration page with a status message.
      *
-     * @param Request $request The incoming HTTP request containing session and user information.
      *
      * @return RedirectResponse Redirects to the bank configuration page with a status message.
      */
-    public function updateAll(Request $request): RedirectResponse
+    public function updateAll(): RedirectResponse
     {
         $user = Auth::user();
         $accounts = Account::where('user_id', $user->id)->onlyApi()->get();
@@ -424,7 +422,7 @@ class NordigenController extends Controller
     {
         $accessToken = session('access_token', $this->getAccessToken());
 
-        $response = Http::withToken($accessToken)->get("{$this->baseUrl}/institutions/");
+        $response = Http::withToken($accessToken)->get("$this->baseUrl/institutions/");
 
         $institutions = $response->json();
 
