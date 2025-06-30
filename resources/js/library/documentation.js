@@ -21,6 +21,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
         addStep('navigation-history');
 
+        addStep('navigation-calculator');
+
         addStep('navigation-clock');
 
         addStep('navigation-configuration');
