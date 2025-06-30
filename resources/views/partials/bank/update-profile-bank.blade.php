@@ -5,7 +5,7 @@
         </h2>
 
         <p class="mt-1 text-sm text-secondary">
-            Sino te aparece ningun entidad bancaria, debes de ir a <strong>GoCardless</strong> y iniciar session, despues ir a Developers -> User Secrets y crear o usar una cuenta para el Secret Id y Secret Key. Una vez hecho, vuelve a esta página y inserta estos datos en los inputs de bajado y guardalo. Ahora te aparezera el boton <strong>Actualizar lista</strong>, una vez le des click te mostrara la todas las entidades bancarias.
+            {!! __('Sino te aparece ningun entidad bancaria, debes de ir a <strong>GoCardless</strong> y iniciar session, despues ir a Developers -> User Secrets y crear o usar una cuenta para el Secret Id y Secret Key. Una vez hecho, vuelve a esta página y inserta estos datos en los inputs de bajado y guardalo. Ahora te aparezera el boton <strong>Actualizar lista</strong>, una vez le des click te mostrara la todas las entidades bancarias.') !!}
         </p>
 
         <div class="flex gap-4 mt-4">
@@ -44,8 +44,12 @@
         </div>
 
         <div class="grid grid-cols-2 gap-4">
-            <x-inputs.input type="password" name="NORDIGEN_SECRET_ID" id="NORDIGEN_SECRET_ID" :value="$user->NORDIGEN_SECRET_ID" label="{{ __('SECRET ID') }}" />
-            <x-inputs.input type="password" name="NORDIGEN_SECRET_KEY" id="NORDIGEN_SECRET_KEY" :value="$user->NORDIGEN_SECRET_KEY" label="{{ __('SECRET KEY') }}" />
+            @php
+                $NORDIGEN_SECRET_ID = $user->NORDIGEN_SECRET_ID ? '✅' : '❌';
+                $NORDIGEN_SECRET_KEY = $user->NORDIGEN_SECRET_KEY ? '✅' : '❌';
+            @endphp
+            <x-inputs.input type="password" name="NORDIGEN_SECRET_ID" id="NORDIGEN_SECRET_ID" label="{{ __('SECRET ID') }} ({{ $NORDIGEN_SECRET_ID }})" />
+            <x-inputs.input type="password" name="NORDIGEN_SECRET_KEY" id="NORDIGEN_SECRET_KEY" label="{{ __('SECRET KEY') }} ({{ $NORDIGEN_SECRET_KEY }})" />
         </div>
 
         <div class="flex items-center gap-4">

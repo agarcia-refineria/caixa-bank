@@ -39,10 +39,12 @@ class BankController extends Controller
         ]);
     }
 
+
     /**
-     * Update the user's bank information.
+     * Update the user's bank details.
      *
      * @return RedirectResponse
+     *
      */
     public function update(): RedirectResponse
     {
@@ -53,8 +55,8 @@ class BankController extends Controller
         }
 
         $user->update([
-            'NORDIGEN_SECRET_ID' => request('NORDIGEN_SECRET_ID', $user->NORDIGEN_SECRET_ID),
-            'NORDIGEN_SECRET_KEY' => request('NORDIGEN_SECRET_KEY', $user->NORDIGEN_SECRET_KEY),
+            'NORDIGEN_SECRET_ID' => request('NORDIGEN_SECRET_ID') ? encrypt(request('NORDIGEN_SECRET_ID')) : $user->NORDIGEN_SECRET_ID,
+            'NORDIGEN_SECRET_KEY' => request('NORDIGEN_SECRET_KEY') ? encrypt(request('NORDIGEN_SECRET_KEY')) : $user->NORDIGEN_SECRET_KEY,
         ]);
         $user->save();
 
@@ -83,6 +85,20 @@ class BankController extends Controller
         }
     }
 
+    /**
+     * Updates the user's bank characters based on the provided input.
+     *
+     * Validates the request to ensure the 'chars' field is required and matches
+     * the allowed character types. If validation passes, the authenticated user's
+     * characters are updated in the database. Upon success, a redirect response
+     * is returned with a success status.
+     *
+     * If an exception occurs during the update process, an error message is logged
+     * and the user is redirected back with an error status.
+     *
+     * @param Request $request Incoming request containing the 'chars' field.
+     * @return RedirectResponse Redirect response indicating success or error.
+     */
     public function chars(Request $request): RedirectResponse
     {
         $validated = $request->validate([
@@ -100,6 +116,19 @@ class BankController extends Controller
         }
     }
 
+    /**
+     * Updates the user's selected bank theme based on the provided input.
+     *
+     * Validates the request to ensure that the 'theme' field is required. If validation
+     * is successful, updates the authenticated user's theme preference in the database.
+     * Returns a redirect response with a success status if the update is completed.
+     *
+     * In the event of an exception during the update, an error message is logged, and the
+     * user is redirected back with an error status.
+     *
+     * @param Request $request The incoming request containing the 'theme' field.
+     * @return RedirectResponse Redirect response indicating the outcome of the operation.
+     */
     public function theme(Request $request): RedirectResponse
     {
         $validated = $request->validate([
@@ -117,6 +146,20 @@ class BankController extends Controller
         }
     }
 
+    /**
+     * Updates the user's preferred bank language based on the provided input.
+     *
+     * Validates the request to ensure the 'lang' field is required, is a string,
+     * and does not exceed two characters. If validation is successful, the authenticated
+     * user's language preference is updated in the database. Upon successful update,
+     * a redirect response is returned with a success status.
+     *
+     * If an error occurs during the update process, an error message is logged
+     * and the user is redirected back with an error status.
+     *
+     * @param Request $request Incoming request containing the 'lang' field.
+     * @return RedirectResponse Redirect response indicating success or failure.
+     */
     public function lang(Request $request): RedirectResponse
     {
         $validated = $request->validate([

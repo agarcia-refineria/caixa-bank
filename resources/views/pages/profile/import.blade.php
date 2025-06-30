@@ -17,14 +17,14 @@
                 <table class="datatable table-auto w-full px-4" data-type="default">
                     <thead>
                         <tr>
-                            <th class="!text-left">ID</th>
-                            <th class="!text-left">Name</th>
-                            <th class="!text-left dt-low-priority">IBAN</th>
-                            <th class="!text-left dt-low-priority">BBAN</th>
-                            <th class="!text-left dt-low-priority">Status</th>
-                            <th class="!text-left dt-low-priority">Owner Name</th>
-                            <th class="!text-left dt-low-priority">Created</th>
-                            <th class="!text-left dt-low-priority">Last Accessed</th>
+                            <th class="!text-left">{{ __('ID') }}</th>
+                            <th class="!text-left">{{ __('Name') }}</th>
+                            <th class="!text-left dt-low-priority">{{ __('IBAN') }}</th>
+                            <th class="!text-left dt-low-priority">{{ __('BBAN') }}</th>
+                            <th class="!text-left dt-low-priority">{{ __('Status') }}</th>
+                            <th class="!text-left dt-low-priority">{{ __('Owner Name') }}</th>
+                            <th class="!text-left dt-low-priority">{{ __('Created') }}</th>
+                            <th class="!text-left dt-low-priority">{{ __('Last Accessed') }}</th>
                         </tr>
                     </thead>
                     <tbody>

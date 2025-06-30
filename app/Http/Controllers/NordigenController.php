@@ -25,8 +25,8 @@ class NordigenController extends Controller
         $this->secretKey = null;
 
         $this->middleware(function ($request, $next) {
-            $this->secretId = Auth::user()->NordigenSecretIdReturn;
-            $this->secretKey = Auth::user()->NordigenSecretKeyReturn;
+            $this->secretId = Auth::user()->NORDIGEN_SECRET_ID;
+            $this->secretKey = Auth::user()->NORDIGEN_SECRET_KEY;
 
             return $next($request);
         });
@@ -56,16 +56,43 @@ class NordigenController extends Controller
         return Redirect::route('dashboard.configuration')->with('error', __('status.nordigencontroller.missing-credentials'));
     }
 
+    /**
+     * Retrieves a new access token from the external service.
+     *
+     * Sends a POST request to the token endpoint with the decrypted credentials (`secret_id` and `secret_key`).
+     * If the response contains an access token, it returns the token as a string.
+     * If the token is not present, returns `null`.
+     *
+     * @return string|null The access token if retrieved successfully, or `null` if not available.
+     */
     public function getAccessToken(): string|null
     {
         $response = Http::post("{$this->baseUrl}/token/new/", [
-            'secret_id' => $this->secretId,
-            'secret_key' => $this->secretKey
+            'secret_id' => decrypt($this->secretId),
+            'secret_key' => decrypt($this->secretKey)
         ]);
 
         return isset($response['access']) ? $response['access'] : null;
     }
 
+    /**
+     * Creates a new requisition for the authenticated user's bank institution and stores
+     * the callback URL in the session. Returns the requisition ID if successful or `null` otherwise.
+     *
+     * The method uses the `access_token` from the session or generates one if it's not present.
+     * It retrieves the user's bank and associated institution to prepare the requisition request.
+     *
+     * If the required `secretId` or `secretKey` credentials are missing, it redirects the user
+     * to the configuration page with an error status.
+     *
+     * Sends an HTTP POST request to create the requisition with the required parameters,
+     * including a unique reference, user language, and redirection URL for the callback.
+     * The callback URL is stored in the session for further processing.
+     *
+     * Returns the requisition ID retrieved from the external service if available, or `null` if not.
+     *
+     * @return string|null Returns the ID of the created requisition or `null` if creation fails.
+     */
     public function getRequisition(): string|null
     {
         $user = Auth::user();

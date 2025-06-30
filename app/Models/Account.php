@@ -12,7 +12,6 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Str;
 use App\Helpers\ColorHelper;
-use function PHPUnit\Framework\isEmpty;
 
 /**
  * @property int $id

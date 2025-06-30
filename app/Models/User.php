@@ -230,16 +230,6 @@ class User extends Authenticatable
         });
     }
 
-    public function getNordigenSecretIdReturnAttribute(): string
-    {
-        return $this->NORDIGEN_SECRET_ID;
-    }
-
-    public function getNordigenSecretKeyReturnAttribute(): string
-    {
-        return $this->NORDIGEN_SECRET_KEY;
-    }
-
     /**
      * Execute account tasks for the user
      * @return void

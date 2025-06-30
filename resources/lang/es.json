@@ -238,5 +238,7 @@
     "Next": "Siguiente",
     "Ayuda": "Ayuda",
     "Close": "Cerrar",
-    "You need to set the secret id and key in the .env file to update the accounts!": "Necesitas establecer el ID secreto y la clave en el archivo .env para actualizar las cuentas!"
+    "You need to set the secret id and key in the .env file to update the accounts!": "Necesitas establecer el ID secreto y la clave en el archivo .env para actualizar las cuentas!",
+
+    "Sino te aparece ningun entidad bancaria, debes de ir a <strong>GoCardless</strong> y iniciar session, despues ir a Developers -> User Secrets y crear o usar una cuenta para el Secret Id y Secret Key. Una vez hecho, vuelve a esta página y inserta estos datos en los inputs de bajado y guardalo. Ahora te aparezera el boton <strong>Actualizar lista</strong>, una vez le des click te mostrara la todas las entidades bancarias.": "Si no te aparece ninguna entidad bancaria, debes ir a <strong>GoCardless</strong> e iniciar sesión, luego ir a Developers -> User Secrets y crear o usar una cuenta para el ID secreto y la clave secreta. Una vez hecho esto, vuelve a esta página e inserta estos datos en los campos correspondientes y guárdalo. Ahora aparecerá el botón <strong>Actualizar lista</strong>, una vez que hagas clic en él, te mostrará todas las entidades bancarias."
 }
