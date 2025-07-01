@@ -62,6 +62,35 @@
                                     </div>
                                 </div>
                             </div>
+
+                            @if (isset($category))
+                                <x-ui.modal name="confirm-category-{{ $category->id }}-deletion" focusable>
+                                    <form method="post" action="{{ route('profile.category.destroy', ['id' => $category->id]) }}" class="p-6">
+                                        @csrf
+                                        @method('delete')
+
+                                        <h2 class="text-lg font-medium text-primary">
+                                            {{ __('Are you sure you want to delete your category?') }}
+                                        </h2>
+
+                                        <div class="mt-6 flex justify-end">
+                                            <x-buttons.secondary-button x-on:click="$dispatch('close')">
+                                                {{ __('Cancel') }}
+                                            </x-buttons.secondary-button>
+
+                                            <x-buttons.danger-button class="ms-3">
+                                                {{ __('Delete Category') }}
+                                            </x-buttons.danger-button>
+                                        </div>
+                                    </form>
+                                </x-ui.modal>
+
+                                <x-ui.modal name="create-filter-{{ $category->id }}" focusable>
+                                    <div class="py-6">
+                                        @include('partials.profile.categories.filter-form', ['category' => $category, 'filter' => null])
+                                    </div>
+                                </x-ui.modal>
+                            @endif
                         </div>
                     @endforeach
                 </div>

@@ -162,6 +162,82 @@ $(document).ready(function () {
             });
         }
     }
+
+    const futureIncomeChart = document.getElementById('futureIncomeChart');
+    if (futureIncomeChart) {
+        setFutureIncomeChart();
+    }
+
+    function setFutureIncomeChart() {
+        var labels = futureIncomeChart.getAttribute('data-labels').split(",");
+        var values = futureIncomeChart.getAttribute('data-values').split(",").map(Number);
+        var color = futureIncomeChart.getAttribute('data-color');
+
+        console.log('Chart BALANCE is working!');
+        let chartFutureIncomeChart = new Chart(futureIncomeChart, {
+            type: 'line',
+            data: {
+                labels: labels,
+                datasets: [{
+                    data: values,
+                    borderColor: color,
+                    tension: 0.3,
+                    pointBackgroundColor: tailwindConfig.theme.extend.colors.primary,
+                    fill: false
+                }]
+            },
+            options: {
+                plugins: {
+                    legend: {
+                        display: false,
+                    },
+                }
+            }
+        });
+
+        // Generar leyenda personalizada
+        const legendContainer = document.getElementById('futureIncomeChart-legend');
+        chartFutureIncomeChart.data.labels.forEach((label, index) => {
+            const value = chartFutureIncomeChart.data.datasets[0].data[index];
+            const legendItem = document.createElement('div');
+            legendItem.className = 'legend-item';
+            legendItem.innerHTML = `
+                <div class="legend-color-box" style="background-color:${tailwindConfig.theme.extend.colors.main3}"></div>
+                <span>${label} (${value} €)</span>
+              `;
+            legendItem.setAttribute('data-index', index);
+            legendContainer.appendChild(legendItem);
+        });
+
+        // Agregar evento de hover a los elementos de la leyenda
+        const legendItems = legendContainer.getElementsByClassName('legend-item');
+        for (let i = 0; i < legendItems.length; i++) {
+            const index = parseInt(legendItems[i].getAttribute('data-index'));
+            const meta = chartFutureIncomeChart.getDatasetMeta(0);
+            const item = meta.data[index];
+
+            legendItems[i].style.cursor = 'pointer';
+            item.hidden = null;
+
+            legendItems[i].addEventListener('click', function (evt) {
+                // Toggle visibility of the corresponding dataset
+                const index = parseInt(legendItems[i].getAttribute('data-index'));
+                const meta = chartFutureIncomeChart.getDatasetMeta(0);
+                const item = meta.data[index];
+
+                // if desktop
+                if (item.hidden === null || item.hidden === false) {
+                    item.hidden = true;
+                    legendItems[i].classList.add('line-through');
+                } else {
+                    item.hidden = null;
+                    legendItems[i].classList.remove('line-through');
+                }
+
+                chartFutureIncomeChart.update();
+            });
+        }
+    }
 })
 
 function handleHover(evt, itemIndex, legend) {

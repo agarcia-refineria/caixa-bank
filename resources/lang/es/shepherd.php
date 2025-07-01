@@ -5,7 +5,7 @@ return [
 
     'navigation-panel-control' => "La página del Panel de Control ofrece una visión general del estado financiero del usuario, permitiéndole llevar un control detallado de sus ingresos, gastos y evolución del saldo en un periodo específico.",
     'navigation-history' => "Muestra tablas interactivas (DataTables) con el historial detallado de cuentas, transacciones y balances, permitiendo filtrar, ordenar y buscar información financiera de forma rápida y clara.",
-    'navigation-calculator' => "Es una herramienta que permite realizar cálculos financieros básicos, como sumar o restar importes, facilitando la gestión de las finanzas personales.",
+    'navigation-forecast' => "Es una herramienta que permite realizar cálculos financieros básicos, como sumar o restar importes, facilitando la gestión de las finanzas personales.",
     'navigation-clock' => "Muestra la hora actual y una lista de tareas programadas, automatizando la importación de transacciones y balances sin exponer información sensible.",
     'navigation-configuration' => "Permite importar cuentas, transacciones y balances vía API, además de ordenar las cuentas API para definir su posición en el Panel de Control.",
     'navigation-month-selector' => "Es un filtro disponible solo en el Panel de Control que permite seleccionar el mes a visualizar para actualizar los datos financieros mostrados.",

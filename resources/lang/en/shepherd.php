@@ -5,7 +5,7 @@ return [
 
     'navigation-panel-control' => "The Control Panel page provides an overview of the user's financial status, allowing detailed tracking of income, expenses and balance evolution over a specific period.",
     'navigation-history' => "Shows interactive tables (DataTables) with detailed history of accounts, transactions and balances, allowing quick and clear filtering, sorting and searching of financial information.",
-    'navigation-calculator' => "A simple calculator for quick calculations, useful for performing basic arithmetic operations without leaving the Control Panel.",
+    'navigation-forecast' => "A simple calculator for quick calculations, useful for performing basic arithmetic operations without leaving the Control Panel.",
     'navigation-clock' => "Shows current time and a list of scheduled tasks, automating the import of transactions and balances without exposing sensitive information.",
     'navigation-configuration' => "Allows importing accounts, transactions and balances via API, as well as ordering API accounts to define their position in the Control Panel.",
     'navigation-month-selector' => "It is a filter available only in the Control Panel that allows selecting the month to view to update the financial data shown.",

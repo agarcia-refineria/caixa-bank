@@ -54,6 +54,9 @@ Route::middleware('auth')->group(function () {
     Route::patch('/profile/accounts', [AccountsController::class, 'update'])->name('profile.account.update');
     Route::delete('/profile/accounts/{id}', [AccountsController::class, 'destroy'])->name('profile.account.destroy');
     Route::post('/profile/accounts/order', [AccountsController::class, 'reorder'])->name('profile.accounts.reorder');
+    Route::post('/profile/accounts/paysheet', [AccountsController::class, 'paysheet'])->name('profile.account.paysheet');
+    Route::post('/profile/accounts/disable-transactions', [AccountsController::class, 'disableTransactions'])->name('profile.account.disable-transactions');
+    Route::post('/profile/accounts/apply-expenses-monthly', [AccountsController::class, 'applyExpensesMonthly'])->name('profile.account.apply-expenses-monthly');
 
     // Profile [Transaction routes]
     Route::get('/profile/transactions/{id}', [TransactionsController::class, 'edit'])->name('profile.transaction.edit');
@@ -97,8 +100,9 @@ Route::middleware('auth')->group(function () {
     // Panel [History routes]
     Route::get('/history', [DashboardController::class, 'history'])->name('dashboard.history');
 
-    // Panel [Calculator routes]
-    Route::get('/calculator', [DashboardController::class, 'calculator'])->name('dashboard.calculator');
+    // Panel [Forecast routes]
+    Route::get('/forecast', [DashboardController::class, 'forecast'])->name('dashboard.forecast');
+    Route::get('/forecast/{id}', [DashboardController::class, 'forecastShow'])->name('dashboard.forecastShow');
 
     // Panel [Clock routes]
     Route::get('/clock', [DashboardController::class, 'clock'])->name('dashboard.clock');

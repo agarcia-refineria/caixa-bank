@@ -1,5 +1,5 @@
 <x-app-layout>
-    <x-site.top-bar :text="__('History')" />
+    <x-site.top-info :text="__('History')" />
 
     <div id="history-accounts-table" shepherd-text="{{ trans('shepherd.history-accounts-table') }}" class="w-full text-primary p-6">
         <h2 class="text-lg font-semibold mb-4">{{ __('Accounts') }}</h2>

@@ -110,7 +110,7 @@ class DashboardController extends Controller
      *
      * @throws HttpException Thrown when the authenticated user cannot be found (HTTP 403).
      */
-    public function calculator(): View
+    public function forecast(): View
     {
         $user = Auth::user();
 
@@ -122,7 +122,40 @@ class DashboardController extends Controller
             ->orderBy('order')
             ->get();
 
-        return view('pages.dashboard.calculator', compact('user', 'accounts'));
+        $currentAccount = $accounts->first();
+
+        return view('pages.dashboard.forecast', compact('user', 'accounts', 'currentAccount'));
+    }
+
+    /**
+     * Displays the forecast information for a specific account and returns the corresponding view.
+     *
+     * @param string $id The identifier of the account to retrieve forecast data for.
+     *
+     * @return View The rendered view of the forecast page with the user's accounts and the current account data.
+     *
+     * @throws HttpException Thrown when the authenticated user cannot be found (HTTP 403).
+     * @throws ModelNotFoundException Thrown when the specified account cannot be located for the given ID.
+     */
+    public function forecastShow(string $id): View
+    {
+        $user = Auth::user();
+
+        if (!$user) {
+            abort(403);
+        }
+
+        $accounts = $user->accounts()
+            ->orderBy('order')
+            ->get();
+
+        $currentAccount = $user->accounts()
+            ->with(['balances' => function ($query) {
+                $query->balanceTypeForward()->lastInstance();
+            }])
+            ->findOrFail($id);
+
+        return view('pages.dashboard.forecast', compact('user', 'accounts', 'currentAccount'));
     }
 
     /**

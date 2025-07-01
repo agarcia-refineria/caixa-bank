@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Models\Account;
+use App\Models\CategoryAccount;
+use App\Models\Transaction;
 use Exception;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\JsonResponse;
@@ -204,6 +206,151 @@ class AccountsController extends Controller
             return response()->json([
                 'status' => 'error',
                 'message' => 'No se pudo reordenar los elementos'
+            ], 500);
+        }
+    }
+
+    /**
+     * Process and assign a paysheet to an account.
+     *
+     * @param Request $request The incoming HTTP request containing the transaction details.
+     *
+     * @throws Throwable
+     */
+    public function paysheet(Request $request): JsonResponse
+    {
+        $validated = $request->validate([
+            'paysheet' => 'required|exists:transactions,id'
+        ]);
+
+        try {
+            DB::beginTransaction();
+
+            $paysheet = Transaction::findOrFail($validated['paysheet']);
+            $account = Account::where('user_id', Auth::id())
+                ->where('id', $paysheet->account_id)
+                ->firstOrFail();
+
+            $account->paysheet_id = $paysheet->id;
+            $account->save();
+
+            DB::commit();
+
+            return response()->json([
+                'status' => 'success',
+                'message' => __('status.accountscontroller.paysheet-success')
+            ]);
+        } catch (Exception $e) {
+            Log::error('Error al transferir entre cuentas: ' . $e->getMessage());
+            DB::rollBack();
+
+            return response()->json([
+                'status' => 'error',
+                'message' => __('status.accountscontroller.paysheet-failed')
+            ], 500);
+        }
+    }
+
+    /**
+     * Disable transactions for an account.
+     *
+     * @param Request $request The incoming HTTP request containing the account ID.
+     * @return JsonResponse Redirects back with a status message.
+     */
+    public function disableTransactions(Request $request): JsonResponse
+    {
+        $validated = $request->validate([
+            'account_id' => 'required|exists:accounts,id',
+            'categories' => 'nullable|array'
+        ]);
+
+
+        try {
+            $account = Account::where('user_id', Auth::user()->id)
+                ->where('id', $validated['account_id'])
+                ->firstOrFail();
+
+            // Reset paysheet_disabled for all categories of the account
+            CategoryAccount::where('account_id', $account->code)
+                ->update(['paysheet_disabled' => false]);
+
+            foreach ($validated['categories'] ?? [] as $category) {
+                if (!is_numeric($category)) {
+                    continue;
+                }
+
+                // Check if the category already exists for the account
+                $existingCategory = CategoryAccount::where('category_id', $category)
+                    ->where('account_id', $account->code)
+                    ->first();
+
+                if ($existingCategory) {
+                    // If it exists, update the paysheet_disabled status
+                    $existingCategory->paysheet_disabled = true;
+                    $existingCategory->save();
+                    continue;
+                }
+
+                CategoryAccount::create([
+                    'category_id' => $category,
+                    'account_id' => $account->code,
+                    'paysheet_disabled' => true,
+                ]);
+            }
+
+            return response()->json([
+                'status' => 'success',
+                'message' => __('status.accountscontroller.disable-transactions-success')
+            ]);
+        } catch (Exception $e) {
+            Log::error('Error al deshabilitar transacciones: ' . $e->getMessage());
+            return response()->json([
+                'status' => 'error',
+                'message' => __('status.accountscontroller.disable-transactions-failed')
+            ], 500);
+        }
+    }
+
+    /**
+     * Apply or remove the application of monthly expenses for the specified account.
+     *
+     * @param Request $request The incoming HTTP request containing account data and expense application flag.
+     *
+     * @return JsonResponse The success or error JSON response indicating the operation status.
+     *
+     * @throws ModelNotFoundException If the specified account does not belong to the authenticated user.
+     * @throws Exception|Throwable If an error occurs during the database transaction.
+     */
+    public function applyExpensesMonthly(Request $request): JsonResponse
+    {
+        $validated = $request->validate([
+            'account_id' => 'required|exists:accounts,id',
+            'apply_expenses_monthly' => 'required|boolean',
+        ]);
+
+        try {
+            DB::beginTransaction();
+
+            $account = Account::where('user_id', Auth::id())
+                ->where('id', $validated['account_id'])
+                ->firstOrFail();
+
+            $account->apply_expenses_monthly = $validated['apply_expenses_monthly'];
+            $account->save();
+
+            DB::commit();
+
+            return response()->json([
+                'status' => 'success',
+                'message' => __('status.accountscontroller.apply-expenses-monthly-success')
+            ]);
+        } catch (Exception $e) {
+            Log::error('Error al transferir entre cuentas: ' . $e->getMessage());
+            DB::rollBack();
+
+            return response()->json([
+                'status' => 'error',
+                'message' => __('status.accountscontroller.apply-expenses-monthly-failed')
             ], 500);
         }
     }

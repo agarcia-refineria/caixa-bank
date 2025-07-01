@@ -242,5 +242,10 @@
 
     "Sino te aparece ningun entidad bancaria, debes de ir a <strong>GoCardless</strong> y iniciar session, despues ir a Developers -> User Secrets y crear o usar una cuenta para el Secret Id y Secret Key. Una vez hecho, vuelve a esta página y inserta estos datos en los inputs de bajado y guardalo. Ahora te aparezera el boton <strong>Actualizar lista</strong>, una vez le des click te mostrara la todas las entidades bancarias.": "If no bank entities appear, you must go to <strong>GoCardless</strong> and log in, then go to Developers -> User Secrets and create or use an account for the Secret Id and Secret Key. Once done, return to this page and enter these details in the inputs below and save it. Now the <strong>Update List</strong> button will appear, once you click it, it will show you all the bank entities.",
 
-    "Calculator": "Calculator"
+    "Forecast": "Forecast",
+    "Forecast Saving": "Forecast Saving",
+    "Paysheet": "Paysheet",
+    "Average Month Expenses": "Average Month Expenses",
+    "Disable Transfers": "Disable Transactions",
+    "filters": "filters"
 }

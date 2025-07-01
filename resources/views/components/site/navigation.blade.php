@@ -24,8 +24,8 @@
                 </div>
 
                 <div class="hidden space-x-8 lg:-my-px lg:ms-10 lg:flex">
-                    <x-links.nav-link id="navigation-calculator" :shepherd-text="trans('shepherd.navigation-calculator')" :href="route('dashboard.calculator')" :active="request()->routeIs('dashboard.calculator')">
-                        {{ __('Calculator') }}
+                    <x-links.nav-link id="navigation-forecast" :shepherd-text="trans('shepherd.navigation-forecast')" :href="route('dashboard.forecast')" :active="request()->routeIs(['dashboard.forecast', 'dashboard.forecastShow'])">
+                        {{ __('Forecast') }}
                     </x-links.nav-link>
                 </div>
 
@@ -133,8 +133,8 @@
         </div>
 
         <div class="pt-2 pb-3 space-y-1">
-            <x-links.responsive-nav-link :href="route('dashboard.calculator')" :active="request()->routeIs('dashboard.calculator')">
-                {{ __('Calculator') }}
+            <x-links.responsive-nav-link :href="route('dashboard.forecast')" :active="request()->routeIs(['dashboard.forecast', 'dashboard.forecastShow'])">
+                {{ __('Forecast') }}
             </x-links.responsive-nav-link>
         </div>
 

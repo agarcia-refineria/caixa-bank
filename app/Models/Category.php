@@ -53,4 +53,9 @@ class Category extends Model
     {
         return $this->belongsTo(User::class, 'user_id');
     }
+
+    public function categories(): HasMany
+    {
+        return $this->hasMany(CategoryAccount::class, 'category_id');
+    }
 }
