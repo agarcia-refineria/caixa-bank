@@ -64,7 +64,7 @@
                     </x-slot>
 
                     <x-slot name="content">
-                        @if (!request()->routeIs(['profile.edit', 'profile.bank.edit', 'profile.accounts.edit', 'profile.import.edit', 'profile.categories']))
+                        @if (!request()->routeIs(['profile.edit', 'profile.bank.edit', 'profile.accounts.edit', 'profile.import.edit', 'profile.export.edit', 'profile.categories']))
                             <x-inputs.dropdown-link :href="route('profile.edit')">
                                 {{ __('Profile') }}
                             </x-inputs.dropdown-link>
@@ -158,7 +158,7 @@
             </div>
 
             <div class="mt-3 space-y-1">
-                @if (!request()->routeIs(['profile.edit', 'profile.bank.edit', 'profile.accounts.edit', 'profile.import.edit', 'profile.categories']))
+                @if (!request()->routeIs(['profile.edit', 'profile.bank.edit', 'profile.accounts.edit', 'profile.import.edit', 'profile.export.edit', 'profile.categories']))
                     <x-links.responsive-nav-link :href="route('profile.edit')">
                         {{ __('Profile') }}
                     </x-links.responsive-nav-link>

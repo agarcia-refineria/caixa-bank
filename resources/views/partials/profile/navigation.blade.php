@@ -17,7 +17,7 @@
                 </div>
 
                 <div class="hidden space-x-8 lg:-my-px lg:ms-10 lg:flex">
-                    <x-links.nav-link id="profile-navigation-accounts" :shepherd-text="trans('shepherd.profile-navigation-accounts')" :href="route('profile.accounts.edit')" :active="request()->routeIs(['profile.accounts.edit', 'profile.transaction.edit', 'profile.balance.edit' ,'profile.import.edit'])">
+                    <x-links.nav-link id="profile-navigation-accounts" :shepherd-text="trans('shepherd.profile-navigation-accounts')" :href="route('profile.accounts.edit')" :active="request()->routeIs(['profile.accounts.edit', 'profile.transaction.edit', 'profile.balance.edit' ,'profile.import.edit', 'profile.export.edit'])">
                         {{ __('Accounts') }}
                     </x-links.nav-link>
                 </div>
@@ -44,7 +44,7 @@
                 </div>
 
                 <div class="pt-2 pb-3 space-y-1">
-                    <x-links.responsive-nav-link :href="route('profile.accounts.edit')" :active="request()->routeIs(['profile.accounts.edit', 'profile.transaction.edit', 'profile.balance.edit', 'profile.import.edit'])">
+                    <x-links.responsive-nav-link :href="route('profile.accounts.edit')" :active="request()->routeIs(['profile.accounts.edit', 'profile.transaction.edit', 'profile.balance.edit', 'profile.import.edit', 'profile.export.edit'])">
                         {{ __('Accounts') }}
                     </x-links.responsive-nav-link>
                 </div>
