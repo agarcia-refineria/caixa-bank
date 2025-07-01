@@ -220,18 +220,19 @@ class AccountsController extends Controller
     public function paysheet(Request $request): JsonResponse
     {
         $validated = $request->validate([
-            'paysheet' => 'required|exists:transactions,id'
+            'paysheet' => 'nullable|exists:transactions,id',
+            'account_id' => 'required|exists:accounts,id',
         ]);
 
         try {
             DB::beginTransaction();
 
-            $paysheet = Transaction::findOrFail($validated['paysheet']);
-            $account = Account::where('user_id', Auth::id())
-                ->where('id', $paysheet->account_id)
+            $account = Account::where('user_id', Auth::user()->id)
+                ->where('id', $validated['account_id'])
                 ->firstOrFail();
+            $paysheet = Transaction::find($validated['paysheet']);
 
-            $account->paysheet_id = $paysheet->id;
+            $account->paysheet_id = $paysheet?->id;
             $account->save();
 
             DB::commit();

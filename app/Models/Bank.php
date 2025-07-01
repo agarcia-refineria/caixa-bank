@@ -10,6 +10,8 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Support\Carbon;
 
 /**
+ * 
+ *
  * @property int $id
  * @property int $user_id
  * @property int $institution_id

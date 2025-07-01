@@ -2,10 +2,31 @@
 
 namespace App\Models;
 
+use Eloquent;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
+/**
+ *
+ *
+ * @property int $id
+ * @property int $category_id
+ * @property string $account_id
+ * @property bool $paysheet_disabled
+ * @property-read Account $account
+ * @property-read Category $category
+ * @method static Builder|CategoryAccount isPaysheetDisabled()
+ * @method static Builder|CategoryAccount newModelQuery()
+ * @method static Builder|CategoryAccount newQuery()
+ * @method static Builder|CategoryAccount query()
+ * @method static Builder|CategoryAccount whereAccountId($value)
+ * @method static Builder|CategoryAccount whereCategoryId($value)
+ * @method static Builder|CategoryAccount whereId($value)
+ * @method static Builder|CategoryAccount wherePaysheetDisabled($value)
+ * @mixin Eloquent
+ */
 class CategoryAccount extends Model
 {
     use HasFactory;

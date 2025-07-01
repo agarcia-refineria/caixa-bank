@@ -11,6 +11,8 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
 /**
+ *
+ *
  * @property int $id
  * @property int|null $user_id
  * @property string $name
@@ -25,6 +27,8 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  * @method static Builder|Category whereId($value)
  * @method static Builder|Category whereName($value)
  * @method static Builder|Category whereUserId($value)
+ * @property-read Collection<int, CategoryAccount> $categories
+ * @property-read int|null $categories_count
  * @mixin Eloquent
  */
 class Category extends Model

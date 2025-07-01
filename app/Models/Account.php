@@ -10,12 +10,13 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
-use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Str;
 use App\Helpers\ColorHelper;
 
 /**
+ *
+ *
  * @property int $id
  * @property string|null $name
  * @property string|null $iban
@@ -86,6 +87,12 @@ use App\Helpers\ColorHelper;
  * @property-read mixed $chart_transactions_labels_category
  * @property-read mixed $chart_transactions_values_category
  * @property-read bool $show_update_all
+ * @property-read Collection<int, \App\Models\CategoryAccount> $categories
+ * @property-read int|null $categories_count
+ * @property-read string $chart_forecast_month_incomes_labels
+ * @property-read string $chart_forecast_month_incomes_values
+ * @method static Builder|Account whereApplyExpensesMonthly($value)
+ * @method static Builder|Account wherePaysheetId($value)
  * @mixin Eloquent
  */
 class Account extends Model
@@ -142,6 +149,12 @@ class Account extends Model
         return $this->belongsTo(Institution::class);
     }
 
+    /**
+     * Get the paysheet for the account.
+     *
+     * @noinspection PhpUnused
+     * @return BelongsTo
+     */
     public function paysheet(): BelongsTo
     {
         return $this->belongsTo(Transaction::class);
@@ -184,8 +197,6 @@ class Account extends Model
      */
     public function getUsedColors(&$usedColors): string
     {
-        //$colorsJson = file_get_contents(base_path('tailwind-colors.json'));
-        //$colorsArray = json_decode($colorsJson, true);
         $mainColor = Auth::user()->theme_main3;
         $minDistance = 10;
 
@@ -196,7 +207,6 @@ class Account extends Model
 
         $rgb = ColorHelper::hexToRgb($mainColor);
 
-        // If color is white or black, generate a random color
         if ($rgb[0] == 255 && $rgb[1] == 255 && $rgb[2] == 255) {
             $rgb = [rand(0, 255), rand(0, 255), rand(0, 255)];
         } elseif ($rgb[0] == 0 && $rgb[1] == 0 && $rgb[2] == 0) {
@@ -205,9 +215,6 @@ class Account extends Model
 
         do {
             list($r, $g, $b) = $rgb;
-
-            // Switch the RGB values to see wich one is the most dominant
-            // and set the other two to random values between 0 and 255
 
             switch (true) {
                 case $r > $g && $r > $b:
@@ -244,7 +251,14 @@ class Account extends Model
         return $color;
     }
 
-    public function colorDistance($c1, $c2): float
+    /**
+     * Calculates the Euclidean distance between two colors in RGB color space.
+     *
+     * @param array $c1 An array representing the first color in RGB format [red, green, blue].
+     * @param array $c2 An array representing the second color in RGB format [red, green, blue].
+     * @return float The calculated distance between the two colors.
+     */
+    public function colorDistance(array $c1, array $c2): float
     {
         list($r1, $g1, $b1) = $c1;
         list($r2, $g2, $b2) = $c2;
@@ -753,7 +767,7 @@ class Account extends Model
 
         $result = [];
 
-        for ($i = 0; $i < 12; $i++) {
+        for ($i = 0; $i < 24; $i++) {
             $result[] = $balance+($forecast * $i);
         }
 
@@ -770,15 +784,13 @@ class Account extends Model
         $labels = [];
         $currentMonth = now()->startOfMonth();
 
-        for ($i = 0; $i < 12; $i++) {
+        for ($i = 0; $i < 24; $i++) {
             $labels[] = $currentMonth->format('M Y');
             $currentMonth->addMonth();
         }
 
         return implode(',', $labels);
     }
-
-
 
     /**
      * Get the example model for testing purposes.

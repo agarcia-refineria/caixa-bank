@@ -91,7 +91,7 @@
                         'Content-Type': 'application/json',
                         'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
                     },
-                    body: JSON.stringify({ paysheet: paysheetValue })
+                    body: JSON.stringify({ paysheet: paysheetValue, account_id: '{{ $currentAccount->code }}' })
                 });
             }
             function setDisableTransactions() {

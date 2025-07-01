@@ -22,6 +22,8 @@ use Monolog\Handler\StreamHandler;
 use Monolog\Logger;
 
 /**
+ * 
+ *
  * @property int $id
  * @property string $name
  * @property string $email
