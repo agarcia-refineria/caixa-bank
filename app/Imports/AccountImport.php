@@ -17,6 +17,8 @@ class AccountImport implements ToModel, WithHeadingRow
      */
     public function model(array $row): Model|Account|null
     {
+        dd($row);
+
         // Check if the account already exists for the authenticated user
         $existingAccount = Account::where('user_id', auth()->id())
             ->where('id', $row['id'])

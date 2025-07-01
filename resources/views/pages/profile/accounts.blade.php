@@ -15,6 +15,10 @@
                     <x-links.nav-link class="uppercase px-4" :href="route('profile.import.edit')" :active="request()->routeIs(['profile.import.edit'])">
                         {{ __('Import') }}
                     </x-links.nav-link>
+
+                    <x-links.nav-link class="uppercase px-4" :href="route('profile.export.edit')" :active="request()->routeIs(['profile.export.edit'])">
+                        {{ __('Export') }}
+                    </x-links.nav-link>
                 </div>
 
 

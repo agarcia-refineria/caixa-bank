@@ -11,4 +11,5 @@
            file:bg-main3 file:text-primary hover:file:text-main3 hover:file:bg-primary"
     id="file_input"
     type="file"
+    {{ $attributes->merge() }}
 />

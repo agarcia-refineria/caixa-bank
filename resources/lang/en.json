@@ -249,5 +249,6 @@
     "Disable Transfers": "Disable Transactions",
     "filters": "filters",
     "Apply Expenses Monthly": "Apply Expenses Monthly",
-    "Incomes Future History": "Incomes Future History"
+    "Incomes Future History": "Incomes Future History",
+    "Export": "Export"
 }

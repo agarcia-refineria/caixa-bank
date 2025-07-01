@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\CategoriesController;
+use App\Http\Controllers\ExportController;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\NordigenController;
@@ -75,6 +76,12 @@ Route::middleware('auth')->group(function () {
     Route::post('/profile/import/accounts', [ImportController::class, 'accounts'])->name('profile.import.accounts');
     Route::post('/profile/import/transactions', [ImportController::class, 'transaction'])->name('profile.import.transactions');
     Route::post('/profile/import/balances', [ImportController::class, 'balances'])->name('profile.import.balances');
+
+    // Profile [export routes]
+    Route::get('/profile/export', [ExportController::class, 'show'])->name('profile.export.edit');
+    Route::get('/profile/export/accounts/{type}', [ExportController::class, 'accounts'])->name('profile.export.accounts');
+    Route::get('/profile/export/transactions/{type}', [ExportController::class, 'transaction'])->name('profile.export.transactions');
+    Route::get('/profile/export/balances/{type}', [ExportController::class, 'balances'])->name('profile.export.balances');
 
     // Profile [Categories routes]
     Route::get('/profile/categories', [CategoriesController::class, 'show'])->name('profile.categories');
