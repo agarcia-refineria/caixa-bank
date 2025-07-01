@@ -695,7 +695,7 @@ class Account extends Model
         $excludedCategories = $this->categories()
             ->where('paysheet_disabled', true)
             ->get()
-            ->pluck('id')
+            ->pluck('category_id')
             ->toArray();
 
         // Get all transactions that are not in the excluded categories and are expenses
