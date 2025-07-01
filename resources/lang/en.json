@@ -247,5 +247,7 @@
     "Paysheet": "Paysheet",
     "Average Month Expenses": "Average Month Expenses",
     "Disable Transfers": "Disable Transactions",
-    "filters": "filters"
+    "filters": "filters",
+    "Apply Expenses Monthly": "Apply Expenses Monthly",
+    "Incomes Future History": "Incomes Future History"
 }
