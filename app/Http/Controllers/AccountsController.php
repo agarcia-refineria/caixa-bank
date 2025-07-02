@@ -204,7 +204,7 @@ class AccountsController extends Controller
                 $account->delete();
                 DB::commit();
                 return Redirect::route('profile.accounts.edit')
-                    ->with('status', __('status.accountscontroller.destroy-account-success'));
+                    ->with('status', __('status.accountscontroller.delete-account-success'));
             } catch (Exception $e) {
                 DB::rollBack();
                 throw $e;
@@ -219,7 +219,7 @@ class AccountsController extends Controller
             );
 
             return Redirect::route('profile.accounts.edit')
-                ->with('error', __('status.accountscontroller.destroy-account-not-found'));
+                ->with('error', __('status.accountscontroller.delete-account-not-found'));
         } catch (Exception $e) {
             $user->getCustomLoggerAttribute('AccountsController')->error(
                 'Error function destroy()',
@@ -230,7 +230,7 @@ class AccountsController extends Controller
             );
 
             return Redirect::route('profile.accounts.edit')
-                ->with('error', __('status.accountscontroller.destroy-account-failed'));
+                ->with('error', __('status.accountscontroller.delete-account-failed'));
         }
     }
 
@@ -246,7 +246,7 @@ class AccountsController extends Controller
         if (!auth()->check()) {
             return response()->json([
                 'status' => 'error',
-                'message' => 'No se pudo reordenar los elementos'
+                'message' => __('status.accountscontroller.reorder-failed')
             ], 500);
         }
 
@@ -267,7 +267,7 @@ class AccountsController extends Controller
 
             DB::commit();
 
-            return response()->json(['status' => 'success']);
+            return response()->json(['status' => 'success', 'message' => __('status.accountscontroller.reorder-success')]);
         } catch (Exception $e) {
             $user->getCustomLoggerAttribute('AccountsController')->error(
                 'Error function reorder()',
@@ -280,7 +280,7 @@ class AccountsController extends Controller
             DB::rollBack();
             return response()->json([
                 'status' => 'error',
-                'message' => 'No se pudo reordenar los elementos'
+                'message' => __('status.accountscontroller.reorder-failed')
             ], 500);
         }
     }

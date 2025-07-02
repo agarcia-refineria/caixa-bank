@@ -79,11 +79,11 @@ class ImportController extends Controller
             );
 
             return Redirect::route('profile.import.edit')
-                ->withErrors(['file_accounts' => 'Error al procesar el archivo: ' . $e->getMessage()]);
+                ->withErrors(['file_accounts' => __('status.exportcontroller.error-reading-file')]);
         }
 
         return Redirect::route('profile.import.edit')
-            ->with('success', 'Cuentas importadas correctamente');
+            ->with('success', __('status.importcontroller.accounts-imported'));
     }
 
     /**
@@ -125,10 +125,10 @@ class ImportController extends Controller
             );
 
             return Redirect::route('profile.import.edit')
-                ->withErrors(['file_csv_transactions' => 'Error reading file: ' . $e->getMessage()]);
+                ->withErrors(['file_transactions' =>  __('status.exportcontroller.error-reading-file')]);
         }
 
-        return Redirect::route('profile.import.edit')->with('success', 'transactions-imported');
+        return Redirect::route('profile.import.edit')->with('success', __('status.importcontroller.transactions-imported'));
     }
 
     /**
@@ -170,10 +170,10 @@ class ImportController extends Controller
             );
 
             return Redirect::route('profile.import.edit')
-                ->withErrors(['file_csv_balances' => 'Error reading file: ' . $e->getMessage()]);
+                ->withErrors(['file_balances' =>  __('status.exportcontroller.error-reading-file')]);
         }
 
-        return Redirect::route('profile.import.edit')->with('success', 'balances-imported');
+        return Redirect::route('profile.import.edit')->with('success', __('status.importcontroller.balances-imported'));
     }
 
     private function moveUploadedFile(UploadedFile $file): string

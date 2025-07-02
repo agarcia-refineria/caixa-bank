@@ -56,7 +56,14 @@ class CategoryAccount extends Model
         return $this->belongsTo(Account::class, 'account_id');
     }
 
-    public function scopeIsPaysheetDisabled($query)
+    /**
+     * Scope a query to only include accounts with paysheet disabled.
+     *
+     * @noinspection PhpUnused
+     * @param Builder $query
+     * @return Builder
+     */
+    public function scopeIsPaysheetDisabled(Builder $query): Builder
     {
         return $query->where('paysheet_disabled', true);
     }

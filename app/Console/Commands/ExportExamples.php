@@ -41,9 +41,9 @@ class ExportExamples extends Command
             try {
                 $this->exportFiles($type);
             } catch (Exception $e) {
-                $this->error("Failed to export files in {$type} format: " . $e->getMessage());
+                $this->error("Failed to export files in $type format: " . $e->getMessage());
             } catch (\Exception $e) {
-                $this->error("An unexpected error occurred while exporting files in {$type} format: " . $e->getMessage());
+                $this->error("An unexpected error occurred while exporting files in $type format: " . $e->getMessage());
             }
         }
     }

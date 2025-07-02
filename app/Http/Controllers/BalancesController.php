@@ -169,7 +169,7 @@ class BalancesController extends Controller
             // Ensure the balance belongs to the authenticated user's account and is manual
             if ($balance->account->is_manual && $balance->account->user_id !== $user->id) {
                 return Redirect::route('profile.accounts.edit')
-                    ->with('error', __('You do not have permission to update this balance.'));
+                    ->with('error', __('status.balancescontroller.update-balance-not-found'));
             }
 
             $balanceData = $request->input('Balance')[$key];
@@ -248,7 +248,7 @@ class BalancesController extends Controller
                 // Ensure the balance belongs to the authenticated user's account
                 if ($account->is_manual && $account->user_id !== $user->id) {
                     return Redirect::route('profile.accounts.edit')
-                        ->with('error', __('You do not have permission to delete this balance.'));
+                        ->with('error', __('status.balancescontroller.delete-balance-not-found'));
                 }
 
                 DB::transaction(function () use ($balance) {
@@ -256,7 +256,7 @@ class BalancesController extends Controller
                 });
 
                 return Redirect::route('profile.balance.edit', ['id' => $account->code])
-                    ->with('success', __('Balance deleted successfully.'));
+                    ->with('success', __('status.balancescontroller.delete-balance-success'));
             }
         } catch (Exception $e) {
             $user->getCustomLoggerAttribute('BalancesController')->error(
@@ -268,10 +268,10 @@ class BalancesController extends Controller
             );
 
             return Redirect::route('profile.accounts.edit')
-                ->with('error', __('Error deleting balance.'));
+                ->with('error', __('status.balancescontroller.delete-balance-failed'));
         }
 
         return Redirect::route('profile.accounts.edit')
-            ->with('error', __('Error deleting balance.'));
+            ->with('error', __('status.balancescontroller.delete-balance-failed'));
     }
 }

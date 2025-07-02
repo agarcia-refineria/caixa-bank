@@ -3,6 +3,7 @@
 namespace App\Imports;
 
 use App\Models\Account;
+use Auth;
 use Illuminate\Database\Eloquent\Model;
 use Maatwebsite\Excel\Concerns\ToModel;
 use Maatwebsite\Excel\Concerns\WithHeadingRow;
@@ -17,8 +18,10 @@ class AccountImport implements ToModel, WithHeadingRow
      */
     public function model(array $row): Model|Account|null
     {
+        $user = Auth::user();
+
         // Check if the account already exists for the authenticated user
-        $existingAccount = Account::where('user_id', auth()->id())
+        $existingAccount = Account::where('user_id', $user->id)
             ->where('id', $row['id'])
             ->first();
 
@@ -26,8 +29,8 @@ class AccountImport implements ToModel, WithHeadingRow
             // Check if the account does not exist
             $existingAccount = Account::find($row['id']);
 
-            if ($existingAccount) {
-                // If the account exists but not for the current user, return null
+            if ($existingAccount || !$user->bank) {
+                // If the account exists but not for the current user, return null or user dosntt have a bank
                 return null;
             }
 
@@ -40,8 +43,8 @@ class AccountImport implements ToModel, WithHeadingRow
                 'owner_name' => $row['owner_name'],
                 'created' => Date::excelToDateTimeObject($row['created'])->format('d-m-Y H:i:s'),
                 'last_accessed' => Date::excelToDateTimeObject($row['last_accessed'])->format('d-m-Y H:i:s'),
-                'institution_id' => auth()->user()->bank->institution_id,
-                'user_id' => auth()->id(),
+                'institution_id' => $user->bank->institution_id,
+                'user_id' => $user->id,
                 'type' => Account::$accountTypes['manual'],
             ]);
         } else {

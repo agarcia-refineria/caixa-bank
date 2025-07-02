@@ -9,6 +9,14 @@ return [
         'delete-account-success' => 'La cuenta fue eliminada exitosamente',
         'delete-account-failed' => 'Ocurrió un error al eliminar la cuenta',
         'delete-account-not-found' => 'No se encontró la cuenta a eliminar',
+        'paysheet-failed' => 'Ocurrió un error al procesar la nómina',
+        'paysheet-success' => 'Nómina procesada exitosamente',
+        'disable-transactions-failed' => 'Ocurrió un error al deshabilitar las transacciones',
+        'disable-transactions-success' => 'Las transacciones fueron deshabilitadas exitosamente',
+        'apply-expenses-monthly-failed' => 'Ocurrió un error al aplicar los gastos mensuales',
+        'apply-expenses-monthly-success' => 'Gastos mensuales aplicados exitosamente',
+        'reorder-failed' => 'Ocurrió un error al reordenar las cuentas',
+        'reorder-success' => 'Cuentas reordenadas exitosamente'
     ],
     'balancescontroller' => [
         'create-balance-success' => 'El balance fue creado exitosamente',
@@ -58,6 +66,8 @@ return [
         'transaction-update-failed' => 'Ocurrió un error al actualizar la transacción',
         'transaction-deleted' => 'Transacción eliminada exitosamente',
         'transaction-delete-failed' => 'Ocurrió un error al eliminar la transacción',
+        'account-not-found' => 'No se encontró la cuenta para la transacción',
+        'transaction-not-found' => 'No se encontró la transacción'
     ],
     'categoriescontroller' => [
         'create-category-success' => 'Categoría creada exitosamente',
@@ -73,5 +83,18 @@ return [
         'no-transactions-categories' => 'No hay transacciones para actualizar las categorías',
         'update-filter-success' => 'Filtro actualizado exitosamente',
         'create-filter-success' => 'Filtro creado exitosamente',
+        'delete-filter-success' => 'Filtro eliminado exitosamente',
+    ],
+    'dashboardcontroller' => [
+        'account-not-found' => 'Cuenta no encontrada',
+    ],
+    'exportcontroller' => [
+        'error-reading-file' => 'Ocurrió un error al leer el archivo',
+    ],
+    'importcontroller' => [
+        'error-reading-file' => 'Ocurrió un error al leer el archivo',
+        'accounts-imported' => 'Cuentas importadas exitosamente',
+        'transactions-imported' => 'Transacciones importadas exitosamente',
+        'balances-imported' => 'Balances importados exitosamente',
     ],
 ];

@@ -12,11 +12,11 @@ use PhpOffice\PhpSpreadsheet\Shared\Date;
 class BalanceImport implements ToModel, WithHeadingRow
 {
     /**
-    * @param array $row
-    *
-    * @return Model|null
-    */
-    public function model(array $row)
+     * @param array $row
+     *
+     * @return Model|Balance|null
+     */
+    public function model(array $row): Model|Balance|null
     {
         // Check if the account exists for the authenticated user
         $account = Auth::user()->accounts()

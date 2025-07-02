@@ -63,7 +63,7 @@ class ExportController extends Controller
                     'trace' => $e->getTraceAsString() ?: 'No trace available',
                 ]
             );
-            return Redirect::route('profile.export.edit')->withErrors(['file_accounts' => 'Error reading file: ' . $e->getMessage()]);
+            return Redirect::route('profile.export.edit')->withErrors(['file_accounts' => __('status.exportcontroller.error-reading-file')]);
         }
     }
 
@@ -93,7 +93,7 @@ class ExportController extends Controller
                 ]
             );
 
-            return Redirect::route('profile.export.edit')->withErrors(['file_transactions' => 'Error reading file: ' . $e->getMessage()]);
+            return Redirect::route('profile.export.edit')->withErrors(['file_transactions' =>  __('status.exportcontroller.error-reading-file')]);
         }
     }
 
@@ -123,7 +123,7 @@ class ExportController extends Controller
                 ]
             );
 
-            return Redirect::route('profile.export.edit')->withErrors(['file_balances' => 'Error reading file: ' . $e->getMessage()]);
+            return Redirect::route('profile.export.edit')->withErrors(['file_balances' =>  __('status.exportcontroller.error-reading-file')]);
         }
     }
 

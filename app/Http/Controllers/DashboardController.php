@@ -76,7 +76,7 @@ class DashboardController extends Controller
             return view('pages.dashboard.index', compact('user', 'accounts', 'currentAccount', 'balance'));
         }
 
-        return redirect()->route('dashboard.index')->withErrors(['account' => 'Account not found.']);
+        return redirect()->route('dashboard.index')->with(['status' => __('status.dashboardcontroller.account-not-found')]);
     }
 
     /**

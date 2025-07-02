@@ -11,7 +11,6 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Carbon;
-use Illuminate\Support\Str;
 use App\Helpers\ColorHelper;
 
 /**
@@ -87,7 +86,7 @@ use App\Helpers\ColorHelper;
  * @property-read mixed $chart_transactions_labels_category
  * @property-read mixed $chart_transactions_values_category
  * @property-read bool $show_update_all
- * @property-read Collection<int, \App\Models\CategoryAccount> $categories
+ * @property-read Collection<int, CategoryAccount> $categories
  * @property-read int|null $categories_count
  * @property-read string $chart_forecast_month_incomes_labels
  * @property-read string $chart_forecast_month_incomes_values

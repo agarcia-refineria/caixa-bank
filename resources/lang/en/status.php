@@ -9,6 +9,14 @@ return [
         'delete-account-success' => 'The account was deleted successfully',
         'delete-account-failed' => 'An error occurred while deleting the account',
         'delete-account-not-found' => 'The account to delete was not found',
+        'paysheet-failed' => 'An error occurred while processing the paysheet',
+        'paysheet-success' => 'Paysheet processed successfully',
+        'disable-transactions-failed' => 'An error occurred while disabling transactions',
+        'disable-transactions-success' => 'Transactions were disabled successfully',
+        'apply-expenses-monthly-failed' => 'An error occurred while applying monthly expenses',
+        'apply-expenses-monthly-success' => 'Monthly expenses applied successfully',
+        'reorder-failed' => 'An error occurred while reordering accounts',
+        'reorder-success' => 'Accounts reordered successfully',
     ],
     'balancescontroller' => [
         'create-balance-success' => 'The balance was created successfully',
@@ -58,6 +66,8 @@ return [
         'transaction-update-failed' => 'An error occurred while updating the transaction',
         'transaction-deleted' => 'Transaction deleted successfully',
         'transaction-delete-failed' => 'An error occurred while deleting the transaction',
+        'account-not-found' => 'The account for the transaction was not found',
+        'transaction-not-found' => 'Transaction not found',
     ],
     'categoriescontroller' => [
         'create-category-success' => 'Category created successfully',
@@ -73,5 +83,18 @@ return [
         'no-transactions-categories' => 'No transactions to update categories',
         'update-filter-success' => 'Filter updated successfully',
         'create-filter-success' => 'Filter created successfully',
+        'delete-filter-success' => 'Filter deleted successfully',
+    ],
+    'dashboardcontroller' => [
+        'account-not-found' => 'The account was not found',
+    ],
+    'exportcontroller' => [
+        'error-reading-file' => 'An error occurred while reading the file',
+    ],
+    'importcontroller' => [
+        'error-reading-file' => 'An error occurred while reading the file',
+        'accounts-imported' => 'Accounts imported successfully',
+        'transactions-imported' => 'Transactions imported successfully',
+        'balances-imported' => 'Balances imported successfully',
     ],
 ];

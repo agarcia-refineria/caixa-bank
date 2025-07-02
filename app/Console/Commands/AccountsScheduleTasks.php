@@ -35,7 +35,7 @@ class AccountsScheduleTasks extends Command
             foreach ($user->schedule as $task) {
                 if ($task->hourSimple === $ahora) {
                     $user->executeAccountTasks();
-                    $logger->info("✅ Ejecutando tarea programada para {$user->email} a las {$task->hour}");
+                    $logger->info("✅ Ejecutando tarea programada para $user->email a las $task->hour");
                 }
             }
         }

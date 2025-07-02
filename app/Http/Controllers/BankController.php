@@ -300,7 +300,7 @@ class BankController extends Controller
     public function scheduleTasks(): JsonResponse
     {
         if (!auth()->check()) {
-            return response()->json(['error' => 'No autorizado'], 401);
+            return response()->json(['status' => 'error', 'message' => __('status.bankcontroller.schedule-error')], 401);
         }
 
         $user = Auth::user();
@@ -310,7 +310,7 @@ class BankController extends Controller
                 Artisan::call('schedule:run');
             })->afterResponse();
 
-            return response()->json(['status' => 'executed']);
+            return response()->json(['status' => 'success', 'message' => __('status.bankcontroller.schedule-updated')]);
         } catch (Exception $e) {
             $user->getCustomLoggerAttribute('BankController')->error(
                 'Error function scheduleTasks()',
@@ -320,7 +320,7 @@ class BankController extends Controller
                 ]
             );
 
-            return response()->json(['error' => 'Error al ejecutar tareas programadas'], 500);
+            return response()->json(['status' => 'error', 'message' => __('status.bankcontroller.schedule-error')], 500);
         }
     }
 }
