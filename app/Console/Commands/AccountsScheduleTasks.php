@@ -19,7 +19,7 @@ class AccountsScheduleTasks extends Command
      *
      * @var string
      */
-    protected $description = 'Command description';
+    protected $description = 'Execute scheduled tasks for user accounts';
 
     /**
      * Execute the console command.

@@ -3,6 +3,7 @@
 namespace App\Imports;
 
 use App\Models\Balance;
+use Auth;
 use Illuminate\Database\Eloquent\Model;
 use Maatwebsite\Excel\Concerns\ToModel;
 use Maatwebsite\Excel\Concerns\WithHeadingRow;
@@ -18,12 +19,32 @@ class BalanceImport implements ToModel, WithHeadingRow
     public function model(array $row)
     {
         // Check if the account exists for the authenticated user
-        $account = auth()->user()->accounts()
+        $account = Auth::user()->accounts()
             ->where('id', $row['account_id'])
             ->first();
 
         if ($account) {
+            // Check if the balance id exists for the given account
+            $existingBalance = $account->balances()
+                ->where('id', $row['id'])
+                ->first();
+
+            if ($existingBalance) {
+                // If the balance already exists update it
+                $existingBalance->update([
+                    'amount' => $row['amount'],
+                    'currency' => $row['currency'],
+                    'balance_type' => $row['balance_type'],
+                    'reference_date' => Date::excelToDateTimeObject($row['reference_date'])->format('d-m-Y H:i:s'),
+                    'account_id' => $account->id,
+                ]);
+
+                return $existingBalance;
+            }
+
+            // If the balance does not exist, create a new one
             return new Balance([
+                'id' => $row['id'],
                 'amount' => $row['amount'],
                 'currency' => $row['currency'],
                 'balance_type' => $row['balance_type'],
@@ -32,6 +53,7 @@ class BalanceImport implements ToModel, WithHeadingRow
             ]);
         }
 
+        // If the account does not exist for the authenticated user, return null
         return null;
     }
 }

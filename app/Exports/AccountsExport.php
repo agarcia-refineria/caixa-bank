@@ -13,12 +13,15 @@ use PhpOffice\PhpSpreadsheet\Worksheet\Drawing;
 
 class AccountsExport implements FromCollection, WithMapping, WithHeadings,WithDrawings
 {
+
+    private Collection $collection;
+
     /**
     * @return Collection
     */
     public function collection(): Collection
     {
-        return Auth::user()->accounts;
+        return $this->collection ?? Auth::user()->accounts;
     }
 
 
@@ -66,5 +69,10 @@ class AccountsExport implements FromCollection, WithMapping, WithHeadings,WithDr
         $drawing->setCoordinates('A1');
 
         return $drawing;
+    }
+
+    public function setCollection(Collection $collection): void
+    {
+        $this->collection = $collection;
     }
 }

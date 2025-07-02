@@ -13,17 +13,21 @@ use PhpOffice\PhpSpreadsheet\Worksheet\Drawing;
 
 class BalancesExport implements FromCollection, WithMapping, WithHeadings, WithDrawings
 {
+
+    private Collection $collection;
+
     /**
     * @return Collection
     */
     public function collection(): Collection
     {
-        return Auth::user()->balances;
+        return $this->collection ?? Auth::user()->balances;
     }
 
     public function map($row): array
     {
         return [
+            'id' => $row->id,
             'amount' => $row->amount,
             'currency' => $row->currency,
             'balance_type' => $row->balance_type,
@@ -34,6 +38,7 @@ class BalancesExport implements FromCollection, WithMapping, WithHeadings, WithD
     public function headings(): array
     {
         return [
+            'ID',
             'Amount',
             'Currency',
             'Balance Type',
@@ -55,5 +60,10 @@ class BalancesExport implements FromCollection, WithMapping, WithHeadings, WithD
         $drawing->setCoordinates('A1');
 
         return $drawing;
+    }
+
+    public function setCollection(Collection $collection): void
+    {
+        $this->collection = $collection;
     }
 }

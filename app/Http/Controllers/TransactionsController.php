@@ -9,7 +9,6 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Str;
 use Illuminate\View\View;
@@ -32,6 +31,10 @@ class TransactionsController extends Controller
      */
     public function edit(string $accountId): View|RedirectResponse
     {
+        if (!auth()->check()) {
+            abort(403);
+        }
+
         $account = Account::where('user_id', Auth::id())
             ->findOrFail($accountId);
 
@@ -62,6 +65,12 @@ class TransactionsController extends Controller
      */
     public function create(Request $request): RedirectResponse
     {
+        if (!auth()->check()) {
+            return Redirect::route('login');
+        }
+
+        $user = Auth::user();
+
         try {
             $validated = $request->validate([
                 'account_id' => 'required|exists:accounts,id'
@@ -82,7 +91,15 @@ class TransactionsController extends Controller
                 'newTransaction.debtorAccount' => 'nullable|string|max:255',
             ]));
 
-            $account = Account::onlyManual()->findOrFail($validated['account_id']);
+            // Ensure the account is a manual account and belongs to the user
+            $account = Account::onlyManual()
+                ->where('user_id', $user->id)
+                ->findOrFail($validated['account_id']);
+
+            if (!$account) {
+                return Redirect::route('profile.accounts.edit')
+                    ->with('error', __('status.transactionscontroller.account-not-found'));
+            }
 
             $transactionData = $validated['newTransaction'];
 
@@ -108,11 +125,14 @@ class TransactionsController extends Controller
                 ->with('success', __('status.transactionscontroller.transaction-created'));
 
         } catch (Exception $e) {
-            Log::error('Error creating transaction', [
-                'error' => $e->getMessage(),
-                'account_id' => $request->input('account_id'),
-                'request_data' => $request->all(),
-            ]);
+            $user->getCustomLoggerAttribute('TransactionsController')->error(
+                'Error function create()',
+                [
+                    'message' => $e->getMessage() ?: 'No message provided',
+                    'trace' => $e->getTraceAsString() ?: 'No trace available',
+                ]
+            );
+
             return Redirect::route('profile.accounts.edit')
                 ->with('error', __('status.transactionscontroller.transaction-creation-failed'));
         }
@@ -133,6 +153,12 @@ class TransactionsController extends Controller
      */
     public function update(Request $request): RedirectResponse
     {
+        if (!auth()->check()) {
+            return Redirect::route('login');
+        }
+
+        $user = Auth::user();
+
         $request->validate([
             'transaction_id' => 'required|exists:transactions,id',
             "account_id" => 'required|exists:accounts,id',
@@ -158,8 +184,19 @@ class TransactionsController extends Controller
         $transactionData = $request->input("Transaction.$key");
 
         try {
-            $account = Account::onlyManual()->findOrFail($request->input('account_id'));
-            $transaction = Transaction::findOrFail($request->input('transaction_id'));
+            // Ensure the account is a manual account and belongs to the user
+            $account = Account::onlyManual()
+                ->where('user_id', $user->id)
+                ->findOrFail($request->input('account_id'));
+
+            // Ensure the transaction belongs to the account
+            $transaction = Transaction::where('account_id', $account->code)
+                ->findOrFail($request->input('transaction_id'));
+
+            if (!$transaction) {
+                return Redirect::route('profile.transaction.edit', ['id' => $account->code])
+                    ->with('error', __('status.transactionscontroller.transaction-not-found'));
+            }
 
             DB::beginTransaction();
 
@@ -185,13 +222,15 @@ class TransactionsController extends Controller
             return Redirect::route('profile.transaction.edit', ['id' => $account->code])
                 ->with('success', __('status.transactionscontroller.transaction-updated'));
         } catch (Exception $e) {
-            Log::error('Error updating transaction', [
-                'error' => $e->getMessage(),
-                'transaction_id' => $request->input('transaction_id'),
-                'account_id' => $request->input('account_id'),
-            ]);
-            DB::rollBack();
+            $user->getCustomLoggerAttribute('TransactionsController')->error(
+                'Error function update()',
+                [
+                    'message' => $e->getMessage() ?: 'No message provided',
+                    'trace' => $e->getTraceAsString() ?: 'No trace available',
+                ]
+            );
 
+            DB::rollBack();
             return Redirect::route('profile.transaction.edit', ['id' => $request->input('account_id')])
                 ->with('error', __('status.transactionscontroller.transaction-update-failed'));
         }
@@ -212,16 +251,25 @@ class TransactionsController extends Controller
      */
     public function destroy(): RedirectResponse
     {
+        if (!auth()->check()) {
+            return Redirect::route('login');
+        }
+
+        $user = Auth::user();
+
         $validated = request()->validate([
             'transaction_id' => 'required|exists:transactions,id',
             'account_id' => 'required|exists:accounts,id',
         ]);
 
-        $transaction = Transaction::findOrFail($validated['transaction_id']);
-        $account = Account::onlyManual()->findOrFail($validated['account_id']);
+        $account = Account::onlyManual()
+            ->where('user_id', $user->id)
+            ->findOrFail($validated['account_id']);
 
-        // Ensure the transaction belongs to the account
-        if ($account->user_id !== Auth::id()) {
+        $transaction = Transaction::where('account_id', $account->code)
+            ->findOrFail($validated['transaction_id']);
+
+        if (!$transaction) {
             return Redirect::route('profile.transaction.edit', ['id' => $account->code])
                 ->with('error', __('status.transactionscontroller.transaction-not-found'));
         }

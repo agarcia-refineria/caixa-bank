@@ -13,6 +13,7 @@ use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Foundation\Application;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Redirect;
 
 class CategoriesController extends Controller
 {
@@ -20,18 +21,23 @@ class CategoriesController extends Controller
      * Display the categories associated with the current user's account transactions.
      *
      * Fetches all categories, including their related transactions and filters, for the authenticated user.
-     * Passes the authenticated user and categories data to the view.
+     * Passes the authenticated user and category data to the view.
      *
      * @return View|Application|Factory|\Illuminate\Contracts\Foundation\Application The rendered view for the categories page.
      */
     public function show(): View|Application|Factory|\Illuminate\Contracts\Foundation\Application
     {
+        if (!auth()->check()) {
+            abort(403);
+        }
+
+        $user = Auth::user();
+
         // Get all categories from accounts transactions of the current user
-        $categories = Auth::user()
+        $categories = $user
             ->categories()
             ->with(['transactions', 'filters'])
             ->get();
-        $user = auth()->user();
 
         return view('pages.profile.categories', compact('categories', 'user'));
     }
@@ -46,6 +52,10 @@ class CategoriesController extends Controller
      */
     public function create(Request $request): RedirectResponse
     {
+        if (!auth()->check()) {
+            return Redirect::route('login');
+        }
+
         $request->validate([
             'name' => 'required|string|max:255|unique:categories,name,NULL,id,user_id,' . auth()->id(),
         ]);
@@ -69,6 +79,10 @@ class CategoriesController extends Controller
      */
     public function update(Request $request, int $id): RedirectResponse
     {
+        if (!auth()->check()) {
+            return Redirect::route('login');
+        }
+
         $request->validate([
             'name' => 'required|string|max:255|unique:categories,name,' . $id . ',id,user_id,' . auth()->id(),
         ]);
@@ -92,6 +106,10 @@ class CategoriesController extends Controller
      */
     public function destroy(int $id): RedirectResponse
     {
+        if (!auth()->check()) {
+            return Redirect::route('login');
+        }
+
         $category = Auth::user()->categories()->findOrFail($id);
 
         if ($category instanceof Category) {
@@ -118,6 +136,10 @@ class CategoriesController extends Controller
      */
     public function createFilter(Request $request): RedirectResponse
     {
+        if (!auth()->check()) {
+            return Redirect::route('login');
+        }
+
         $request->validate([
             'value' => 'required|string|max:255',
             'type' => 'required|in:exact,contains,starts_with,ends_with',
@@ -150,6 +172,10 @@ class CategoriesController extends Controller
      */
     public function updateFilter(Request $request, int $id): RedirectResponse
     {
+        if (!auth()->check()) {
+            return Redirect::route('login');
+        }
+
         $request->validate([
             'value' => 'required|string|max:255',
             'type' => 'required|in:exact,contains,starts_with,ends_with',
@@ -178,6 +204,10 @@ class CategoriesController extends Controller
      */
     public function destroyFilter(int|string $id): RedirectResponse
     {
+        if (!auth()->check()) {
+            return Redirect::route('login');
+        }
+
         $filter = CategoryFilter::findOrFail($id);
         $filter->delete();
 
@@ -198,6 +228,10 @@ class CategoriesController extends Controller
      */
     public function setAllCategoriesFilter(): RedirectResponse
     {
+        if (!auth()->check()) {
+            return Redirect::route('login');
+        }
+
         $accounts = Auth::user()->accounts()->get();
         $updatedCount = 0;
         $totalTransactions = 0;

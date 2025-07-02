@@ -801,7 +801,7 @@ class Account extends Model
     public static function getExampleModel(): Account
     {
         return new self([
-            'id' => Str::uuid()->toString(),
+            'id' => '0c1b159b-07b5-4551-e4re34-51f0e01ff9cd',
             'name' => 'Example Account',
             'iban' => 'DE89370400440532013000',
             'bban' => '12345678901234567890',

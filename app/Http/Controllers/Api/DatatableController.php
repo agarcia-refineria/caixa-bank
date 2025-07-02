@@ -20,6 +20,10 @@ class DatatableController extends Controller
      */
     public function accounts(Request $request): JsonResponse
     {
+        if (!auth()->check()) {
+            abort(403);
+        }
+
         $user = Auth::user();
 
         $page = $request->input('page', 1);
@@ -38,15 +42,15 @@ class DatatableController extends Controller
 
         if (!empty($search)) {
             $query->where(function ($q) use ($search) {
-                $q->where('iban', 'like', "%{$search}%")
-                    ->orWhere('owner_name', 'like', "%{$search}%");
+                $q->where('iban', 'like', "%$search%")
+                    ->orWhere('owner_name', 'like', "%$search%");
             });
         }
 
         $recordsTotal = Account::where('user_id', $user->id)->count();
         $recordsFiltered = $query->count();
 
-        $totalAmount = number_format($query->with('balances')->get()->sum(function ($account) {;
+        $totalAmount = number_format($query->with('balances')->get()->sum(function ($account) {
             return $account->balances()->balanceTypeForward()->lastInstance()->first() ? $account->balances()->balanceTypeForward()->lastInstance()->first()->amount : 0;
         }), 2, ',', '.') . ' €';
 
@@ -85,6 +89,10 @@ class DatatableController extends Controller
      */
     public function balances(Request $request, string $id = null): JsonResponse
     {
+        if (!auth()->check()) {
+            abort(403);
+        }
+
         $user = Auth::user();
 
         $page = $request->input('page', 1);
@@ -102,7 +110,7 @@ class DatatableController extends Controller
         if ($id) {
             $query = Balance::whereHas('account', function ($q) use ($user) {
                 $q->where('user_id', $user->id);
-            })->where('account_id', $id);;
+            })->where('account_id', $id);
         } else {
             $query = Balance::whereHas('account', function ($q) use ($user) {
                 $q->where('user_id', $user->id);
@@ -115,11 +123,11 @@ class DatatableController extends Controller
             $query->leftJoin('accounts', 'accounts.id', '=', 'balances.account_id');
 
             $query->where(function ($q) use ($search) {
-                $q->where('accounts.iban', 'like', "%{$search}%")
-                    ->orWhere('reference_date', 'like', "%{$search}%")
-                    ->orWhere('balance_type', 'like', "%{$search}%")
-                    ->orWhere('amount', 'like', "%{$search}%")
-                    ->orWhere('currency', 'like', "%{$search}%");
+                $q->where('accounts.iban', 'like', "%$search%")
+                    ->orWhere('reference_date', 'like', "%$search%")
+                    ->orWhere('balance_type', 'like', "%$search%")
+                    ->orWhere('amount', 'like', "%$search%")
+                    ->orWhere('currency', 'like', "%$search%");
             });
         }
 
@@ -168,6 +176,10 @@ class DatatableController extends Controller
      */
     public function transactions(Request $request, string $id = null): JsonResponse
     {
+        if (!auth()->check()) {
+            abort(403);
+        }
+
         $user = Auth::user();
 
         $page = $request->input('page', 1);
@@ -200,12 +212,12 @@ class DatatableController extends Controller
             $query->leftJoin('categories', 'categories.id', '=', 'transactions.category_id');
 
             $query->where(function ($q) use ($search) {
-                $q->where('accounts.iban', 'like', "%{$search}%")
-                    ->orWhere('bookingDate', 'like', "%{$search}%")
-                    ->orWhere('debtorName', 'like', "%{$search}%")
-                    ->orWhere('remittanceInformationUnstructured', 'like', "%{$search}%")
-                    ->orWhere('categories.name', 'like', "%{$search}%")
-                    ->orWhere('transactionAmount_amount', 'like', "%{$search}%");
+                $q->where('accounts.iban', 'like', "%$search%")
+                    ->orWhere('bookingDate', 'like', "%$search%")
+                    ->orWhere('debtorName', 'like', "%$search%")
+                    ->orWhere('remittanceInformationUnstructured', 'like', "%$search%")
+                    ->orWhere('categories.name', 'like', "%$search%")
+                    ->orWhere('transactionAmount_amount', 'like', "%$search%");
             });
         }
 
@@ -250,6 +262,6 @@ class DatatableController extends Controller
      */
     public static function toColor(string $text, string $color): string
     {
-        return "<span class='text-{$color}'>{$text}</span>";
+        return "<span class='text-$color'>$text</span>";
     }
 }

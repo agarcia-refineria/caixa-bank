@@ -15,7 +15,6 @@ use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Str;
 use Illuminate\View\View;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Log;
 use Throwable;
 
 class AccountsController extends Controller
@@ -31,15 +30,24 @@ class AccountsController extends Controller
             abort(403);
         }
 
+        $user = Auth::user();
+
         try {
-            $user = Auth::user();
             $accounts = Account::where('user_id', $user->id)
                 ->orderBy('order')
                 ->get();
 
             return view('pages.profile.accounts', compact('user', 'accounts'));
         } catch (Exception $e) {
-            Log::error('Error al cargar cuentas del usuario: ' . $e->getMessage());
+            // Log the error and abort with a 500 status code
+            $user->getCustomLoggerAttribute('AccountsController')->error(
+                'Error function edit()',
+                [
+                    'message' => $e->getMessage() ?: 'No message provided',
+                    'trace' => $e->getTraceAsString() ?: 'No trace available',
+                ]
+            );
+
             abort(500);
         }
     }
@@ -52,6 +60,10 @@ class AccountsController extends Controller
      */
     public function create(Request $request): RedirectResponse
     {
+        if (!auth()->check()) {
+            return Redirect::route('login');
+        }
+
         $request->validate([
             'newAccount.owner_name' => ['required', 'string', 'max:255'],
             'newAccount.bban' => ['nullable', 'string', 'max:255'],
@@ -61,9 +73,9 @@ class AccountsController extends Controller
 
         $accountData = $request->input('newAccount');
 
-        try {
-            $user = Auth::user();
+        $user = Auth::user();
 
+        try {
             Account::create([
                 'id' => Str::uuid()->toString(),
                 'iban' => $accountData['iban'],
@@ -79,7 +91,14 @@ class AccountsController extends Controller
             return redirect()->route('profile.accounts.edit')
                 ->with('status', __('status.accountscontroller.create-account-success'));
         } catch (Exception $e) {
-            Log::error('Error al crear la cuenta: ' . $e->getMessage());
+            $user->getCustomLoggerAttribute('AccountsController')->error(
+                'Error function create()',
+                [
+                    'message' => $e->getMessage() ?: 'No message provided',
+                    'trace' => $e->getTraceAsString() ?: 'No trace available',
+                ]
+            );
+
             return redirect()->route('profile.accounts.edit')
                 ->with('error', __('status.accountscontroller.create-account-failed'));
         }
@@ -93,9 +112,15 @@ class AccountsController extends Controller
      */
     public function update(Request $request): RedirectResponse
     {
+        if (!auth()->check()) {
+            return Redirect::route('login');
+        }
+
         $validated = $request->validate([
             'id' => ['required', 'exists:accounts,id'],
         ]);
+
+        $user = Auth::user();
 
         $key = $request->input('id');
 
@@ -109,7 +134,7 @@ class AccountsController extends Controller
         $accountData = $validated['Account'][$key];
 
         try {
-            $account = Account::where('user_id', Auth::id())
+            $account = Account::where('user_id', $user->id)
                 ->where('id', $validated['id'])
                 ->firstOrFail();
 
@@ -123,11 +148,25 @@ class AccountsController extends Controller
             return Redirect::route('profile.accounts.edit')
                 ->with('status', __('status.accountscontroller.update-account-success'));
         } catch (ModelNotFoundException $e) {
-            Log::error('Error al actualizar la cuenta: ' . $e->getMessage());
+            $user->getCustomLoggerAttribute('AccountsController')->error(
+                'Error function update()',
+                [
+                    'message' => $e->getMessage() ?: 'No message provided',
+                    'trace' => $e->getTraceAsString() ?: 'No trace available',
+                ]
+            );
+
             return Redirect::route('profile.accounts.edit')
                 ->with('error', __('status.accountscontroller.update-account-not-found'));
         } catch (Exception $e) {
-            Log::error('Error al actualizar la cuenta: ' . $e->getMessage());
+            $user->getCustomLoggerAttribute('AccountsController')->error(
+                'Error function update()',
+                [
+                    'message' => $e->getMessage() ?: 'No message provided',
+                    'trace' => $e->getTraceAsString() ?: 'No trace available',
+                ]
+            );
+
             return Redirect::route('profile.accounts.edit')
                 ->with('error', __('status.accountscontroller.update-account-failed'));
         }
@@ -143,6 +182,12 @@ class AccountsController extends Controller
      */
     public function destroy(Request $request, string $id): RedirectResponse
     {
+        if (!auth()->check()) {
+            return Redirect::route('login');
+        }
+
+        $user = Auth::user();
+
         $key = array_key_first($request->input('Account'));
 
         $request->validateWithBag('userDeletion', [
@@ -150,7 +195,6 @@ class AccountsController extends Controller
         ]);
 
         try {
-            $user = Auth::user();
             $account = Account::where('user_id', $user->id)
                 ->where('id', $id)
                 ->firstOrFail();
@@ -166,11 +210,25 @@ class AccountsController extends Controller
                 throw $e;
             }
         } catch (ModelNotFoundException $e) {
-            Log::error('Error al eliminar la cuenta: ' . $e->getMessage());
+            $user->getCustomLoggerAttribute('AccountsController')->error(
+                'Error function destroy()',
+                [
+                    'message' => $e->getMessage() ?: 'No message provided',
+                    'trace' => $e->getTraceAsString() ?: 'No trace available',
+                ]
+            );
+
             return Redirect::route('profile.accounts.edit')
                 ->with('error', __('status.accountscontroller.destroy-account-not-found'));
         } catch (Exception $e) {
-            Log::error('Error al eliminar la cuenta: ' . $e->getMessage());
+            $user->getCustomLoggerAttribute('AccountsController')->error(
+                'Error function destroy()',
+                [
+                    'message' => $e->getMessage() ?: 'No message provided',
+                    'trace' => $e->getTraceAsString() ?: 'No trace available',
+                ]
+            );
+
             return Redirect::route('profile.accounts.edit')
                 ->with('error', __('status.accountscontroller.destroy-account-failed'));
         }
@@ -185,15 +243,25 @@ class AccountsController extends Controller
      */
     public function reorder(Request $request): JsonResponse
     {
+        if (!auth()->check()) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'No se pudo reordenar los elementos'
+            ], 500);
+        }
+
         $validated = $request->validate([
             'ids' => 'required|array',
         ]);
+
+        $user = Auth::user();
 
         try {
             DB::beginTransaction();
 
             foreach ($validated['ids'] as $index => $id) {
                 Account::where('id', $id)
+                    ->where('user_id', $user->id)
                     ->update(['order' => $index]);
             }
 
@@ -201,7 +269,14 @@ class AccountsController extends Controller
 
             return response()->json(['status' => 'success']);
         } catch (Exception $e) {
-            Log::error('Error al reordenar cuentas: ' . $e->getMessage());
+            $user->getCustomLoggerAttribute('AccountsController')->error(
+                'Error function reorder()',
+                [
+                    'message' => $e->getMessage() ?: 'No message provided',
+                    'trace' => $e->getTraceAsString() ?: 'No trace available',
+                ]
+            );
+
             DB::rollBack();
             return response()->json([
                 'status' => 'error',
@@ -219,15 +294,24 @@ class AccountsController extends Controller
      */
     public function paysheet(Request $request): JsonResponse
     {
+        if (!auth()->check()) {
+            return response()->json([
+                'status' => 'error',
+                'message' => __('status.accountscontroller.paysheet-failed')
+            ], 500);
+        }
+
         $validated = $request->validate([
             'paysheet' => 'nullable|exists:transactions,id',
             'account_id' => 'required|exists:accounts,id',
         ]);
 
+        $user = Auth::user();
+
         try {
             DB::beginTransaction();
 
-            $account = Account::where('user_id', Auth::user()->id)
+            $account = Account::where('user_id', $user->id)
                 ->where('id', $validated['account_id'])
                 ->firstOrFail();
             $paysheet = Transaction::find($validated['paysheet']);
@@ -242,9 +326,15 @@ class AccountsController extends Controller
                 'message' => __('status.accountscontroller.paysheet-success')
             ]);
         } catch (Exception $e) {
-            Log::error('Error al transferir entre cuentas: ' . $e->getMessage());
-            DB::rollBack();
+            $user->getCustomLoggerAttribute('AccountsController')->error(
+                'Error function paysheet()',
+                [
+                    'message' => $e->getMessage() ?: 'No message provided',
+                    'trace' => $e->getTraceAsString() ?: 'No trace available',
+                ]
+            );
 
+            DB::rollBack();
             return response()->json([
                 'status' => 'error',
                 'message' => __('status.accountscontroller.paysheet-failed')
@@ -260,14 +350,22 @@ class AccountsController extends Controller
      */
     public function disableTransactions(Request $request): JsonResponse
     {
+        if (!auth()->check()) {
+            return response()->json([
+                'status' => 'error',
+                'message' => __('status.accountscontroller.disable-transactions-failed')
+            ], 500);
+        }
+
         $validated = $request->validate([
             'account_id' => 'required|exists:accounts,id',
             'categories' => 'nullable|array'
         ]);
 
+        $user = Auth::user();
 
         try {
-            $account = Account::where('user_id', Auth::user()->id)
+            $account = Account::where('user_id', $user->id)
                 ->where('id', $validated['account_id'])
                 ->firstOrFail();
 
@@ -304,7 +402,14 @@ class AccountsController extends Controller
                 'message' => __('status.accountscontroller.disable-transactions-success')
             ]);
         } catch (Exception $e) {
-            Log::error('Error al deshabilitar transacciones: ' . $e->getMessage());
+            $user->getCustomLoggerAttribute('AccountsController')->error(
+                'Error function disableTransactions()',
+                [
+                    'message' => $e->getMessage() ?: 'No message provided',
+                    'trace' => $e->getTraceAsString() ?: 'No trace available',
+                ]
+            );
+
             return response()->json([
                 'status' => 'error',
                 'message' => __('status.accountscontroller.disable-transactions-failed')
@@ -324,15 +429,24 @@ class AccountsController extends Controller
      */
     public function applyExpensesMonthly(Request $request): JsonResponse
     {
+        if (!auth()->check()) {
+            return response()->json([
+                'status' => 'error',
+                'message' => __('status.accountscontroller.apply-expenses-monthly-failed')
+            ], 500);
+        }
+
         $validated = $request->validate([
             'account_id' => 'required|exists:accounts,id',
             'apply_expenses_monthly' => 'required|boolean',
         ]);
 
+        $user = Auth::user();
+
         try {
             DB::beginTransaction();
 
-            $account = Account::where('user_id', Auth::id())
+            $account = Account::where('user_id', $user->id)
                 ->where('id', $validated['account_id'])
                 ->firstOrFail();
 
@@ -346,9 +460,15 @@ class AccountsController extends Controller
                 'message' => __('status.accountscontroller.apply-expenses-monthly-success')
             ]);
         } catch (Exception $e) {
-            Log::error('Error al transferir entre cuentas: ' . $e->getMessage());
-            DB::rollBack();
+            $user->getCustomLoggerAttribute('AccountsController')->error(
+                'Error function applyExpensesMonthly()',
+                [
+                    'message' => $e->getMessage() ?: 'No message provided',
+                    'trace' => $e->getTraceAsString() ?: 'No trace available',
+                ]
+            );
 
+            DB::rollBack();
             return response()->json([
                 'status' => 'error',
                 'message' => __('status.accountscontroller.apply-expenses-monthly-failed')

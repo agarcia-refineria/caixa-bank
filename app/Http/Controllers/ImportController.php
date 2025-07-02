@@ -5,9 +5,11 @@ namespace App\Http\Controllers;
 use App\Imports\AccountImport;
 use App\Imports\BalanceImport;
 use App\Imports\TransactionImport;
+use Auth;
 use Exception;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\View\View;
 use Maatwebsite\Excel\Facades\Excel;
@@ -30,8 +32,10 @@ class ImportController extends Controller
             abort(401);
         }
 
+        $user = Auth::user();
+
         return view('pages.profile.import', [
-            'user' => auth()->user(),
+            'user' => $user,
         ]);
     }
 
@@ -50,35 +54,36 @@ class ImportController extends Controller
      */
     public function accounts(Request $request): RedirectResponse
     {
+        if (!auth()->check()) {
+            return Redirect::route('login');
+        }
+
+        $user = Auth::user();
+
         $request->validate([
-            'file_csv_accounts' => ['nullable', 'mimes:csv,txt'],
-            'file_xlsx_accounts' => ['nullable', 'mimes:xlsx,xls'],
+            'file_accounts' => ['required', 'file', 'mimes:csv,txt,xlsx,xls'],
         ]);
 
-        if (!$request->file('file_csv_accounts') && !$request->file('file_xlsx_accounts')) {
-            return Redirect::route('profile.import.edit')->withErrors(['file_csv_accounts' => 'Please upload a CSV file.', 'file_xlsx_accounts' => 'Please upload an XLSX file.']);
+        $file = $request->file('file_accounts');
+
+        try {
+            $fullPath = $this->moveUploadedFile($file);
+            Excel::import(new AccountImport(), $fullPath, null, \Maatwebsite\Excel\Excel::CSV);
+        } catch (Exception $e) {
+            $user->getCustomLoggerAttribute('ImportController')->error(
+                'Error function accounts()',
+                [
+                    'message' => $e->getMessage() ?: 'No message provided',
+                    'trace' => $e->getTraceAsString() ?: 'No trace available',
+                ]
+            );
+
+            return Redirect::route('profile.import.edit')
+                ->withErrors(['file_accounts' => 'Error al procesar el archivo: ' . $e->getMessage()]);
         }
 
-        $file_csv = $request->file('file_csv_accounts');
-        $file_xlsx = $request->file('file_xlsx_accounts');
-
-        if ($file_csv) {
-            try {
-                Excel::import(new AccountImport(), $file_csv, null, \Maatwebsite\Excel\Excel::CSV);
-            } catch (Exception $e) {
-                return Redirect::route('profile.import.edit')->withErrors(['file_csv_accounts' => 'Error reading CSV file: ' . $e->getMessage()]);
-            }
-        }
-
-        if ($file_xlsx) {
-            try {
-                Excel::import(new AccountImport(), $file_xlsx, null, \Maatwebsite\Excel\Excel::XLSX);
-            } catch (Exception $e) {
-                return Redirect::route('profile.import.edit')->withErrors(['file_xlsx_accounts' => 'Error reading XLSX file: ' . $e->getMessage()]);
-            }
-        }
-
-        return Redirect::route('profile.import.edit')->with('success', 'Cuentas importadas correctamente');
+        return Redirect::route('profile.import.edit')
+            ->with('success', 'Cuentas importadas correctamente');
     }
 
     /**
@@ -95,35 +100,35 @@ class ImportController extends Controller
      */
     public function transaction(Request $request): RedirectResponse
     {
+        if (!auth()->check()) {
+            return Redirect::route('login');
+        }
+
+        $user = Auth::user();
+
         $request->validate([
-            'file_csv_transactions' => ['nullable', 'mimes:csv,txt'],
-            'file_xlsx_transactions' => ['nullable', 'mimes:xlsx,xls'],
+            'file_transactions' => ['required', 'file', 'mimes:csv,txt,xlsx,xls'],
         ]);
 
-        if (!$request->file('file_csv_transactions') && !$request->file('file_xlsx_transactions')) {
-            return Redirect::route('profile.import.edit')->withErrors(['file_csv_transactions' => 'Please upload a CSV file.', 'file_xlsx_transactions' => 'Please upload an XLSX file.']);
+        $file = $request->file('file_transactions');
+
+        try {
+            $fullPath = $this->moveUploadedFile($file);
+            Excel::import(new TransactionImport(), $fullPath);
+        } catch (Exception $e) {
+            $user->getCustomLoggerAttribute('ImportController')->error(
+                'Error function transaction()',
+                [
+                    'message' => $e->getMessage() ?: 'No message provided',
+                    'trace' => $e->getTraceAsString() ?: 'No trace available',
+                ]
+            );
+
+            return Redirect::route('profile.import.edit')
+                ->withErrors(['file_csv_transactions' => 'Error reading file: ' . $e->getMessage()]);
         }
 
-        $file_csv = $request->file('file_csv_transactions');
-        $file_xlsx = $request->file('file_xlsx_transactions');
-
-        if ($file_csv) {
-            try {
-                Excel::import(new TransactionImport(), $file_csv, null, \Maatwebsite\Excel\Excel::CSV);
-            } catch (Exception $e) {
-                return Redirect::route('profile.import.edit')->withErrors(['file_csv_transactions' => 'Error reading CSV file: ' . $e->getMessage()]);
-            }
-        }
-
-        if ($file_xlsx) {
-            try {
-                Excel::import(new TransactionImport(), $file_xlsx, null, \Maatwebsite\Excel\Excel::XLSX);
-            } catch (Exception $e) {
-                return Redirect::route('profile.import.edit')->withErrors(['file_xlsx_transactions' => 'Error reading XLSX file: ' . $e->getMessage()]);
-            }
-        }
-
-        return Redirect::route('profile.import.edit')->with('success', 'account-imported');
+        return Redirect::route('profile.import.edit')->with('success', 'transactions-imported');
     }
 
     /**
@@ -140,34 +145,48 @@ class ImportController extends Controller
      */
     public function balances(Request $request): RedirectResponse
     {
+        if (!auth()->check()) {
+            return Redirect::route('login');
+        }
+
+        $user = Auth::user();
+
         $request->validate([
-            'file_csv_balances' => ['nullable', 'mimes:csv,txt'],
-            'file_xlsx_balances' => ['nullable', 'mimes:xlsx,xls'],
+            'file_balances' => ['required', 'file', 'mimes:csv,txt,xlsx,xls'],
         ]);
 
-        if (!$request->file('file_csv_balances') && !$request->file('file_xlsx_balances')) {
-            return Redirect::route('profile.import.edit')->withErrors(['file_csv_balances' => 'Please upload a CSV file.', 'file_xlsx_balances' => 'Please upload an XLSX file.']);
+        $file = $request->file('file_balances');
+
+        try {
+            $fullPath = $this->moveUploadedFile($file);
+            Excel::import(new BalanceImport(), $fullPath);
+        } catch (Exception $e) {
+            $user->getCustomLoggerAttribute('ImportController')->error(
+                'Error function balances()',
+                [
+                    'message' => $e->getMessage() ?: 'No message provided',
+                    'trace' => $e->getTraceAsString() ?: 'No trace available',
+                ]
+            );
+
+            return Redirect::route('profile.import.edit')
+                ->withErrors(['file_csv_balances' => 'Error reading file: ' . $e->getMessage()]);
         }
 
-        $file_csv = $request->file('file_csv_balances');
-        $file_xlsx = $request->file('file_xlsx_balances');
+        return Redirect::route('profile.import.edit')->with('success', 'balances-imported');
+    }
 
-        if ($file_csv) {
-            try {
-                Excel::import(new BalanceImport(), $file_csv, null, \Maatwebsite\Excel\Excel::CSV);
-            } catch (Exception $e) {
-                return Redirect::route('profile.import.edit')->withErrors(['file_csv_balances' => 'Error reading CSV file: ' . $e->getMessage()]);
-            }
+    private function moveUploadedFile(UploadedFile $file): string
+    {
+        $fileName = time() . '_' . $file->getClientOriginalName();
+        $destinationPath = storage_path('app/tmp');
+
+        if (!file_exists($destinationPath)) {
+            mkdir($destinationPath, 0755, true);
         }
 
-        if ($file_xlsx) {
-            try {
-                Excel::import(new BalanceImport(), $file_xlsx, null, \Maatwebsite\Excel\Excel::XLSX);
-            } catch (Exception $e) {
-                return Redirect::route('profile.import.edit')->withErrors(['file_xlsx_balances' => 'Error reading XLSX file: ' . $e->getMessage()]);
-            }
-        }
+        $file->move($destinationPath, $fileName);
 
-        return Redirect::route('profile.import.edit')->with('success', 'account-imported');
+        return $destinationPath . '/' . $fileName;
     }
 }

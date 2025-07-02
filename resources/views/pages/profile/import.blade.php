@@ -2,13 +2,14 @@
     @include('partials.profile.navigation')
 
     <div class="py-6 md:px-0 px-4">
-        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 space-y-6">
+        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 pb-4">
             <div class="bg-[#664d03] w-full rounded-2xl relative group inline-block px-4 py-2 text-sm font-medium text-gray-900 dark:text-gray-100">
                 (I). {{ __('You can import your transactions, accounts and balances from CSV or XLSX files. You can also download example files to help you with the import process.') }}<br/>
                 (II). {{ __('Please note that the import process may take some time, depending on the size of the files you are uploading.') }}<br/>
                 (III). {{ __('The fields needs to be THE EXACT same name from examples showing you.') }}<br/>
             </div>
-
+        </div>
+        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 grid gap-4 grid-cols-1 lg:grid-cols-3">
             <x-form.import-form
                 :user="$user"
                 :action="route('profile.import.accounts')"
@@ -30,7 +31,7 @@
                     <tbody>
                         @php $defaultAccount = \App\Models\Account::getExampleModel(); @endphp
                         <tr>
-                            <td class="!text-left">{{ $defaultAccount->id }}</td>
+                            <td class="!text-left">{{ $defaultAccount->code }}</td>
                             <td class="!text-left">{{ $defaultAccount->name }}</td>
                             <td class="!text-left">{{ $defaultAccount->iban }}</td>
                             <td class="!text-left">{{ $defaultAccount->bban }}</td>
@@ -42,10 +43,10 @@
                     </tbody>
                 </table>
 
-                <x-links.nav-link href="/csv/import_account.csv" download="import_account.csv">
+                <x-links.nav-link href="/csv/import_accounts.csv" download="import_accounts.csv">
                     {{ __('DOWNLOAD') }} CSV
                 </x-links.nav-link>
-                <x-links.nav-link href="/xlsx/import_account.xlsx" download="import_account.xlsx">
+                <x-links.nav-link href="/xlsx/import_accounts.xlsx" download="import_accounts.xlsx">
                     {{ __('DOWNLOAD') }} XLSX
                 </x-links.nav-link>
             </x-form.import-form>
@@ -58,6 +59,7 @@
                 <table class="datatable table-auto w-full px-4" data-type="default">
                     <thead>
                         <tr>
+                            <th>{{ __('ID') }}</th>
                             <th class="dt-low-priority">{{ __('Entry Reference') }}</th>
                             <th class="dt-low-priority">{{ __('Check ID') }}</th>
                             <th>{{ __('Booking Date') }}</th>
@@ -76,6 +78,7 @@
                     <tbody>
                         @php $defaultTransaction = \App\Models\Transaction::getExampleModel(); @endphp
                         <tr>
+                            <td>{{ $defaultTransaction->id }}</td>
                             <td>{{ $defaultTransaction->entryReference }}</td>
                             <td>{{ $defaultTransaction->checkId }}</td>
                             <td>{{ $defaultTransaction->bookingDate->format('d-m-Y H:i:s') }}</td>
@@ -109,6 +112,7 @@
                 <table class="datatable table-auto w-full px-4" data-type="default">
                     <thead>
                         <tr>
+                            <th>{{ __('ID') }}</th>
                             <th>{{ __('Amount') }}</th>
                             <th class="dt-low-priority">{{ __('Currency') }}</th>
                             <th>{{ __('Balance Type') }}</th>
@@ -119,6 +123,7 @@
                     <tbody>
                         @php $defaultBalance = \App\Models\Balance::getExampleModel(); @endphp
                         <tr>
+                            <td>{{ $defaultBalance->id }}</td>
                             <td>{{ $defaultBalance->amount }}</td>
                             <td>{{ $defaultBalance->currency }}</td>
                             <td>{{ $defaultBalance->balance_type }}</td>

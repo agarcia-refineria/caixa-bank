@@ -10,21 +10,12 @@
     <!-- Show the account buttons -->
     <div class="grid grid-cols-2 gap-4 py-6 sm:px-6 lg:px-8 w-full">
         <div class="col-span-2 lg:col-span-1">
-            <x-inputs.input-label for="file_csv" value="{{ $type }} CSV" />
+            <x-inputs.input-label for="file_{{ $typeField }}" value="{{ $type }}" />
             <x-inputs.file-input
-                name="file_csv_{{ $typeField }}"
+                name="file_{{ $typeField }}"
                 class="w-full"
-                placeholder="{{ $type }} CSV" />
-            <x-inputs.input-error :messages="$errors->get('file_csv_'.$typeField)" class="mt-2" />
-        </div>
-
-        <div class="col-span-2 lg:col-span-1">
-            <x-inputs.input-label for="file_xlsx" value="{{ $type }} XLSX" />
-            <x-inputs.file-input
-                name="file_xlsx_{{ $typeField }}"
-                class="w-full"
-                placeholder="{{ $type }} XLSX" />
-            <x-inputs.input-error :messages="$errors->get('file_xlsx_'.$typeField)" class="mt-2" />
+                placeholder="{{ $type }}" />
+            <x-inputs.input-error :messages="$errors->get('file_'.$typeField)" class="mt-2" />
         </div>
     </div>
 

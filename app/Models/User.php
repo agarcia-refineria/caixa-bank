@@ -22,7 +22,7 @@ use Monolog\Handler\StreamHandler;
 use Monolog\Logger;
 
 /**
- * 
+ *
  *
  * @property int $id
  * @property string $name
@@ -235,7 +235,22 @@ class User extends Authenticatable
     public function getLoggerAttribute(): Logger
     {
         $logger = new Logger("user_$this->id");
-        $logPath = storage_path("logs/user_$this->id.log");
+        $logPath = storage_path("logs/users/$this->email/user_$this->id.log");
+        $logger->pushHandler(new StreamHandler($logPath, Logger::INFO));
+
+        return $logger;
+    }
+
+    /**
+     * Get a custom user's logger instance.
+     *
+     * @param string $fileName
+     * @return Logger
+     */
+    public function getCustomLoggerAttribute(string $fileName): Logger
+    {
+        $logger = new Logger("user_$this->id");
+        $logPath = storage_path("logs/users/$this->email/$fileName.log");
         $logger->pushHandler(new StreamHandler($logPath, Logger::INFO));
 
         return $logger;

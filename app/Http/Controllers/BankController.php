@@ -12,7 +12,6 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\View\View;
-use Illuminate\Support\Facades\Log;
 use App\Models\ScheduledTasks;
 use Illuminate\Support\Facades\Artisan;
 use Throwable;
@@ -27,11 +26,11 @@ class BankController extends Controller
      */
     public function edit(): View
     {
-        $user = Auth::user();
-
-        if (!$user) {
+        if (!auth()->check()) {
             abort(403);
         }
+
+        $user = Auth::user();
 
         return view('pages.profile.bank', [
             'user' => $user,
@@ -48,11 +47,11 @@ class BankController extends Controller
      */
     public function update(): RedirectResponse
     {
-        $user = Auth::user();
-
-        if (!$user) {
+        if (!auth()->check()) {
             return Redirect::route('login');
         }
+
+        $user = Auth::user();
 
         $user->update([
             'NORDIGEN_SECRET_ID' => request('NORDIGEN_SECRET_ID') ? encrypt(request('NORDIGEN_SECRET_ID')) : $user->NORDIGEN_SECRET_ID,
@@ -78,7 +77,13 @@ class BankController extends Controller
             return Redirect::route('profile.bank.edit')
                 ->with('status', __('status.bankcontroller.update-account-success'));
         } catch (Exception $e) {
-            Log::error('Error actualizando banco del usuario: ' . $e->getMessage());
+            $user->getCustomLoggerAttribute('BankController')->error(
+                'Error function update()',
+                [
+                    'message' => $e->getMessage() ?: 'No message provided',
+                    'trace' => $e->getTraceAsString() ?: 'No trace available',
+                ]
+            );
 
             return Redirect::route('profile.bank.edit')
                 ->with('error', __('status.bankcontroller.update-account-failed'));
@@ -101,17 +106,29 @@ class BankController extends Controller
      */
     public function chars(Request $request): RedirectResponse
     {
+        if (!auth()->check()) {
+            return Redirect::route('login');
+        }
+
+        $user = Auth::user();
+
         $validated = $request->validate([
             'chars' => ['required', 'in:'. implode(',', User::$charsTypes)],
         ]);
 
         try {
-            $user = Auth::user();
             $user->update(['chars' => $validated['chars']]);
 
             return redirect()->route('profile.bank.edit')->with('status', __('status.bankcontroller.chars-updated'));
         } catch (Exception $e) {
-            Log::error('Error al actualizar los caracteres del banco: ' . $e->getMessage());
+            $user->getCustomLoggerAttribute('BankController')->error(
+                'Error function chars()',
+                [
+                    'message' => $e->getMessage() ?: 'No message provided',
+                    'trace' => $e->getTraceAsString() ?: 'No trace available',
+                ]
+            );
+
             return redirect()->route('profile.bank.edit')->with('error', __('status.bankcontroller.chars-error'));
         }
     }
@@ -131,17 +148,29 @@ class BankController extends Controller
      */
     public function theme(Request $request): RedirectResponse
     {
+        if (!auth()->check()) {
+            return Redirect::route('login');
+        }
+
+        $user = Auth::user();
+
         $validated = $request->validate([
             'theme' => ['required'],
         ]);
 
         try {
-            $user = Auth::user();
             $user->update(['theme' => $validated['theme']]);
 
             return redirect()->route('profile.bank.edit')->with('status', __('status.bankcontroller.theme-updated'));
         } catch (Exception $e) {
-            Log::error('Error al actualizar el tema del banco: ' . $e->getMessage());
+            $user->getCustomLoggerAttribute('BankController')->error(
+                'Error function theme()',
+                [
+                    'message' => $e->getMessage() ?: 'No message provided',
+                    'trace' => $e->getTraceAsString() ?: 'No trace available',
+                ]
+            );
+
             return redirect()->route('profile.bank.edit')->with('error', __('status.bankcontroller.theme-error'));
         }
     }
@@ -162,17 +191,29 @@ class BankController extends Controller
      */
     public function lang(Request $request): RedirectResponse
     {
+        if (!auth()->check()) {
+            return Redirect::route('login');
+        }
+
+        $user = Auth::user();
+
         $validated = $request->validate([
             'lang' => ['required', 'string', 'max:2'],
         ]);
 
         try {
-            $user = Auth::user();
             $user->update(['lang' => $validated['lang']]);
 
             return redirect()->route('profile.bank.edit')->with('status', __('status.bankcontroller.lang-updated'));
         } catch (Exception $e) {
-            Log::error('Error al actualizar el idioma del banco: ' . $e->getMessage());
+            $user->getCustomLoggerAttribute('BankController')->error(
+                'Error function lang()',
+                [
+                    'message' => $e->getMessage() ?: 'No message provided',
+                    'trace' => $e->getTraceAsString() ?: 'No trace available',
+                ]
+            );
+
             return redirect()->route('profile.bank.edit')->with('error', __('status.bankcontroller.lang-error'));
         }
     }
@@ -191,6 +232,12 @@ class BankController extends Controller
      */
     public function schedule(Request $request): RedirectResponse
     {
+        if (!auth()->check()) {
+            return Redirect::route('login');
+        }
+
+        $user = Auth::user();
+
         $validated = $request->validate([
             'schedule_times' => ['required', 'integer', 'max:' . ScheduledTasks::$MAX_TIMES],
             'times.*' => ['nullable', 'date_format:H:i'],
@@ -199,8 +246,6 @@ class BankController extends Controller
 
         try {
             DB::beginTransaction();
-
-            $user = Auth::user();
 
             $user->update([
                 'schedule_times' => $validated['schedule_times'],
@@ -228,8 +273,15 @@ class BankController extends Controller
             DB::commit();
             return redirect()->route('profile.bank.edit')->with('status', __('status.bankcontroller.schedule-updated'));
         } catch (Exception $e) {
+            $user->getCustomLoggerAttribute('BankController')->error(
+                'Error function schedule()',
+                [
+                    'message' => $e->getMessage() ?: 'No message provided',
+                    'trace' => $e->getTraceAsString() ?: 'No trace available',
+                ]
+            );
+
             DB::rollBack();
-            Log::error('Error al programar tareas: ' . $e->getMessage());
             return redirect()->route('profile.bank.edit')->with('status', __('status.bankcontroller.schedule-error'));
         }
     }
@@ -247,18 +299,27 @@ class BankController extends Controller
      */
     public function scheduleTasks(): JsonResponse
     {
-        try {
-            if (!auth()->check()) {
-                return response()->json(['error' => 'No autorizado'], 401);
-            }
+        if (!auth()->check()) {
+            return response()->json(['error' => 'No autorizado'], 401);
+        }
 
+        $user = Auth::user();
+
+        try {
             dispatch(function () {
                 Artisan::call('schedule:run');
             })->afterResponse();
 
             return response()->json(['status' => 'executed']);
         } catch (Exception $e) {
-            Log::error('Error ejecutando tareas programadas: ' . $e->getMessage());
+            $user->getCustomLoggerAttribute('BankController')->error(
+                'Error function scheduleTasks()',
+                [
+                    'message' => $e->getMessage() ?: 'No message provided',
+                    'trace' => $e->getTraceAsString() ?: 'No trace available',
+                ]
+            );
+
             return response()->json(['error' => 'Error al ejecutar tareas programadas'], 500);
         }
     }

@@ -13,17 +13,21 @@ use PhpOffice\PhpSpreadsheet\Worksheet\Drawing;
 
 class TransactionsExport implements FromCollection, WithMapping, WithHeadings, WithDrawings
 {
+
+    private Collection $collection;
+
     /**
     * @return Collection
     */
     public function collection(): Collection
     {
-        return Auth::user()->transactions;
+        return $this->collection ?? Auth::user()->transactions;
     }
 
     public function map($row): array
     {
         return [
+            'id' => $row->id,
             'entryReference' => $row->entryReference,
             'checkId' => $row->checkId,
             'bookingDate' => $row->bookingDate ? $row->bookingDate->format('Y-m-d') : null,
@@ -42,6 +46,7 @@ class TransactionsExport implements FromCollection, WithMapping, WithHeadings, W
     public function headings(): array
     {
         return [
+            'ID',
             'Entry Reference',
             'Check ID',
             'Booking Date',
@@ -71,5 +76,10 @@ class TransactionsExport implements FromCollection, WithMapping, WithHeadings, W
         $drawing->setCoordinates('A1');
 
         return $drawing;
+    }
+
+    public function setCollection(Collection $collection): void
+    {
+        $this->collection = $collection;
     }
 }

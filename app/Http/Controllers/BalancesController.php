@@ -12,7 +12,6 @@ use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Redirect;
-use Illuminate\Support\Facades\Log;
 use Illuminate\View\View;
 use Throwable;
 
@@ -31,20 +30,30 @@ class BalancesController extends Controller
      */
     public function edit(string $accountId): View|RedirectResponse
     {
+        if (!auth()->check()) {
+            return Redirect::route('login');
+        }
+
+        $user = Auth::user();
+
         try {
-            $account = Account::where('user_id', Auth::id())
+            $account = Account::where('user_id', $user->id)
                 ->findOrFail($accountId);
 
             return view('pages.profile.balances.edit', [
-                'user' => auth()->user(),
+                'user' => $user,
                 'account' => $account,
                 'balances' => $account->balances()->orderBy('reference_date', 'desc')->get()
             ]);
         } catch (Exception $e) {
-            Log::error('Error show account balances', [
-                'account_id' => $accountId,
-                'error' => $e->getMessage()
-            ]);
+            $user->getCustomLoggerAttribute('BalancesController')->error(
+                'Error function edit()',
+                [
+                    'message' => $e->getMessage() ?: 'No message provided',
+                    'trace' => $e->getTraceAsString() ?: 'No trace available',
+                ]
+            );
+
             abort(505);
         }
     }
@@ -63,6 +72,12 @@ class BalancesController extends Controller
      */
     public function create(Request $request): RedirectResponse
     {
+        if (!auth()->check()) {
+            return Redirect::route('login');
+        }
+
+        $user = Auth::user();
+
         $validated = $request->validate([
             'account_id' => 'required|exists:accounts,id',
         ]);
@@ -79,7 +94,9 @@ class BalancesController extends Controller
         try {
             DB::beginTransaction();
 
-            $account = Account::onlyManual()->findOrFail($validated['account_id']);
+            $account = Account::onlyManual()
+                ->where('user_id', $user->id)
+                ->findOrFail($validated['account_id']);
 
             Balance::create([
                 'account_id' => $account->code,
@@ -94,10 +111,14 @@ class BalancesController extends Controller
             return Redirect::route('profile.balance.edit', ['id' => $account->code])
                 ->with('success', __('status.balancescontroller.create-balance-success'));
         } catch (Exception $e) {
-            Log::error('Error creating balance', [
-                'account_id' => $request->input('account_id'),
-                'error' => $e->getMessage()
-            ]);
+            $user->getCustomLoggerAttribute('BalancesController')->error(
+                'Error function create()',
+                [
+                    'message' => $e->getMessage() ?: 'No message provided',
+                    'trace' => $e->getTraceAsString() ?: 'No trace available',
+                ]
+            );
+
             DB::rollBack();
             return Redirect::back()
                 ->withInput()
@@ -123,6 +144,12 @@ class BalancesController extends Controller
      */
     public function update(Request $request): RedirectResponse
     {
+        if (!auth()->check()) {
+            return Redirect::route('login');
+        }
+
+        $user = Auth::user();
+
         $request->validate([
             'balance_id' => 'required|exists:balances,id',
         ]);
@@ -139,6 +166,12 @@ class BalancesController extends Controller
         try {
             $balance = Balance::findOrFail($key);
 
+            // Ensure the balance belongs to the authenticated user's account and is manual
+            if ($balance->account->is_manual && $balance->account->user_id !== $user->id) {
+                return Redirect::route('profile.accounts.edit')
+                    ->with('error', __('You do not have permission to update this balance.'));
+            }
+
             $balanceData = $request->input('Balance')[$key];
 
             DB::transaction(function () use ($request, $balance, $balanceData) {
@@ -153,17 +186,25 @@ class BalancesController extends Controller
             return Redirect::route('profile.balance.edit', ['id' => $balance->account->code])
                 ->with('success', __('status.balancescontroller.update-balance-success'));
         } catch (ModelNotFoundException $e) {
-            Log::error('Error updating balance', [
-                'balance_id' => $request->input('balance_id'),
-                'error' => $e->getMessage()
-            ]);
+            $user->getCustomLoggerAttribute('BalancesController')->error(
+                'Error function update()',
+                [
+                    'message' => $e->getMessage() ?: 'No message provided',
+                    'trace' => $e->getTraceAsString() ?: 'No trace available',
+                ]
+            );
+
             return Redirect::route('profile.accounts.edit')
                 ->with('error', __('status.balancescontroller.update-balance-not-found'));
         } catch (Exception $e) {
-            Log::error('Error updating balance', [
-                'balance_id' => $request->input('balance_id'),
-                'error' => $e->getMessage()
-            ]);
+            $user->getCustomLoggerAttribute('BalancesController')->error(
+                'Error function update()',
+                [
+                    'message' => $e->getMessage() ?: 'No message provided',
+                    'trace' => $e->getTraceAsString() ?: 'No trace available',
+                ]
+            );
+
             return Redirect::back()
                 ->withInput()
                 ->with('error', __('status.balancescontroller.update-balance-failed'));
@@ -186,6 +227,12 @@ class BalancesController extends Controller
      */
     public function destroy(Request $request): RedirectResponse
     {
+        if (!auth()->check()) {
+            return Redirect::route('login');
+        }
+
+        $user = Auth::user();
+
         $request->validate([
             'balance_id' => 'required|exists:balances,id',
         ]);
@@ -195,10 +242,11 @@ class BalancesController extends Controller
                 ->findOrFail($request->input('balance_id'));
 
             if ($balance instanceof Balance) {
-                $account = Account::onlyManual()->findOrFail($balance->account_id);
+                // Has always an account relation if not there is a previous error on a database
+                $account = $balance->account;
 
                 // Ensure the balance belongs to the authenticated user's account
-                if ($account->user_id !== Auth::id()) {
+                if ($account->is_manual && $account->user_id !== $user->id) {
                     return Redirect::route('profile.accounts.edit')
                         ->with('error', __('You do not have permission to delete this balance.'));
                 }
@@ -211,13 +259,18 @@ class BalancesController extends Controller
                     ->with('success', __('Balance deleted successfully.'));
             }
         } catch (Exception $e) {
-            Log::error('Error deleting balance', [
-                'balance_id' => $request->input('balance_id'),
-                'error' => $e->getMessage()
-            ]);
+            $user->getCustomLoggerAttribute('BalancesController')->error(
+                'Error function destroy()',
+                [
+                    'message' => $e->getMessage() ?: 'No message provided',
+                    'trace' => $e->getTraceAsString() ?: 'No trace available',
+                ]
+            );
+
             return Redirect::route('profile.accounts.edit')
                 ->with('error', __('Error deleting balance.'));
         }
+
         return Redirect::route('profile.accounts.edit')
             ->with('error', __('Error deleting balance.'));
     }

@@ -24,11 +24,11 @@ class DashboardController extends Controller
      */
     public function index(): View
     {
-        $user = Auth::user();
-
-        if (!$user) {
-            abort(401);
+        if (!auth()->check()) {
+            abort(403);
         }
+
+        $user = Auth::user();
 
         $accounts = $user->accounts()
             ->with(['balances' => function($query) {
@@ -54,11 +54,11 @@ class DashboardController extends Controller
      */
     public function show(string $id): View|\Illuminate\Foundation\Application|Factory|Application|RedirectResponse
     {
-        $user = Auth::user();
-
-        if (!$user) {
-            abort(401);
+        if (!auth()->check()) {
+            abort(403);
         }
+
+        $user = Auth::user();
 
         $accounts = $user->accounts()
             ->orderBy('order')
@@ -88,11 +88,11 @@ class DashboardController extends Controller
      */
     public function history(): View
     {
-        $user = Auth::user();
-
-        if (!$user) {
+        if (!auth()->check()) {
             abort(403);
         }
+
+        $user = Auth::user();
 
         $transactions = $user->transactions;
         $balances = $user->balances;
@@ -112,11 +112,11 @@ class DashboardController extends Controller
      */
     public function forecast(): View
     {
-        $user = Auth::user();
-
-        if (!$user) {
+        if (!auth()->check()) {
             abort(403);
         }
+
+        $user = Auth::user();
 
         $accounts = $user->accounts()
             ->orderBy('order')
@@ -139,11 +139,11 @@ class DashboardController extends Controller
      */
     public function forecastShow(string $id): View
     {
-        $user = Auth::user();
-
-        if (!$user) {
+        if (!auth()->check()) {
             abort(403);
         }
+
+        $user = Auth::user();
 
         $accounts = $user->accounts()
             ->orderBy('order')
@@ -167,11 +167,11 @@ class DashboardController extends Controller
      */
     public function clock(): View
     {
-        $user = Auth::user();
-
-        if (!$user) {
+        if (!auth()->check()) {
             abort(403);
         }
+
+        $user = Auth::user();
 
         $schedules = $user->schedule;
 
@@ -188,11 +188,11 @@ class DashboardController extends Controller
      */
     public function configuration(): View
     {
-        $user = Auth::user();
-
-        if (!$user) {
+        if (!auth()->check()) {
             abort(403);
         }
+
+        $user = Auth::user();
 
         $apiAccounts = tap($user->accounts()->getQuery())
             ->onlyApi()

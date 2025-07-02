@@ -17,14 +17,20 @@ class AccountImport implements ToModel, WithHeadingRow
      */
     public function model(array $row): Model|Account|null
     {
-        dd($row);
-
         // Check if the account already exists for the authenticated user
         $existingAccount = Account::where('user_id', auth()->id())
             ->where('id', $row['id'])
             ->first();
 
         if (!$existingAccount) {
+            // Check if the account does not exist
+            $existingAccount = Account::find($row['id']);
+
+            if ($existingAccount) {
+                // If the account exists but not for the current user, return null
+                return null;
+            }
+
             return new Account([
                 'id' => $row['id'],
                 'name' => $row['name'],
@@ -38,8 +44,19 @@ class AccountImport implements ToModel, WithHeadingRow
                 'user_id' => auth()->id(),
                 'type' => Account::$accountTypes['manual'],
             ]);
-        }
+        } else {
+            // If the account already exists for the user, update it
+            $existingAccount->update([
+                'name' => $row['name'],
+                'iban' => $row['iban'],
+                'bban' => $row['bban'] ?? '',
+                'status' => $row['status'] ?? '',
+                'owner_name' => $row['owner_name'],
+                'created' => Date::excelToDateTimeObject($row['created'])->format('d-m-Y H:i:s'),
+                'last_accessed' => Date::excelToDateTimeObject($row['last_accessed'])->format('d-m-Y H:i:s'),
+            ]);
 
-        return null;
+            return $existingAccount;
+        }
     }
 }

@@ -19,7 +19,7 @@ class ExtractTranslations extends Command
      *
      * @var string
      */
-    protected $description = 'Command description';
+    protected $description = 'Extract translation keys from Blade templates and update en.json';
 
     /**
      * Execute the console command.

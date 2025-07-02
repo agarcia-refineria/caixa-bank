@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Exports\AccountsExport;
 use App\Exports\BalancesExport;
 use App\Exports\TransactionsExport;
+use Auth;
 use Exception;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -46,10 +47,23 @@ class ExportController extends Controller
      */
     public function accounts(Request $request, string $type): BinaryFileResponse|RedirectResponse
     {
+        if (!auth()->check()) {
+            return Redirect::route('login');
+        }
+
+        $user = Auth::user();
+
         try {
             return Excel::download(new AccountsExport(), 'accounts_'.date('d_m_Y').'.'.$type, $this->getType($type));
         } catch (Exception $e) {
-            return Redirect::route('profile.export.edit')->withErrors(['file_csv_accounts' => 'Error reading CSV file: ' . $e->getMessage()]);
+            $user->getCustomLoggerAttribute('ExportController')->error(
+                'Error function accounts()',
+                [
+                    'message' => $e->getMessage() ?: 'No message provided',
+                    'trace' => $e->getTraceAsString() ?: 'No trace available',
+                ]
+            );
+            return Redirect::route('profile.export.edit')->withErrors(['file_accounts' => 'Error reading file: ' . $e->getMessage()]);
         }
     }
 
@@ -62,10 +76,24 @@ class ExportController extends Controller
      */
     public function transaction(Request $request, string $type): BinaryFileResponse|RedirectResponse
     {
+        if (!auth()->check()) {
+            return Redirect::route('login');
+        }
+
+        $user = Auth::user();
+
         try {
             return Excel::download(new TransactionsExport(), 'transactions_'.date('d_m_Y').'.'.$type, $this->getType($type));
         } catch (Exception $e) {
-            return Redirect::route('profile.export.edit')->withErrors(['file_csv_transactions' => 'Error reading CSV file: ' . $e->getMessage()]);
+            $user->getCustomLoggerAttribute('ExportController')->error(
+                'Error function transaction()',
+                [
+                    'message' => $e->getMessage() ?: 'No message provided',
+                    'trace' => $e->getTraceAsString() ?: 'No trace available',
+                ]
+            );
+
+            return Redirect::route('profile.export.edit')->withErrors(['file_transactions' => 'Error reading file: ' . $e->getMessage()]);
         }
     }
 
@@ -78,10 +106,24 @@ class ExportController extends Controller
      */
     public function balances(Request $request, string $type): BinaryFileResponse|RedirectResponse
     {
+        if (!auth()->check()) {
+            return Redirect::route('login');
+        }
+
+        $user = Auth::user();
+
         try {
             return Excel::download(new BalancesExport(), 'balances_'.date('d_m_Y').'.'.$type, $this->getType($type));
         } catch (Exception $e) {
-            return Redirect::route('profile.export.edit')->withErrors(['file_csv_balances' => 'Error reading CSV file: ' . $e->getMessage()]);
+            $user->getCustomLoggerAttribute('ExportController')->error(
+                'Error function balances()',
+                [
+                    'message' => $e->getMessage() ?: 'No message provided',
+                    'trace' => $e->getTraceAsString() ?: 'No trace available',
+                ]
+            );
+
+            return Redirect::route('profile.export.edit')->withErrors(['file_balances' => 'Error reading file: ' . $e->getMessage()]);
         }
     }
 

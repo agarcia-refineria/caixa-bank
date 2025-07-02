@@ -11,7 +11,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Support\Carbon;
 
 /**
- * 
+ *
  *
  * @property int $id
  * @property string|null $entryReference
@@ -243,6 +243,7 @@ class Transaction extends Model
     public static function getExampleModel(): Transaction
     {
         return new self([
+            'id' => 5,
             'entryReference' => '1234567890',
             'checkId' => '1234567890',
             'bookingDate' => now(),

@@ -11,7 +11,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Support\Carbon;
 
 /**
- * 
+ *
  *
  * @property int $id
  * @property string|null $amount
@@ -54,6 +54,7 @@ class Balance extends Model
     ];
 
     protected $fillable = [
+        'id',
         'amount',
         'currency',
         'balance_type',
@@ -146,20 +147,10 @@ class Balance extends Model
         return self::$balanceTypes;
     }
 
-    /**
-     * Get the balance code.
-     *
-     * @noinspection PhpUnused
-     * @return mixed
-     */
-    public function getCodeAttribute(): mixed
-    {
-        return $this->attributes['id'];
-    }
-
     public static function getExampleModel(): Balance
     {
         return new self([
+            'id' => 5,
             'amount' => 12.3,
             'currency' => 'EUR',
             'balance_type' => 'forwardAvailable',
