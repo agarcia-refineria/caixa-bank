@@ -35,7 +35,7 @@ class BalanceImport implements ToModel, WithHeadingRow
                     'amount' => $row['amount'],
                     'currency' => $row['currency'],
                     'balance_type' => $row['balance_type'],
-                    'reference_date' => Date::excelToDateTimeObject($row['reference_date'])->format('d-m-Y H:i:s'),
+                    'reference_date' => Date::excelToDateTimeObject($row['reference_date'] ?? now())->format('d-m-Y H:i:s'),
                     'account_id' => $account->id,
                 ]);
 
@@ -48,7 +48,7 @@ class BalanceImport implements ToModel, WithHeadingRow
                 'amount' => $row['amount'],
                 'currency' => $row['currency'],
                 'balance_type' => $row['balance_type'],
-                'reference_date' => Date::excelToDateTimeObject($row['reference_date'])->format('d-m-Y H:i:s'),
+                'reference_date' => Date::excelToDateTimeObject($row['reference_date'] ?? now())->format('d-m-Y H:i:s'),
                 'account_id' => $account->id,
             ]);
         }

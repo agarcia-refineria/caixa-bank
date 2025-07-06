@@ -4,7 +4,7 @@
     <div class="py-6 md:px-0 px-4">
         <div class="pb-6 md:px-0 px-4">
             <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 space-y-6">
-                <div class="flex items-center justify-start gap-4">
+                <div class="flex items-center justify-center md:justify-start gap-4">
                     <x-links.nav-link class="uppercase px-4 py-2" :href="route('profile.accounts.edit')" :active="request()->routeIs(['profile.accounts.edit'])">
                         {{ __('Accounts') }}
                     </x-links.nav-link>
@@ -17,6 +17,14 @@
                         {{ __('Export') }}
                     </x-links.nav-link>
                 </div>
+            </div>
+        </div>
+
+        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 pb-4">
+            <div class="bg-[#664d03] w-full rounded-2xl relative group inline-block px-4 py-2 text-sm font-medium text-gray-900 dark:text-gray-100">
+                (I). {{ __('You can export your transactions, accounts and balances to CSV or XLSX files.') }}<br/>
+                (II). {{ __('Please note that the export process may take some time, depending on the volume of information.') }}<br/>
+                (III). {{ __('The files exported represent the data from the database.') }}<br/>
             </div>
         </div>
 

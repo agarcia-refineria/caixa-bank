@@ -43,7 +43,7 @@ class AccountImport implements ToModel, WithHeadingRow
                 'owner_name' => $row['owner_name'],
                 'created' => Date::excelToDateTimeObject($row['created'])->format('d-m-Y H:i:s'),
                 'last_accessed' => Date::excelToDateTimeObject($row['last_accessed'])->format('d-m-Y H:i:s'),
-                'institution_id' => $row['institution_id'] ?? null,
+                'institution_id' => $row['institution_id'],
                 'user_id' => $user->id,
                 'type' => Account::$accountTypes['manual'],
             ]);
@@ -57,6 +57,7 @@ class AccountImport implements ToModel, WithHeadingRow
                 'owner_name' => $row['owner_name'],
                 'created' => Date::excelToDateTimeObject($row['created'])->format('d-m-Y H:i:s'),
                 'last_accessed' => Date::excelToDateTimeObject($row['last_accessed'])->format('d-m-Y H:i:s'),
+                'institution_id' => $row['institution_id'],
             ]);
 
             return $existingAccount;

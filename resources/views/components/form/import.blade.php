@@ -2,7 +2,7 @@
     @csrf
 
     <!-- Show the bank logo and name -->
-    <h2 class="flex gap-4 items-center text-lg font-medium text-primary w-full sm:px-6 lg:px-8 pb-3">
+    <h2 class="flex gap-4 items-center text-lg font-medium text-primary w-full sm:px-6 lg:px-8">
         {{ __('Import') }} {{ $type }}
     </h2>
 
@@ -18,15 +18,17 @@
         </div>
     </div>
 
-    <div class="flex gap-4 items-center justify-left sm:px-6 lg:px-8">
+    <div class="sm:px-6 lg:px-8">
         <x-buttons.secondary-button type="submit">
             {{ __('Import') }} {{ $type }}
         </x-buttons.secondary-button>
-        <x-buttons.secondary-button type="submit"
-                                    x-data=""
+    </div>
+
+    <div class="sm:px-6 lg:px-8 pt-6">
+        <x-links.nav-link x-data=""
                                     x-on:click.prevent="$dispatch('open-modal', 'example-{{ strtolower($type) }}-import')">
             {{ __('Example import') }}
-        </x-buttons.secondary-button>
+        </x-links.nav-link>
     </div>
 
     <x-ui.modal name="example-{{ strtolower($type) }}-import" focusable maxWidth="full" margin="sm:px-[50px]">

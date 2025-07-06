@@ -2,6 +2,7 @@
 
 namespace App\Exports;
 
+use App\Models\Transaction;
 use Auth;
 use Illuminate\Support\Collection;
 use Maatwebsite\Excel\Concerns\FromCollection;
@@ -21,7 +22,10 @@ class TransactionsExport implements FromCollection, WithMapping, WithHeadings, W
     */
     public function collection(): Collection
     {
-        return $this->collection ?? Auth::user()->transactions;
+        $accounts = Auth::user()->accounts;
+        $transactions = Transaction::whereIn('account_id', $accounts->pluck('id'))->orderBy('bookingDate')->get();
+
+        return $this->collection ?? $transactions;
     }
 
     public function map($row): array

@@ -4,7 +4,7 @@
     <div class="py-6 md:px-0 px-4">
         <div class="pb-6 md:px-0 px-4">
             <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 space-y-6">
-                <div class="flex items-center justify-start gap-4">
+                <div class="flex items-center justify-center md:justify-start gap-4">
                     <x-links.nav-link class="uppercase px-4 py-2" :href="route('profile.accounts.edit')" :active="request()->routeIs(['profile.accounts.edit'])">
                         {{ __('Accounts') }}
                     </x-links.nav-link>
@@ -27,6 +27,7 @@
                 (III). {{ __('The fields needs to be THE EXACT same name from examples showing you.') }}<br/>
             </div>
         </div>
+
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 grid gap-4 grid-cols-1 lg:grid-cols-3">
             <x-form.import
                 :user="$user"

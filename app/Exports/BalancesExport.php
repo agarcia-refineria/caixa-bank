@@ -2,6 +2,7 @@
 
 namespace App\Exports;
 
+use App\Models\Balance;
 use Auth;
 use Illuminate\Support\Collection;
 use Maatwebsite\Excel\Concerns\FromCollection;
@@ -21,7 +22,10 @@ class BalancesExport implements FromCollection, WithMapping, WithHeadings, WithD
     */
     public function collection(): Collection
     {
-        return $this->collection ?? Auth::user()->balances;
+        $accounts = Auth::user()->accounts;
+        $balances = Balance::whereIn('account_id', $accounts->pluck('id'))->orderBy('reference_date')->get();
+
+        return $this->collection ?? $balances;
     }
 
     public function map($row): array
@@ -32,6 +36,7 @@ class BalancesExport implements FromCollection, WithMapping, WithHeadings, WithD
             'currency' => $row->currency,
             'balance_type' => $row->balance_type,
             'reference_date' => $row->reference_date?->format('Y-m-d H:i:s'),
+            'account_id' => $row->account_id,
         ];
     }
 
@@ -43,6 +48,7 @@ class BalancesExport implements FromCollection, WithMapping, WithHeadings, WithD
             'Currency',
             'Balance Type',
             'Reference Date',
+            'Account ID'
         ];
     }
 

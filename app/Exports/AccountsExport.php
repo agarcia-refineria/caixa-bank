@@ -21,7 +21,7 @@ class AccountsExport implements FromCollection, WithMapping, WithHeadings,WithDr
     */
     public function collection(): Collection
     {
-        return $this->collection ?? Auth::user()->accounts;
+        return $this->collection ?? Auth::user()->accounts()->orderBy('order')->get();
     }
 
 
