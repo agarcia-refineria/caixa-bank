@@ -3,7 +3,7 @@
         <div data-id="{{ $account->code }}" class="relative max-w-7xl md:px-0 px-4 mx-auto bg-main2 rounded-lg border-t-main3 border-b-main3 border-l-main3 border-r-main3 border-2 py-4 mt-4">
             <!-- Show the bank logo and name -->
             <h2 class="flex gap-4 items-center text-lg font-medium text-primary w-full sm:px-6 lg:px-8 pb-3 border-b-main3 border-t-0 border-l-0 border-r-0 border-2">
-                <img src="{{ $user->bank->institution->logo }}" alt="{{ $user->bank->institution->name }}" width="32" height="32" class="h-8 w-8 mr-2">
+                <img src="{{ $account->institution->logo }}" alt="{{ $account->institution->name }}" width="32" height="32" class="h-8 w-8 mr-2">
                 {{ $account->institution?->name }} - {{ $account->iban }} <span class="md:block hidden">({{ $account->type }})</span>
             </h2>
 
@@ -27,7 +27,7 @@
                                 text="[{{ __('Rate limit exceeded') }}: {{ $account->transactions_disabled_date->format('d-m-Y H:i:s') }}]" />
                         @endif
 
-                        @include('partials.configuration.request', [
+                        @include('partials.requests.request', [
                             'title' => __('Transactions update'),
                             'description' => __('This will add all the transactions'),
                             'button' => __('UPDATE INFORMATION'),
@@ -47,7 +47,7 @@
                                 text="[{{ __('Rate limit exceeded') }}: {{ $account->balance_disabled_date->format('d-m-Y H:i:s') }}]" />
                         @endif
 
-                        @include('partials.configuration.request', [
+                        @include('partials.requests.request', [
                             'title' => __('Balances update'),
                             'description' => __('This will add all the balances'),
                             'button' => __('UPDATE INFORMATION'),

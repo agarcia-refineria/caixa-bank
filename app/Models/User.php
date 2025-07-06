@@ -8,8 +8,8 @@ use Eloquent;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
-use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\DatabaseNotification;
 use Illuminate\Notifications\DatabaseNotificationCollection;
@@ -35,7 +35,6 @@ use Monolog\Logger;
  * @property Carbon|null $updated_at
  * @property-read Collection<int, Account> $accounts
  * @property-read int|null $accounts_count
- * @property-read Bank|null $bank
  * @property-read mixed $bank_data_sync_count
  * @property-read Logger $logger
  * @property-read mixed $total_account_sum
@@ -76,6 +75,9 @@ use Monolog\Logger;
  * @method static Builder|User whereNORDIGENSECRETID($value)
  * @method static Builder|User whereNORDIGENSECRETKEY($value)
  * @method static Builder|User whereTheme($value)
+ * @property-read Logger $custom_logger
+ * @property-read Collection<int, Institution> $institutions
+ * @property-read int|null $institutions_count
  * @mixin Eloquent
  */
 class User extends Authenticatable
@@ -129,9 +131,9 @@ class User extends Authenticatable
         'theme' => 'json',
     ];
 
-    public function bank(): HasOne
+    public function institutions(): BelongsToMany
     {
-        return $this->hasOne(Bank::class);
+        return $this->belongsToMany(Institution::class, 'users_institutions', 'user_id', 'institution_id');
     }
 
     public function accounts(): HasMany
@@ -260,7 +262,7 @@ class User extends Authenticatable
     {
         return $this->accounts->sum(function ($account) {
             $latestBalance = $account->balances()
-                ->balanceTypeForward()
+                ->balanceTypeForward($account)
                 ->orderByDesc('reference_date')
                 ->first();
 

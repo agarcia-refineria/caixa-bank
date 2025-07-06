@@ -1,5 +1,5 @@
 .select2-container {
-    @apply border border-third;
+    @apply border border-third w-full !important;
     border-radius: .375rem !important;
 }
 
@@ -39,6 +39,10 @@
 .select2-container--default .select2-selection--multiple .select2-selection__choice__remove {
     color: #FFFFFF !important;
     border-color: #FFFFFF !important;
+}
+
+.select2.select2-container.select2-container--default.select2-container--disabled {
+    opacity: .5 !important;
 }
 
 @media screen and (max-width: 640px) {

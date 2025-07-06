@@ -51,7 +51,7 @@ class DatatableController extends Controller
         $recordsFiltered = $query->count();
 
         $totalAmount = number_format($query->with('balances')->get()->sum(function ($account) {
-            return $account->balances()->balanceTypeForward()->lastInstance()->first() ? $account->balances()->balanceTypeForward()->lastInstance()->first()->amount : 0;
+            return $account->balances()->balanceTypeForward($account)->lastInstance()->first() ? $account->balances()->balanceTypeForward($account)->lastInstance()->first()->amount : 0;
         }), 2, ',', '.') . ' €';
 
         $data = $query->orderBy($orderBy, $orderDir)
@@ -64,7 +64,7 @@ class DatatableController extends Controller
             'recordsTotal' => $recordsTotal,
             'recordsFiltered' => $recordsFiltered,
             'data' => $data->map(function ($account) {
-                $lastInstance = $account->balances()->balanceTypeForward()->lastInstance()->first();
+                $lastInstance = $account->balances()->balanceTypeForward($account)->lastInstance()->first();
                 $color = $lastInstance && $lastInstance->amount > 0 ? 'success' : 'error';
 
                 return [

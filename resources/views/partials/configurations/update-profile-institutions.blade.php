@@ -26,21 +26,21 @@
         @csrf
     </form>
 
-    <form method="post" action="{{ route('profile.bank.update') }}" class="mt-6 space-y-6">
+    <form method="post" action="{{ route('profile.configuration.update') }}" class="mt-6 space-y-6">
         @csrf
         @method('patch')
 
         <div>
-            <x-inputs.input-label for="name" :value="__('Institution')" />
-            <select data-default="{{ __('-- Select an option --') }}" id="institution" name="institution" class="select2 form-control border-third bg-main2 text-primary rounded-md shadow-sm mt-1 block w-full">
-                <option value="" disabled selected>{{ __('Select an institution') }}</option>
+            <x-inputs.input-label for="institutions" :value="__('Institutions')" />
+            <select data-default="{{ __('-- Select an option --') }}" id="institutions" name="institutions[]" multiple class="select2 form-control border-third bg-main2 text-primary rounded-md shadow-sm mt-1 block w-full">
+                <option value="" disabled>{{ __('Select an institution') }}</option>
                 @foreach (\App\Models\Institution::all() as $institution)
-                    <option value="{{ $institution->id }}" {{ $user->bank && $user->bank?->institution_id == $institution->id ? 'selected' : '' }}>
+                    <option value="{{ $institution->id }}" {{ in_array($institution->id, $user->institutions->pluck('id')->toArray()) ? 'selected' : '' }}>
                         {{ $institution->name }}
                     </option>
                 @endforeach
             </select>
-            <x-inputs.input-error class="mt-2" :messages="$errors->get('institution')" />
+            <x-inputs.input-error class="mt-2" :messages="$errors->get('institutions')" />
         </div>
 
         <div class="grid grid-cols-2 gap-4">

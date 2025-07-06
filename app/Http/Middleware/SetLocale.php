@@ -20,7 +20,7 @@ class SetLocale
             App::setLocale($locale);
         } else {
             // If the locale is not supported, you can redirect to a default locale of the user's choice
-            App::setLocale(Auth::user()->lang);
+            App::setLocale(Auth::user() ? Auth::user()->lang : config('app.fallback_locale'));
         }
 
         return $next($request);

@@ -116,7 +116,7 @@
     "Please add an account from update accounts.": "Please add an account from update accounts.",
     "Please click the button below to verify your email address.": "Please click the button below to verify your email address.",
     "Please note that the import process may take some time, depending on the size of the files you are uploading.": "Please note that the import process may take some time, depending on the size of the files you are uploading.",
-    "Please select an account from the sidebar to view your dashboard. If there is no account on the sidebar go to configuration to import the accounts.": "Please select an account from the sidebar to view your dashboard. If there is no account on the sidebar go to configuration to import the accounts.",
+    "Please select an account from the sidebar to view your dashboard. If there is no account on the sidebar go to requests to import the accounts.": "Please select an account from the sidebar to view your dashboard. If there is no account on the sidebar go to <a class='text-white font-semibold hover:text-main3' href=':link'>Requests</a> to import the accounts.",
     "Profile": "Profile",
     "Profile Information": "Profile Information",
     "Proprietary Bank Transaction Code": "",
@@ -250,5 +250,12 @@
     "filters": "filters",
     "Apply Expenses Monthly": "Apply Expenses Monthly",
     "Incomes Future History": "Incomes Future History",
-    "Export": "Export"
+    "Export": "Export",
+
+    "Institutions": "Institutions",
+    "Requests": "Requests",
+    "Default Lang": "Default Language",
+    "Set the default lang of the web.": "Set the default language of the web.",
+    "Lang": "Language",
+    "You need to set the secret id and key on Configuration!": "You need to set the secret id and key on <a class='text-white font-semibold hover:text-main3' href=':link'>Configuration</a>!"
 }

@@ -12,13 +12,13 @@
 
     <!-- Show the bank logo and name -->
     <h2 class="flex gap-4 items-center text-lg font-medium text-primary w-full sm:px-6 lg:px-8 pb-3">
-        <img src="{{ $user->bank->institution->logo }}" alt="{{ $user->bank->institution->name }}" width="32" height="32" class="h-8 w-8 mr-2">
+        <img src="{{ $account->institution->logo }}" alt="{{ $account->institution->name }}" width="32" height="32" class="h-8 w-8 mr-2">
         {{ $account->institution?->name }} - {{ $account->iban }} <span class="md:block hidden">({{ $account->type }})</span>
     </h2>
 
     <!-- Show the account buttons -->
     <div class="grid grid-cols-3 gap-4 py-6 sm:px-6 lg:px-8 w-full">
-        <x-inputs.input :errorName="$transaction ? 'Transaction.'.$transaction->code.'.entryReference' : 'newTransaction.entryReference'" :value="$transaction ? $transaction->entryReference : null" type="text" name="{{ $transaction ? 'Transaction['.$transaction->code.'][entryReference]' : 'newTransaction[entryReference]' }}" :label="__('Entry Reference')"/>
+        <x-inputs.input :errorName="$transaction ? 'Transaction.'.$transaction->coded.'.entryReference' : 'newTransaction.entryReference'" :value="$transaction ? $transaction->entryReference : null" type="text" name="{{ $transaction ? 'Transaction['.$transaction->code.'][entryReference]' : 'newTransaction[entryReference]' }}" :label="__('Entry Reference')"/>
         <x-inputs.input :errorName="$transaction ? 'Transaction.'.$transaction->code.'.checkId' : 'newTransaction.checkId'" :value="$transaction ? $transaction->checkId : null" type="text" name="{{ $transaction ? 'Transaction['.$transaction->code.'][checkId]' : 'newTransaction[checkId]' }}" :label="__('Check ID')"/>
         <x-inputs.input :errorName="$transaction ? 'Transaction.'.$transaction->code.'.bookingDate' : 'newTransaction.bookingDate'" :value="$transaction ? $transaction->bookingDate->format('Y-m-d') : null" type="date" required="required" name="{{ $transaction ? 'Transaction['.$transaction->code.'][bookingDate]' : 'newTransaction[bookingDate]' }}" :label="__('Booking Date')"/>
         <x-inputs.input :errorName="$transaction ? 'Transaction.'.$transaction->code.'.valueDate' : 'newTransaction.valueDate'" :value="$transaction ? $transaction->valueDate->format('Y-m-d') : null" type="date" name="{{ $transaction ? 'Transaction['.$transaction->code.'][valueDate]' : 'newTransaction[valueDate]' }}" :label="__('Value Date')"/>

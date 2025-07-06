@@ -1,5 +1,5 @@
 <p class="mt-1 text-sm">
     <span class="text-error">
-        {{ $title }}
+        {{ $text ?? $title ?? __('An error occurred') }}
     </span>
 </p>

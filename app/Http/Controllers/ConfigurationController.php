@@ -2,8 +2,9 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Bank;
+use App\Models\Institution;
 use App\Models\User;
+use App\Models\UserInstitution;
 use Exception;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
@@ -16,7 +17,7 @@ use App\Models\ScheduledTasks;
 use Illuminate\Support\Facades\Artisan;
 use Throwable;
 
-class BankController extends Controller
+class ConfigurationController extends Controller
 {
     /**
      * Display the bank edit form.
@@ -32,9 +33,9 @@ class BankController extends Controller
 
         $user = Auth::user();
 
-        return view('pages.profile.bank', [
+        return view('pages.profile.configuration', [
             'user' => $user,
-            'bank' => $user->bank,
+            'institutions' => $user->institutions()->orderBy('name')->get()
         ]);
     }
 
@@ -60,21 +61,30 @@ class BankController extends Controller
         $user->save();
 
         try {
-            if (\request()->has('institution')) {
-                $validated = request()->validate([
-                    'institution' => ['required', 'exists:institutions,id'],
-                ]);
+            // Delete existing user institutions
+            UserInstitution::where('user_id', $user->id)->whereNotIn('institution_id', request('institutions') ?? [])->delete();
 
-                Bank::updateOrCreate(
-                    ['user_id' => $user->id],
-                    ['institution_id' => $validated['institution']]
-                );
+            if (\request()->has('institutions')) {
+                $institutions = request('institutions');
 
-                return Redirect::route('profile.bank.edit')
+                foreach ($institutions as $institutionId) {
+                    // Skip if the institution does not exist
+                    $existingInstitution = Institution::find($institutionId);
+                    if (!$existingInstitution) {
+                        continue;
+                    }
+
+                    UserInstitution::updateOrCreate([
+                        'user_id' => $user->id,
+                        'institution_id' => $institutionId,
+                    ]);
+                }
+
+                return Redirect::route('profile.configuration.edit')
                     ->with('status', __('status.bankcontroller.update-account-success'));
             }
 
-            return Redirect::route('profile.bank.edit')
+            return Redirect::route('profile.configuration.edit')
                 ->with('status', __('status.bankcontroller.update-account-success'));
         } catch (Exception $e) {
             $user->getCustomLoggerAttribute('BankController')->error(
@@ -85,7 +95,7 @@ class BankController extends Controller
                 ]
             );
 
-            return Redirect::route('profile.bank.edit')
+            return Redirect::route('profile.configuration.edit')
                 ->with('error', __('status.bankcontroller.update-account-failed'));
         }
     }
@@ -119,7 +129,7 @@ class BankController extends Controller
         try {
             $user->update(['chars' => $validated['chars']]);
 
-            return redirect()->route('profile.bank.edit')->with('status', __('status.bankcontroller.chars-updated'));
+            return redirect()->route('profile.configuration.edit')->with('status', __('status.bankcontroller.chars-updated'));
         } catch (Exception $e) {
             $user->getCustomLoggerAttribute('BankController')->error(
                 'Error function chars()',
@@ -129,7 +139,7 @@ class BankController extends Controller
                 ]
             );
 
-            return redirect()->route('profile.bank.edit')->with('error', __('status.bankcontroller.chars-error'));
+            return redirect()->route('profile.configuration.edit')->with('error', __('status.bankcontroller.chars-error'));
         }
     }
 
@@ -161,7 +171,7 @@ class BankController extends Controller
         try {
             $user->update(['theme' => $validated['theme']]);
 
-            return redirect()->route('profile.bank.edit')->with('status', __('status.bankcontroller.theme-updated'));
+            return redirect()->route('profile.configuration.edit')->with('status', __('status.bankcontroller.theme-updated'));
         } catch (Exception $e) {
             $user->getCustomLoggerAttribute('BankController')->error(
                 'Error function theme()',
@@ -171,7 +181,7 @@ class BankController extends Controller
                 ]
             );
 
-            return redirect()->route('profile.bank.edit')->with('error', __('status.bankcontroller.theme-error'));
+            return redirect()->route('profile.configuration.edit')->with('error', __('status.bankcontroller.theme-error'));
         }
     }
 
@@ -204,7 +214,7 @@ class BankController extends Controller
         try {
             $user->update(['lang' => $validated['lang']]);
 
-            return redirect()->route('profile.bank.edit')->with('status', __('status.bankcontroller.lang-updated'));
+            return redirect()->route('profile.configuration.edit')->with('status', __('status.bankcontroller.lang-updated'));
         } catch (Exception $e) {
             $user->getCustomLoggerAttribute('BankController')->error(
                 'Error function lang()',
@@ -214,7 +224,7 @@ class BankController extends Controller
                 ]
             );
 
-            return redirect()->route('profile.bank.edit')->with('error', __('status.bankcontroller.lang-error'));
+            return redirect()->route('profile.configuration.edit')->with('error', __('status.bankcontroller.lang-error'));
         }
     }
 
@@ -271,7 +281,7 @@ class BankController extends Controller
             }
 
             DB::commit();
-            return redirect()->route('profile.bank.edit')->with('status', __('status.bankcontroller.schedule-updated'));
+            return redirect()->route('profile.configuration.edit')->with('status', __('status.bankcontroller.schedule-updated'));
         } catch (Exception $e) {
             $user->getCustomLoggerAttribute('BankController')->error(
                 'Error function schedule()',
@@ -282,7 +292,7 @@ class BankController extends Controller
             );
 
             DB::rollBack();
-            return redirect()->route('profile.bank.edit')->with('status', __('status.bankcontroller.schedule-error'));
+            return redirect()->route('profile.configuration.edit')->with('status', __('status.bankcontroller.schedule-error'));
         }
     }
 

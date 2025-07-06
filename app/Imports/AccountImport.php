@@ -29,7 +29,7 @@ class AccountImport implements ToModel, WithHeadingRow
             // Check if the account does not exist
             $existingAccount = Account::find($row['id']);
 
-            if ($existingAccount || !$user->bank) {
+            if ($existingAccount) {
                 // If the account exists but not for the current user, return null or user dosntt have a bank
                 return null;
             }
@@ -43,7 +43,7 @@ class AccountImport implements ToModel, WithHeadingRow
                 'owner_name' => $row['owner_name'],
                 'created' => Date::excelToDateTimeObject($row['created'])->format('d-m-Y H:i:s'),
                 'last_accessed' => Date::excelToDateTimeObject($row['last_accessed'])->format('d-m-Y H:i:s'),
-                'institution_id' => $user->bank->institution_id,
+                'institution_id' => $row['institution_id'] ?? null,
                 'user_id' => $user->id,
                 'type' => Account::$accountTypes['manual'],
             ]);

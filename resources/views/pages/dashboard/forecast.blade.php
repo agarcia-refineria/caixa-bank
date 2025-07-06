@@ -1,5 +1,5 @@
 <x-app-layout>
-    <x-site.top-info :text="__('Forecast Saving')" />
+    <x-site.top-bar :text="__('Forecast Saving')" />
 
     <div class="block md:flex min-h-screen bg-main1 text-primary">
         @include('partials.forecast.sidebar', [

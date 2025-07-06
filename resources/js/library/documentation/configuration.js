@@ -3,7 +3,7 @@ window.loadConfigurationTour = loadConfigurationTour;
 function loadConfigurationTour() {
     let routeName = window.routeName;
 
-    if (routeName === "dashboard.configuration") {
+    if (routeName === "dashboard.requests") {
         addStep('configuration-session-data');
 
         addStep('configuration-accounts-update');

@@ -10,21 +10,37 @@
 
     <!-- Show the bank logo and name -->
     <h2 class="flex gap-4 items-center text-lg font-medium text-primary w-full sm:px-6 lg:px-8 pb-3">
-        <img src="{{ $user->bank->institution->logo }}" alt="{{ $user->bank->institution->name }}" width="32" height="32" class="h-8 w-8 mr-2">
         @if (isset($account))
+            <img src="{{ $account->institution->logo }}" alt="{{ $account->institution->name }}" width="32" height="32" class="h-8 w-8 mr-2">
             {{ $account->institution?->name }} - {{ $account->iban }} <span class="md:block hidden">({{ $account->type }})</span>
         @else
             {{ __('Create Manual Account') }}
         @endif
     </h2>
 
+    @php $isApiAccount = isset($account) && $account->isApi; @endphp
+
     <!-- Show the account buttons -->
     <div class="grid grid-cols-2 gap-4 py-6 sm:px-6 lg:px-8 w-full">
-        <x-inputs.input required="required" :errorName="isset($account) ? 'Account.'.$account->code.'.owner_name' : 'newAccount.owner_name'" :value="isset($account) ? $account->owner_name : null" type="text" name="{{ isset($account) ? 'Account['. $account->code .'][owner_name]' : 'newAccount[owner_name]' }}" :label="__('Owner name')"/>
-        <x-inputs.input required="required" :errorName="isset($account) ? 'Account.'.$account->code.'.institution' : 'newAccount.institution'" :value="isset($account) ? $account->institution?->name : $user->bank->institution?->name" type="text" name="{{ isset($account) ? 'Account['. $account->code .'][institution]' : 'newAccount[institution]' }}" :label="__('Institution')" disabled="disabled" />
-        <x-inputs.input required="required" :errorName="isset($account) ? 'Account.'.$account->code.'.iban' : 'newAccount.iban'" :value="isset($account) ? $account->iban : null" type="text" name="{{ isset($account) ? 'Account['. $account->code .'][iban]' : 'newAccount[iban]' }}" :label="__('Iban')" />
-        <x-inputs.input :errorName="isset($account) ? 'Account.'.$account->code.'.bban' : 'newAccount.bban'" :value="isset($account) ? $account->bban : null" type="text" name="{{ isset($account) ? 'Account['. $account->code .'][bban]' : 'newAccount[bban]' }}" :label="__('bban')" />
-        <x-inputs.input :errorName="isset($account) ? 'Account.'.$account->code.'.status' : 'newAccount.status'" :value="isset($account) ? $account->status : null" type="text" name="{{ isset($account) ? 'Account['. $account->code .'][status]' : 'newAccount[status]' }}" :label="__('Status')" />
+        <x-inputs.input required="required" :errorName="isset($account) ? 'Account.'.$account->code.'.owner_name' : 'newAccount.owner_name'" :value="isset($account) ? $account->owner_name : null" type="text" name="{{ isset($account) ? 'Account['. $account->code .'][owner_name]' : 'newAccount[owner_name]' }}" :label="__('Owner name')" :disabled="$isApiAccount" />
+        <div>
+            @php $institutionId = isset($account) ? 'Account.'. $account->code .'.institution_id' : 'newAccount.institution'; @endphp
+            @php $institutionName = isset($account) ? 'Account['. $account->code .'][institution_id]' : 'newAccount[institution_id]'; @endphp
+
+            <x-inputs.input-label for="{{ $institutionId }}" :value="__('institution')" />
+            <select data-default="{{ __('-- Select an option --') }}" id="{{ $institutionId }}" name="{{ $institutionName }}" class="select2 form-control border-third bg-main2 text-primary rounded-md shadow-sm mt-1 block w-full" @if ($isApiAccount) disabled="disabled" @endif>
+                <option value="" selected disabled>{{ __('Select an institution') }}</option>
+                @foreach (\App\Models\Institution::all() as $institution)
+                    <option value="{{ $institution->id }}" {{ isset($account) && $institution->id == $account->institution->id ? 'selected' : '' }}>
+                        {{ $institution->name }}
+                    </option>
+                @endforeach
+            </select>
+            <x-inputs.input-error class="mt-2" :messages="$errors->get($institutionId)" />
+        </div>
+        <x-inputs.input required="required" :errorName="isset($account) ? 'Account.'.$account->code.'.iban' : 'newAccount.iban'" :value="isset($account) ? $account->iban : null" type="text" name="{{ isset($account) ? 'Account['. $account->code .'][iban]' : 'newAccount[iban]' }}" :label="__('Iban')" :disabled="$isApiAccount" />
+        <x-inputs.input :errorName="isset($account) ? 'Account.'.$account->code.'.bban' : 'newAccount.bban'" :value="isset($account) ? $account->bban : null" type="text" name="{{ isset($account) ? 'Account['. $account->code .'][bban]' : 'newAccount[bban]' }}" :label="__('bban')" :disabled="$isApiAccount" />
+        <x-inputs.input :errorName="isset($account) ? 'Account.'.$account->code.'.status' : 'newAccount.status'" :value="isset($account) ? $account->status : null" type="text" name="{{ isset($account) ? 'Account['. $account->code .'][status]' : 'newAccount[status]' }}" :label="__('Status')" :disabled="$isApiAccount" />
     </div>
 
     @if (isset($account))

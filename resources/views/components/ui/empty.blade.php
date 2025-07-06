@@ -6,7 +6,7 @@
             </h2>
 
             <p class="mt-1 text-sm text-secondary">
-                {{ $description }}
+                {!! $description !!}
             </p>
         </div>
     </div>

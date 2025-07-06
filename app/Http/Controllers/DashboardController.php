@@ -31,12 +31,14 @@ class DashboardController extends Controller
         $user = Auth::user();
 
         $accounts = $user->accounts()
-            ->with(['balances' => function($query) {
-                $query->balanceTypeForward()
-                      ->lastInstance();
-            }])
             ->orderBy('order')
             ->get();
+
+        foreach ($accounts as $account) {
+            $account->load(['balances' => function ($query) use ($account) {
+                $query->balanceTypeForward($account)->lastInstance();
+            }]);
+        }
 
         $currentAccount = $accounts->first();
         $balance = $currentAccount?->balances->first();
@@ -65,10 +67,11 @@ class DashboardController extends Controller
             ->get();
 
         $currentAccount = $user->accounts()
-            ->with(['balances' => function ($query) {
-                $query->balanceTypeForward()->lastInstance();
-            }])
             ->findOrFail($id);
+
+        $currentAccount->load(['balances' => function ($query) use ($currentAccount) {
+            $query->balanceTypeForward($currentAccount)->lastInstance();
+        }]);
 
         if ($currentAccount instanceof Account) {
             $balance = $currentAccount->balances->first();
@@ -150,10 +153,11 @@ class DashboardController extends Controller
             ->get();
 
         $currentAccount = $user->accounts()
-            ->with(['balances' => function ($query) {
-                $query->balanceTypeForward()->lastInstance();
-            }])
             ->findOrFail($id);
+
+        $currentAccount->load(['balances' => function ($query) use ($currentAccount) {
+            $query->balanceTypeForward($currentAccount)->lastInstance();
+        }]);
 
         return view('pages.dashboard.forecast', compact('user', 'accounts', 'currentAccount'));
     }
@@ -186,7 +190,7 @@ class DashboardController extends Controller
      *
      * @throws HttpException Thrown when the authenticated user cannot be found (HTTP 403).
      */
-    public function configuration(): View
+    public function requests(): View
     {
         if (!auth()->check()) {
             abort(403);
@@ -210,6 +214,6 @@ class DashboardController extends Controller
             ->orderBy('order')
             ->get();
 
-        return view('pages.dashboard.configuration', compact('user', 'accounts', 'showUpdateAccounts'));
+        return view('pages.dashboard.requests', compact('user', 'accounts', 'showUpdateAccounts'));
     }
 }

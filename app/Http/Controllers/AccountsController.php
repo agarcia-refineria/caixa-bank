@@ -68,6 +68,7 @@ class AccountsController extends Controller
             'newAccount.owner_name' => ['required', 'string', 'max:255'],
             'newAccount.bban' => ['nullable', 'string', 'max:255'],
             'newAccount.iban' => ['required', 'string', 'max:255'],
+            'newAccount.institution_id' => ['required', 'exists:institutions,id'],
             'newAccount.status' => ['nullable', 'string'],
         ]);
 
@@ -82,7 +83,7 @@ class AccountsController extends Controller
                 'bban' => $accountData['bban'],
                 'status' =>$accountData['status'] ?? 'active',
                 'owner_name' => $accountData['owner_name'],
-                'institution_id' => $user->bank->institution_id,
+                'institution_id' => $accountData['institution_id'],
                 'user_id' => $user->id,
                 'type' => Account::$accountTypes['manual'],
                 'order' => Account::where('user_id', $user->id)->max('order') + 1,
@@ -128,6 +129,7 @@ class AccountsController extends Controller
             "Account.$key.owner_name" => ['required', 'string', 'max:255'],
             "Account.$key.bban" => ['nullable', 'string', 'max:255'],
             "Account.$key.iban" => ['required', 'string', 'max:255'],
+            "Account.$key.institution_id" => ['required', 'exists:institutions,id'],
             "Account.$key.status" => ['nullable', 'string'],
         ]));
 
@@ -142,6 +144,7 @@ class AccountsController extends Controller
                 'owner_name' => $accountData["owner_name"],
                 'bban' => $accountData['bban'],
                 'iban' => $accountData['iban'],
+                'institution_id' => $accountData['institution_id'],
                 'status' => $accountData['status'],
             ]);
 

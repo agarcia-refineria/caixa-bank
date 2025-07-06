@@ -11,12 +11,6 @@
                 </div>
 
                 <div class="hidden space-x-8 lg:-my-px lg:ms-10 lg:flex">
-                    <x-links.nav-link id="profile-navigation-bank" :shepherd-text="trans('shepherd.profile-navigation-bank')" :href="route('profile.bank.edit')" :active="request()->routeIs(['profile.bank.edit'])">
-                        {{ __('Bank') }}
-                    </x-links.nav-link>
-                </div>
-
-                <div class="hidden space-x-8 lg:-my-px lg:ms-10 lg:flex">
                     <x-links.nav-link id="profile-navigation-accounts" :shepherd-text="trans('shepherd.profile-navigation-accounts')" :href="route('profile.accounts.edit')" :active="request()->routeIs(['profile.accounts.edit', 'profile.transaction.edit', 'profile.balance.edit' ,'profile.import.edit', 'profile.export.edit'])">
                         {{ __('Accounts') }}
                     </x-links.nav-link>
@@ -25,6 +19,12 @@
                 <div class="hidden space-x-8 lg:-my-px lg:ms-10 lg:flex">
                     <x-links.nav-link id="profile-navigation-categories" :shepherd-text="trans('shepherd.profile-navigation-categories')" :href="route('profile.categories')" :active="request()->routeIs(['profile.categories'])">
                         {{ __('Categories') }}
+                    </x-links.nav-link>
+                </div>
+
+                <div class="hidden space-x-8 lg:-my-px lg:ms-10 lg:flex">
+                    <x-links.nav-link id="profile-navigation-bank" :shepherd-text="trans('shepherd.profile-navigation-bank')" :href="route('profile.configuration.edit')" :active="request()->routeIs(['profile.configuration.edit'])">
+                        {{ __('Configuration') }}
                     </x-links.nav-link>
                 </div>
             </div>
@@ -38,12 +38,6 @@
                 </div>
 
                 <div class="pt-2 pb-3 space-y-1">
-                    <x-links.responsive-nav-link :href="route('profile.bank.edit')" :active="request()->routeIs(['profile.bank.edit'])">
-                        {{ __('Bank') }}
-                    </x-links.responsive-nav-link>
-                </div>
-
-                <div class="pt-2 pb-3 space-y-1">
                     <x-links.responsive-nav-link :href="route('profile.accounts.edit')" :active="request()->routeIs(['profile.accounts.edit', 'profile.transaction.edit', 'profile.balance.edit', 'profile.import.edit', 'profile.export.edit'])">
                         {{ __('Accounts') }}
                     </x-links.responsive-nav-link>
@@ -52,6 +46,12 @@
                 <div class="pt-2 pb-3 space-y-1">
                     <x-links.responsive-nav-link :href="route('profile.categories')" :active="request()->routeIs(['profile.categories'])">
                         {{ __('Categories') }}
+                    </x-links.responsive-nav-link>
+                </div>
+
+                <div class="pt-2 pb-3 space-y-1">
+                    <x-links.responsive-nav-link :href="route('profile.configuration.edit')" :active="request()->routeIs(['profile.configuration.edit'])">
+                        {{ __('Configuration') }}
                     </x-links.responsive-nav-link>
                 </div>
             </div>

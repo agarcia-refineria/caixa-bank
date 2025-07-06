@@ -591,7 +591,7 @@ class Account extends Model
     public function getChartBalancesValuesAttribute(): mixed
     {
         return tap($this->balances()->getQuery())
-            ->balanceTypeForward()
+            ->balanceTypeForward($this)
             ->currentMonth()
             ->pluck('amount')
             ->implode(',');
@@ -606,7 +606,7 @@ class Account extends Model
     public function getChartBalancesLabelsAttribute(): mixed
     {
         return tap($this->balances()->getQuery())
-            ->balanceTypeForward()
+            ->balanceTypeForward($this)
             ->currentMonth()
             ->pluck('reference_date')
             ->map(fn($date) => trim($date->format('d-m-Y'), '[]"'))
@@ -759,7 +759,7 @@ class Account extends Model
         $forecast = (float) $incomesMonthly + (float) $expensesMonthly;
 
         $currentBalance = tap($this->balances()->getQuery())
-            ->balanceTypeForward()
+            ->balanceTypeForward($this)
             ->orderDate()
             ->first();
         $balance = $currentBalance ? $currentBalance->amount : 0;

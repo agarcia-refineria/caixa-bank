@@ -51,6 +51,7 @@ return [
         'institutions-error' => 'An error occurred while updating institutions',
         'missing-credentials' => 'Missing credentials for Nordigen',
         'token-error' => 'An error occurred while retrieving the token from Nordigen',
+        'institution-not-found' => 'Institution not found'
     ],
     'profilecontroller' => [
         'profile-updated' => 'Profile updated successfully',

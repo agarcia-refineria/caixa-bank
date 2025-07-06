@@ -37,7 +37,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // Navigation steps for profile
-    if (loadNavigation && (routeName === "profile.edit" || routeName === "profile.bank.edit" || routeName === "profile.accounts.edit" || routeName === "profile.categories")) {
+    if (loadNavigation && (routeName === "profile.edit" || routeName === "profile.configuration.edit" || routeName === "profile.accounts.edit" || routeName === "profile.categories")) {
         addStep('profile-navigation-profile');
         addStep('profile-navigation-bank');
         addStep('profile-navigation-accounts');

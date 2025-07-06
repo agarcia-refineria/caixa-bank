@@ -3,20 +3,19 @@
 
     <div class="py-6 md:px-0 px-4">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 space-y-6">
-            @if ($user->bank)
+            @if ($user->institutions()->count() > 0)
                 <div class="flex items-center justify-start gap-4">
-                    <x-buttons.primary-button
-                        class="py-2"
-                        x-data=""
-                        x-on:click.prevent="$dispatch('open-modal', 'confirm-user-create')">
+                    <x-links.nav-link class="uppercase px-4 py-2 cursor-pointer"
+                                      x-data=""
+                                      x-on:click.prevent="$dispatch('open-modal', 'confirm-user-create')">
                         {{ __('Create Account') }}
-                    </x-buttons.primary-button>
+                    </x-links.nav-link>
 
-                    <x-links.nav-link class="uppercase px-4" :href="route('profile.import.edit')" :active="request()->routeIs(['profile.import.edit'])">
+                    <x-links.nav-link class="uppercase px-4 py-2" :href="route('profile.import.edit')" :active="request()->routeIs(['profile.import.edit'])">
                         {{ __('Import') }}
                     </x-links.nav-link>
 
-                    <x-links.nav-link class="uppercase px-4" :href="route('profile.export.edit')" :active="request()->routeIs(['profile.export.edit'])">
+                    <x-links.nav-link class="uppercase px-4 py-2" :href="route('profile.export.edit')" :active="request()->routeIs(['profile.export.edit'])">
                         {{ __('Export') }}
                     </x-links.nav-link>
                 </div>

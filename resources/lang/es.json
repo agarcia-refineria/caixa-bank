@@ -116,7 +116,7 @@
     "Please add an account from update accounts.": "Por favor agrega una cuenta desde actualizar cuentas.",
     "Please click the button below to verify your email address.": "Por favor haz clic en el botón de abajo para verificar tu dirección de correo electrónico.",
     "Please note that the import process may take some time, depending on the size of the files you are uploading.": "Ten en cuenta que el proceso de importación puede llevar algún tiempo, dependiendo del tamaño de los archivos que estés subiendo.",
-    "Please select an account from the sidebar to view your dashboard. If there is no account on the sidebar go to configuration to import the accounts.": "Por favor selecciona una cuenta desde la barra lateral para ver tu panel de control. Si no hay cuentas en la barra lateral, ve a configuración para importar las cuentas.",
+    "Please select an account from the sidebar to view your dashboard. If there is no account on the sidebar go to requests to import the accounts.": "Por favor selecciona una cuenta desde la barra lateral para ver tu panel de control. Si no hay cuentas en la barra lateral, ve a <a class='text-white font-semibold hover:text-main3' href=':link'>Solicitudes</a> para importar las cuentas.",
     "Profile": "Perfil",
     "Profile Information": "Información del Perfil",
     "Proprietary Bank Transaction Code": "Código de Transacción Bancaria Propietario",
@@ -250,5 +250,12 @@
     "filters": "filtros",
     "Apply Expenses Monthly": "Aplicar Gastos Mensuales",
     "Incomes Future History": "Historial Futuro de Ingresos",
-    "Export": "Exportar"
+    "Export": "Exportar",
+
+    "Institutions": "Instituciones",
+    "Requests": "Solicitudes",
+    "Default Lang": "Idioma Predeterminado",
+    "Set the default lang of the web.": "Establece el idioma predeterminado de la web.",
+    "Lang": "Idioma",
+    "You need to set the secret id and key on Configuration!": "Necesitas establecer el ID secreto y la clave en <a class='text-white font-semibold hover:text-main3' href=':link'>Configuración</a>!"
 }

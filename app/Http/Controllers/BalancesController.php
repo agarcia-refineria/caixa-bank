@@ -85,7 +85,7 @@ class BalancesController extends Controller
         $validated = array_merge($validated, $request->validate([
             'newBalance.amount' => 'required|numeric|min:0|decimal:0,2',
             'newBalance.currency' => 'required|string|size:3',
-            'newBalance.balance_type' => 'required|string|in:' . implode(',', Balance::$balanceTypes),
+            'newBalance.balance_type' => 'required|string',
             'newBalance.reference_date' => 'required|date_format:Y-m-d',
         ]));
 
@@ -159,7 +159,7 @@ class BalancesController extends Controller
         $request->validate([
             "Balance.$key.amount" => 'required|numeric',
             "Balance.$key.currency" => 'required|string|size:3',
-            "Balance.$key.balance_type" => 'required|string|in:' . implode(',', Balance::$balanceTypes),
+            "Balance.$key.balance_type" => 'required|string',
             "Balance.$key.reference_date" => 'required|date_format:Y-m-d',
         ]);
 

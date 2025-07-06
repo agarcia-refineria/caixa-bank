@@ -18,9 +18,9 @@ use Illuminate\Support\Carbon;
  * @property string|null $currency
  * @property string|null $balance_type
  * @property Carbon|null $reference_date
+ * @property array $balance_types
  * @property string $account_id
  * @property-read Account $account
- * @property-read mixed $balance_types
  * @property-read mixed $code
  * @method static Builder|Balance balanceTypeClosing()
  * @method static Builder|Balance balanceTypeForward()
@@ -48,11 +48,6 @@ class Balance extends Model
         'reference_date' => 'date',
     ];
 
-    public static array $balanceTypes = [
-        'closingBooked' => 'closingBooked',
-        'forwardAvailable' => 'forwardAvailable',
-    ];
-
     protected $fillable = [
         'id',
         'amount',
@@ -64,7 +59,7 @@ class Balance extends Model
 
     public function account(): BelongsTo
     {
-        return $this->belongsTo(Account::class, 'account_id', 'id');
+        return $this->belongsTo(Account::class);
     }
 
     /**
@@ -113,15 +108,28 @@ class Balance extends Model
     }
 
     /**
+     * Filter by balance type.
+     *
+     * @noinspection PhpUnused
+     * @param $query
+     * @param string $type
+     * @return mixed
+     */
+    public function scopeBalanceType($query, string $type): mixed
+    {
+        return $query->where('balance_type', $type);
+    }
+
+    /**
      * Filter by balance type forwardAvailable.
      *
      * @noinspection PhpUnused
      * @param $query
      * @return mixed
      */
-    public function scopeBalanceTypeForward($query): mixed
+    public function scopeBalanceTypeForward($query, Account $account): mixed
     {
-        return $query->where('balance_type', self::$balanceTypes['forwardAvailable']);
+        return $query->where('balance_type', $this->getBalanceTypes($account)[0] ?? null);
     }
 
     /**
@@ -131,9 +139,11 @@ class Balance extends Model
      * @param $query
      * @return mixed
      */
-    public function scopeBalanceTypeClosing($query): mixed
+    public function scopeBalanceTypeClosing($query, Account $account): mixed
     {
-        return $query->where('balance_type', self::$balanceTypes['closingBooked']);
+        $balanceTypes = $this->getBalanceTypes($account);
+
+        return $query->where('balance_type', end($balanceTypes) ?? null);
     }
 
     /**
@@ -144,7 +154,18 @@ class Balance extends Model
      */
     public function getBalanceTypesAttribute(): array
     {
-        return self::$balanceTypes;
+        $account = $this->account;
+
+        if ($account) {
+            return $this->getBalanceTypes($account);
+        }
+
+        return [];
+    }
+
+    public function getBalanceTypes(Account $account): array
+    {
+        return $account->balances()->pluck('balance_type')->toArray();
     }
 
     public static function getExampleModel(): Balance

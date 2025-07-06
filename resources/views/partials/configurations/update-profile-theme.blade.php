@@ -9,7 +9,7 @@
         </p>
     </header>
 
-    <form method="post" action="{{ route('profile.bank.theme') }}" class="mt-6 space-y-6">
+    <form method="post" action="{{ route('profile.configuration.theme') }}" class="mt-6 space-y-6">
         @csrf
         @method('patch')
 

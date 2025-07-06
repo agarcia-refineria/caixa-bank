@@ -9,7 +9,7 @@ use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\LangController;
 use App\Http\Controllers\MonthController;
 use App\Http\Controllers\AccountsController;
-use App\Http\Controllers\BankController;
+use App\Http\Controllers\ConfigurationController;
 use App\Http\Controllers\ImportController;
 use App\Http\Controllers\TransactionsController;
 use App\Http\Controllers\BalancesController;
@@ -41,13 +41,13 @@ Route::middleware(['auth', 'web'])->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 
     // Profile [Bank routes]
-    Route::get('/profile/bank', [BankController::class, 'edit'])->name('profile.bank.edit');
-    Route::patch('/profile/bank', [BankController::class, 'update'])->name('profile.bank.update');
-    Route::patch('/profile/bank/chars', [BankController::class, 'chars'])->name('profile.bank.chars');
-    Route::patch('/profile/bank/theme', [BankController::class, 'theme'])->name('profile.bank.theme');
-    Route::patch('/profile/bank/lang', [BankController::class, 'lang'])->name('profile.bank.lang');
-    Route::patch('/profile/schedule', [BankController::class, 'schedule'])->name('profile.accounts.schedule');
-    Route::post('/profile/schedule/check', [BankController::class, 'scheduleTasks'])->name('profile.accounts.scheduleTasks');
+    Route::get('/profile/configuration', [ConfigurationController::class, 'edit'])->name('profile.configuration.edit');
+    Route::patch('/profile/configuration', [ConfigurationController::class, 'update'])->name('profile.configuration.update');
+    Route::patch('/profile/configuration/chars', [ConfigurationController::class, 'chars'])->name('profile.configuration.chars');
+    Route::patch('/profile/configuration/theme', [ConfigurationController::class, 'theme'])->name('profile.configuration.theme');
+    Route::patch('/profile/configuration/lang', [ConfigurationController::class, 'lang'])->name('profile.configuration.lang');
+    Route::patch('/profile/schedule', [ConfigurationController::class, 'schedule'])->name('profile.accounts.schedule');
+    Route::post('/profile/schedule/check', [ConfigurationController::class, 'scheduleTasks'])->name('profile.accounts.scheduleTasks');
 
     // Profile [Account routes]
     Route::get('/profile/accounts', [AccountsController::class, 'edit'])->name('profile.accounts.edit');
@@ -115,10 +115,10 @@ Route::middleware(['auth', 'web'])->group(function () {
     Route::get('/clock', [DashboardController::class, 'clock'])->name('dashboard.clock');
 
     // Panel [Configuration routes]
-    Route::get('/configuration', [DashboardController::class, 'configuration'])->name('dashboard.configuration');
+    Route::get('/requests', [DashboardController::class, 'requests'])->name('dashboard.requests');
 
     // Nordigen API routes
-    Route::get('/nordigen/connect', [NordigenController::class, 'authenticate'])->name('nordigen.auth');
+    Route::get('/nordigen/connect/{institutionId}', [NordigenController::class, 'authenticate'])->name('nordigen.auth');
     Route::get('/nordigen/callback', [NordigenController::class, 'callback'])->name('nordigen.callback');
 
     Route::get('/nordigen/transactions/{accountId}', [NordigenController::class, 'transactions'])->name('nordigen.transactions');

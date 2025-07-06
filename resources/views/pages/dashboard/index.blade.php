@@ -58,8 +58,11 @@
                 @endif
             @else
                 <x-ui.empty-state
+                    class="text-white font-semibold hover:text-main3"
                     :title="__('No Account Selected')"
-                    :message="__('Please select an account from the sidebar to view your dashboard. If there is no account on the sidebar go to configuration to import the accounts.')"
+                    :message="__('Please select an account from the sidebar to view your dashboard. If there is no account on the sidebar go to requests to import the accounts.', [
+                        'link' => route('dashboard.requests'),
+                    ])"
                 />
             @endif
         </div>

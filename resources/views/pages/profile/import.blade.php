@@ -2,6 +2,24 @@
     @include('partials.profile.navigation')
 
     <div class="py-6 md:px-0 px-4">
+        <div class="pb-6 md:px-0 px-4">
+            <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 space-y-6">
+                <div class="flex items-center justify-start gap-4">
+                    <x-links.nav-link class="uppercase px-4 py-2" :href="route('profile.accounts.edit')" :active="request()->routeIs(['profile.accounts.edit'])">
+                        {{ __('Accounts') }}
+                    </x-links.nav-link>
+
+                    <x-links.nav-link class="uppercase px-4 py-2" :href="route('profile.import.edit')" :active="request()->routeIs(['profile.import.edit'])">
+                        {{ __('Import') }}
+                    </x-links.nav-link>
+
+                    <x-links.nav-link class="uppercase px-4 py-2" :href="route('profile.export.edit')" :active="request()->routeIs(['profile.export.edit'])">
+                        {{ __('Export') }}
+                    </x-links.nav-link>
+                </div>
+            </div>
+        </div>
+
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 pb-4">
             <div class="bg-[#664d03] w-full rounded-2xl relative group inline-block px-4 py-2 text-sm font-medium text-gray-900 dark:text-gray-100">
                 (I). {{ __('You can import your transactions, accounts and balances from CSV or XLSX files. You can also download example files to help you with the import process.') }}<br/>
@@ -10,7 +28,7 @@
             </div>
         </div>
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 grid gap-4 grid-cols-1 lg:grid-cols-3">
-            <x-form.import-form
+            <x-form.import
                 :user="$user"
                 :action="route('profile.import.accounts')"
                 :type="__('Accounts')"
@@ -49,9 +67,9 @@
                 <x-links.nav-link href="/xlsx/import_accounts.xlsx" download="import_accounts.xlsx">
                     {{ __('DOWNLOAD') }} XLSX
                 </x-links.nav-link>
-            </x-form.import-form>
+            </x-form.import>
 
-            <x-form.import-form
+            <x-form.import
                 :user="$user"
                 :action="route('profile.import.transactions')"
                 :type="__('Transactions')"
@@ -102,9 +120,9 @@
                 <x-links.nav-link href="/xlsx/import_transactions.xlsx" download="import_transactions.xlsx">
                     {{ __('DOWNLOAD') }} XLSX
                 </x-links.nav-link>
-            </x-form.import-form>
+            </x-form.import>
 
-            <x-form.import-form
+            <x-form.import
                 :user="$user"
                 :action="route('profile.import.balances')"
                 :type="__('Balances')"
@@ -139,7 +157,7 @@
                 <x-links.nav-link href="/xlsx/import_balances.xlsx" download="import_balances.xlsx">
                     {{ __('DOWNLOAD') }} XLSX
                 </x-links.nav-link>
-            </x-form.import-form>
+            </x-form.import>
         </div>
     </div>
 </x-app-layout>

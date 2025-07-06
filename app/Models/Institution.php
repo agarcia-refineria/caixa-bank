@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
 /**
@@ -22,8 +23,8 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  * @property string|null $logo
  * @property-read Collection<int, Account> $accounts
  * @property-read int|null $accounts_count
- * @property-read Collection<int, Bank> $bank
- * @property-read int|null $bank_count
+ * @property-read Collection<int, UserInstitution> $institutions
+ * @property-read int|null $institutions_count
  * @method static Builder|Institution newModelQuery()
  * @method static Builder|Institution newQuery()
  * @method static Builder|Institution query()
@@ -35,6 +36,8 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  * @method static Builder|Institution whereMaxAccessValidForDays($value)
  * @method static Builder|Institution whereName($value)
  * @method static Builder|Institution whereTransactionTotalDays($value)
+ * @property-read Collection<int, UserInstitution> $users
+ * @property-read int|null $users_count
  * @mixin Eloquent
  */
 class Institution extends Model
@@ -60,8 +63,8 @@ class Institution extends Model
         return $this->hasMany(Account::class);
     }
 
-    public function bank(): HasMany
+    public function users(): BelongsToMany
     {
-        return $this->hasMany(Bank::class);
+        return $this->belongsToMany(UserInstitution::class, 'user_institution', 'institution_id', 'user_id');
     }
 }

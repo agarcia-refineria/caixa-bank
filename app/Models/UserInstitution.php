@@ -19,17 +19,17 @@ use Illuminate\Support\Carbon;
  * @property Carbon|null $updated_at
  * @property-read Institution $institution
  * @property-read User $user
- * @method static Builder|Bank newModelQuery()
- * @method static Builder|Bank newQuery()
- * @method static Builder|Bank query()
- * @method static Builder|Bank whereCreatedAt($value)
- * @method static Builder|Bank whereId($value)
- * @method static Builder|Bank whereInstitutionId($value)
- * @method static Builder|Bank whereUpdatedAt($value)
- * @method static Builder|Bank whereUserId($value)
+ * @method static Builder|UserInstitution newModelQuery()
+ * @method static Builder|UserInstitution newQuery()
+ * @method static Builder|UserInstitution query()
+ * @method static Builder|UserInstitution whereCreatedAt($value)
+ * @method static Builder|UserInstitution whereId($value)
+ * @method static Builder|UserInstitution whereInstitutionId($value)
+ * @method static Builder|UserInstitution whereUpdatedAt($value)
+ * @method static Builder|UserInstitution whereUserId($value)
  * @mixin Eloquent
  */
-class Bank extends Model
+class UserInstitution extends Model
 {
     use HasFactory;
 
@@ -38,7 +38,7 @@ class Bank extends Model
         'institution_id',
     ];
 
-    protected $table = 'banks';
+    protected $table = 'users_institutions';
 
     public function institution(): BelongsTo
     {

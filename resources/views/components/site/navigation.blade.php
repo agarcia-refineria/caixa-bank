@@ -36,8 +36,8 @@
                 </div>
 
                 <div class="hidden space-x-8 lg:-my-px lg:ms-10 lg:flex">
-                    <x-links.nav-link id="navigation-configuration" :shepherd-text="trans('shepherd.navigation-configuration')" :href="route('dashboard.configuration')" :active="request()->routeIs('dashboard.configuration')">
-                        {{ __('Configuration') }}
+                    <x-links.nav-link id="navigation-configuration" :shepherd-text="trans('shepherd.navigation-configuration')" :href="route('dashboard.requests')" :active="request()->routeIs('dashboard.requests')">
+                        {{ __('Requests') }}
                     </x-links.nav-link>
                 </div>
             </div>
@@ -64,13 +64,9 @@
                     </x-slot>
 
                     <x-slot name="content">
-                        @if (!request()->routeIs(['profile.edit', 'profile.bank.edit', 'profile.accounts.edit', 'profile.import.edit', 'profile.export.edit', 'profile.categories']))
+                        @if (!request()->routeIs(['profile.edit', 'profile.configuration.edit', 'profile.accounts.edit', 'profile.import.edit', 'profile.export.edit', 'profile.categories']))
                             <x-inputs.dropdown-link :href="route('profile.edit')">
                                 {{ __('Profile') }}
-                            </x-inputs.dropdown-link>
-
-                            <x-inputs.dropdown-link :href="route('profile.bank.edit')">
-                                {{ __('Bank') }}
                             </x-inputs.dropdown-link>
 
                             <x-inputs.dropdown-link :href="route('profile.accounts.edit')">
@@ -79,6 +75,10 @@
 
                             <x-inputs.dropdown-link :href="route('profile.categories')">
                                 {{ __('Categories') }}
+                            </x-inputs.dropdown-link>
+
+                            <x-inputs.dropdown-link :href="route('profile.configuration.edit')">
+                                {{ __('Configuration') }}
                             </x-inputs.dropdown-link>
                         @endif
 
@@ -99,7 +99,7 @@
             <!-- Hamburger -->
             <div class="-me-2 flex items-center lg:hidden">
                 <div class="pt-4 pb-3 px-4 flex -md:gap-2">
-                    @foreach(['es', 'en'] as $lang)
+                    @foreach(config('app.supported_locales') as $lang)
                         <x-inputs.dropdown-link href="{{ route('lang.switch', $lang) }}" :active="app()->getLocale() == $lang" class="rounded-lg uppercase md:!w-12 c-lang">
                             {{ $lang }}
                         </x-inputs.dropdown-link>
@@ -145,8 +145,8 @@
         </div>
 
         <div class="pt-2 pb-3 space-y-1">
-            <x-links.responsive-nav-link :href="route('dashboard.configuration')" :active="request()->routeIs('dashboard.configuration')">
-                {{ __('Configuration') }}
+            <x-links.responsive-nav-link :href="route('dashboard.requests')" :active="request()->routeIs('dashboard.requests')">
+                {{ __('Requests') }}
             </x-links.responsive-nav-link>
         </div>
 
@@ -158,13 +158,9 @@
             </div>
 
             <div class="mt-3 space-y-1">
-                @if (!request()->routeIs(['profile.edit', 'profile.bank.edit', 'profile.accounts.edit', 'profile.import.edit', 'profile.export.edit', 'profile.categories']))
+                @if (!request()->routeIs(['profile.edit', 'profile.configuration.edit', 'profile.accounts.edit', 'profile.import.edit', 'profile.export.edit', 'profile.categories']))
                     <x-links.responsive-nav-link :href="route('profile.edit')">
                         {{ __('Profile') }}
-                    </x-links.responsive-nav-link>
-
-                    <x-links.responsive-nav-link :href="route('profile.bank.edit')">
-                        {{ __('Bank') }}
                     </x-links.responsive-nav-link>
 
                     <x-links.responsive-nav-link :href="route('profile.accounts.edit')">
@@ -173,6 +169,10 @@
 
                     <x-links.responsive-nav-link :href="route('profile.categories')">
                         {{ __('Categories') }}
+                    </x-links.responsive-nav-link>
+
+                    <x-links.responsive-nav-link :href="route('profile.configuration.edit')">
+                        {{ __('Configuration') }}
                     </x-links.responsive-nav-link>
                 @endif
 

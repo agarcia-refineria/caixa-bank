@@ -37,14 +37,20 @@ class NordigenController extends Controller
      *
      * @return RedirectResponse
      */
-    public function authenticate(): RedirectResponse
+    public function authenticate(int $institutionId): RedirectResponse
     {
         if ($this->secretId == null || $this->secretKey == null) {
-            return Redirect::route('dashboard.configuration')->with('error', __('status.nordigencontroller.missing-credentials'));
+            return Redirect::route('dashboard.requests')->with('error', __('status.nordigencontroller.missing-credentials'));
+        }
+
+        $institution = Institution::find($institutionId);
+
+        if (!$institution) {
+            return Redirect::route('dashboard.requests')->with('error', __('status.nordigencontroller.institution-not-found'));
         }
 
         session(['access_token' => $this->getAccessToken()]);
-        $requisitionId = $this->getRequisition();
+        $requisitionId = $this->getRequisition($institution);
         $link = session('callback_url');
 
         if ($requisitionId && $link) {
@@ -52,7 +58,7 @@ class NordigenController extends Controller
             return redirect()->away($link);
         }
 
-        return Redirect::route('dashboard.configuration')->with('error', __('status.nordigencontroller.missing-credentials'));
+        return Redirect::route('dashboard.requests')->with('error', __('status.nordigencontroller.missing-credentials'));
     }
 
     /**
@@ -92,21 +98,17 @@ class NordigenController extends Controller
      *
      * @return string|null Returns the ID of the created requisition or `null` if creation fails.
      */
-    public function getRequisition(): string|null
+    public function getRequisition(Institution $institution): string|null
     {
-        $user = Auth::user();
         $accessToken = session('access_token',$this->getAccessToken());
-        $bank = $user->bank;
-
-        $institutionId = $bank->institution->code;
 
         if ($this->secretId == null || $this->secretKey == null) {
-            return Redirect::route('dashboard.configuration')->with('error', __('status.nordigencontroller.missing-credentials'));
+            return Redirect::route('dashboard.requests')->with('error', __('status.nordigencontroller.missing-credentials'));
         }
 
         $response = Http::withToken($accessToken)->post("$this->baseUrl/requisitions/", [
             'redirect' => route('nordigen.callback'),
-            'institution_id' => $institutionId,
+            'institution_id' => $institution->code,
             'reference' => uniqid(),
             'user_language' => 'ES'
         ]);
@@ -139,7 +141,7 @@ class NordigenController extends Controller
         $institution = Institution::where('code', $requisition['institution_id'])->first();
 
         if (empty($accounts)) {
-            return Redirect::route('dashboard.configuration')->with('error', __('status.nordigencontroller.callback-failed'));
+            return Redirect::route('dashboard.requests')->with('error', __('status.nordigencontroller.callback-failed'));
         }
 
         foreach ($accounts as $accountId) {
@@ -181,7 +183,7 @@ class NordigenController extends Controller
             ]);
         }
 
-        return redirect()->route('dashboard.configuration')->with('success', __('status.nordigencontroller.callback-success'));
+        return redirect()->route('dashboard.requests')->with('success', __('status.nordigencontroller.callback-success'));
     }
 
     /**
@@ -212,7 +214,7 @@ class NordigenController extends Controller
                 $account->transactions_disabled_date = $this->getSecondsFromString($transactions['detail']);
                 $account->save();
 
-                return Redirect::route('dashboard.configuration');
+                return Redirect::route('dashboard.requests');
             }
 
             $bookedTransactions = $transactions["transactions"]['booked'];
@@ -265,7 +267,7 @@ class NordigenController extends Controller
             ]);
         }
 
-        return Redirect::route('dashboard.configuration');
+        return Redirect::route('dashboard.requests');
     }
 
     /**
@@ -296,27 +298,27 @@ class NordigenController extends Controller
                 $account->balance_disabled_date = $this->getSecondsFromString($balances['detail']);
                 $account->save();
 
-                return Redirect::route('dashboard.configuration');
+                return Redirect::route('dashboard.requests');
             }
 
             foreach ($balances["balances"] as $bal) {
                 $balanceModel = Balance::where('account_id', $accountId)
                     ->where('balance_type', $bal['balanceType'])
-                    ->where('reference_date', Carbon::parse($bal['referenceDate'])->format('Y-m-d H:i:s'))
+                    ->where('reference_date', Carbon::parse($bal['referenceDate'] ?? now())->format('Y-m-d H:i:s'))
                     ->first();
 
                 if ($balanceModel) {
                     $balanceModel->update([
                         'amount' => $bal['balanceAmount']['amount'],
                         'currency' => $bal['balanceAmount']['currency'],
-                        'reference_date' => Carbon::parse($bal['referenceDate'])->format('Y-m-d H:i:s'),
+                        'reference_date' => Carbon::parse($bal['referenceDate'] ?? now())->format('Y-m-d H:i:s'),
                     ]);
                 } else {
                     Balance::create([
                         'amount' => $bal['balanceAmount']['amount'],
                         'currency' => $bal['balanceAmount']['currency'],
                         'balance_type' => $bal['balanceType'],
-                        'reference_date' => Carbon::parse($bal['referenceDate'])->format('Y-m-d H:i:s'),
+                        'reference_date' => Carbon::parse($bal['referenceDate'] ?? now())->format('Y-m-d H:i:s'),
                         'account_id' => $accountId,
                     ]);
                 }
@@ -330,7 +332,7 @@ class NordigenController extends Controller
             ]);
         }
 
-        return Redirect::route('dashboard.configuration');
+        return Redirect::route('dashboard.requests');
     }
 
     /**
@@ -368,7 +370,7 @@ class NordigenController extends Controller
         $this->transactions($accountId);
         $this->balances($accountId);
 
-        return Redirect::route('dashboard.configuration')->with('success', __('status.nordigencontroller.update-account-success'));
+        return Redirect::route('dashboard.requests')->with('success', __('status.nordigencontroller.update-account-success'));
     }
 
     /**
@@ -389,7 +391,7 @@ class NordigenController extends Controller
         $accounts = Account::where('user_id', $user->id)->onlyApi()->get();
 
         if ($accounts->isEmpty()) {
-            return Redirect::route('dashboard.configuration')->with('error', __('status.nordigencontroller.schedule-error'));
+            return Redirect::route('dashboard.requests')->with('error', __('status.nordigencontroller.schedule-error'));
         }
 
         foreach ($accounts as $account) {
@@ -397,7 +399,7 @@ class NordigenController extends Controller
             $this->balances($account->code);
         }
 
-        return Redirect::route('dashboard.configuration')->with('success', __('status.nordigencontroller.schedule-updated'));
+        return Redirect::route('dashboard.requests')->with('success', __('status.nordigencontroller.schedule-updated'));
     }
 
     /**
@@ -434,7 +436,7 @@ class NordigenController extends Controller
                 }
             }
         } else {
-            return Redirect::route('profile.bank.edit')->with('error', __('status.nordigencontroller.institutions-error'));
+            return Redirect::route('profile.configuration.edit')->with('error', __('status.nordigencontroller.institutions-error'));
         }
 
         foreach ($institutions as $institution) {
@@ -451,6 +453,6 @@ class NordigenController extends Controller
             Institution::create($institutionData);
         }
 
-        return Redirect::route('profile.bank.edit')->with('success', __('status.nordigencontroller.institutions-updated'));
+        return Redirect::route('profile.configuration.edit')->with('success', __('status.nordigencontroller.institutions-updated'));
     }
 }

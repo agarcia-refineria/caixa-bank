@@ -3,7 +3,7 @@ window.loadProfileBankTour = loadProfileBankTour;
 function loadProfileBankTour() {
     let routeName = window.routeName;
 
-    if (routeName === "profile.bank.edit") {
+    if (routeName === "profile.configuration.edit") {
         addStep('bank-profile-bank');
         addStep('bank-profile-chars');
         addStep('bank-profile-theme');
