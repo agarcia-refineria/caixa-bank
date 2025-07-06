@@ -13,7 +13,7 @@
         </x-slot>
 
         <x-slot name="content">
-            @foreach(\App\Models\User::$langs as $lang)
+            @foreach(config('app.supported_locales') as $lang)
                 @if ($lang === app()->getLocale())
                     @continue
                 @endif

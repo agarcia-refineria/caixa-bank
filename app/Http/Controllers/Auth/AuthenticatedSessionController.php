@@ -42,8 +42,7 @@ class AuthenticatedSessionController extends Controller
         }
 
         // Set the locale if it exists in the session
-        $locale = $user->lang ?? session('locale', 'es');
-        session(['locale' => $locale]);
+        $locale = $user->lang ?? 'en';
         App::setLocale($locale);
 
         return redirect()->intended(RouteServiceProvider::HOME);

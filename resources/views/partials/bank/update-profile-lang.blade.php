@@ -17,7 +17,7 @@
             <x-inputs.input-label for="name" :value="__('Lang')" />
             <select data-default="{{ __('-- Select an option --') }}" id="lang" name="lang" class="select2 form-control border-third bg-main2 text-primary rounded-md shadow-sm mt-1 block w-full" required>
                 <option value="" disabled selected>{{ __('Select a lang') }}</option>
-                @foreach(\App\Models\User::$langs as $key => $lang)
+                @foreach(config('app.supported_locales') as $key => $lang)
                     <option value="{{ $lang }}" {{ $user->lang == $lang ? 'selected' : '' }}>
                         {{ __('langs.' . $lang) }}
                     </option>

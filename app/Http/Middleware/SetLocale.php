@@ -2,22 +2,27 @@
 
 namespace App\Http\Middleware;
 
+use Auth;
 use Closure;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\App;
 use Symfony\Component\HttpFoundation\Response;
 
 class SetLocale
 {
     /**
      * Handle an incoming request.
-     *
-     * @param  \Closure(\Illuminate\Http\Request): (\Symfony\Component\HttpFoundation\Response)  $next
      */
     public function handle(Request $request, Closure $next): Response
     {
-        if (session()->has('locale')) {
-            app()->setLocale(session('locale'));
+        $locale = $request->segment(1);
+        if (in_array($locale, config('app.supported_locales'))) {
+            App::setLocale($locale);
+        } else {
+            // If the locale is not supported, you can redirect to a default locale of the user's choice
+            App::setLocale(Auth::user()->lang);
         }
+
         return $next($request);
     }
 }

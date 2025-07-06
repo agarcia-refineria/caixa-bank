@@ -34,7 +34,7 @@ Route::get('/', function () {
 Route::get('/lang/{locale}',[LangController::class, 'index'])->name('lang.switch');
 Route::get('/month/{month}',[MonthController::class, 'index'])->name('month.index');
 
-Route::middleware('auth')->group(function () {
+Route::middleware(['auth', 'web'])->group(function () {
     // Profile [Profile routes]
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');

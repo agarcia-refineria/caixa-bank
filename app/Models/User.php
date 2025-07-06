@@ -82,11 +82,6 @@ class User extends Authenticatable
 {
     use HasApiTokens, HasFactory, Notifiable;
 
-    public static array $langs = [
-        'es',
-        'en',
-    ];
-
     public static array $charsTypes = [
         'all',
         'categories'
