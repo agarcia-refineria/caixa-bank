@@ -90,7 +90,7 @@ class AccountsController extends Controller
             ]);
 
             return redirect()->route('profile.accounts.edit')
-                ->with('status', __('status.accountscontroller.create-account-success'));
+                ->with('success', __('status.accountscontroller.create-account-success'));
         } catch (Exception $e) {
             $user->getCustomLoggerAttribute('AccountsController')->error(
                 'Error function create()',
@@ -149,7 +149,7 @@ class AccountsController extends Controller
             ]);
 
             return Redirect::route('profile.accounts.edit')
-                ->with('status', __('status.accountscontroller.update-account-success'));
+                ->with('success', __('status.accountscontroller.update-account-success'));
         } catch (ModelNotFoundException $e) {
             $user->getCustomLoggerAttribute('AccountsController')->error(
                 'Error function update()',
@@ -193,7 +193,7 @@ class AccountsController extends Controller
 
         $key = array_key_first($request->input('Account'));
 
-        $request->validateWithBag('userDeletion', [
+        $request->validateWithBag('accountDeletion', [
             "Account.$key.password" => ['required', 'current_password'],
         ]);
 
@@ -207,7 +207,7 @@ class AccountsController extends Controller
                 $account->delete();
                 DB::commit();
                 return Redirect::route('profile.accounts.edit')
-                    ->with('status', __('status.accountscontroller.delete-account-success'));
+                    ->with('success', __('status.accountscontroller.delete-account-success'));
             } catch (Exception $e) {
                 DB::rollBack();
                 throw $e;

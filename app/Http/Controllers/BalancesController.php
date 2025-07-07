@@ -78,25 +78,30 @@ class BalancesController extends Controller
 
         $user = Auth::user();
 
-        $validated = $request->validate([
+        $validated = $request->validateWithBag('balanceCreate', [
             'account_id' => 'required|exists:accounts,id',
         ]);
 
-        $validated = array_merge($validated, $request->validate([
+        $account = Account::onlyManual()
+            ->where('user_id', $user->id)
+            ->findOrFail($validated['account_id']);
+
+        if (!$account) {
+            return Redirect::route('profile.accounts.edit')
+                ->with('error', __('status.transactionscontroller.account-not-found'));
+        }
+
+        $validated = $request->validateWithBag('balanceCreate', [
             'newBalance.amount' => 'required|numeric|min:0|decimal:0,2',
             'newBalance.currency' => 'required|string|size:3',
             'newBalance.balance_type' => 'required|string',
             'newBalance.reference_date' => 'required|date_format:Y-m-d',
-        ]));
+        ]);
 
         $balanceData = $validated['newBalance'];
 
         try {
             DB::beginTransaction();
-
-            $account = Account::onlyManual()
-                ->where('user_id', $user->id)
-                ->findOrFail($validated['account_id']);
 
             Balance::create([
                 'account_id' => $account->code,
@@ -150,13 +155,13 @@ class BalancesController extends Controller
 
         $user = Auth::user();
 
-        $request->validate([
+        $request->validateWithBag('balanceUpdate', [
             'balance_id' => 'required|exists:balances,id',
         ]);
 
         $key = $request->input('balance_id');
 
-        $request->validate([
+        $request->validateWithBag('balanceUpdate', [
             "Balance.$key.amount" => 'required|numeric',
             "Balance.$key.currency" => 'required|string|size:3',
             "Balance.$key.balance_type" => 'required|string',

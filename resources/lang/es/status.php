@@ -39,6 +39,7 @@ return [
         'schedule-error' => 'Ocurrió un error al programar las tareas',
         'lang-updated' => 'Idioma del banco actualizado exitosamente',
         'lang-error' => 'Ocurrió un error al actualizar el idioma del banco',
+        'view-api-keys' => 'Claves API vistas exitosamente',
     ],
     'nordigencontroller' => [
         'callback-success' => 'Callback recibido exitosamente',

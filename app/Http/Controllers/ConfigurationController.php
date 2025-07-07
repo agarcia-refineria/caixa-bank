@@ -39,6 +39,24 @@ class ConfigurationController extends Controller
         ]);
     }
 
+    public function viewApi(): RedirectResponse
+    {
+        if (!auth()->check()) {
+            return Redirect::route('login');
+        }
+
+        $user = Auth::user();
+
+        // Decrypt the API keys
+        $secretId = $user->NORDIGEN_SECRET_ID ? decrypt($user->NORDIGEN_SECRET_ID) : '';
+        $secretKey = $user->NORDIGEN_SECRET_KEY ? decrypt($user->NORDIGEN_SECRET_KEY) : '';
+
+        return Redirect::route('profile.configuration.edit')
+            ->with('success', __('status.bankcontroller.view-api-keys'))
+            ->with('secret_id', $secretId)
+            ->with('secret_key', $secretKey);
+    }
+
 
     /**
      * Update the user's bank details.
@@ -81,11 +99,11 @@ class ConfigurationController extends Controller
                 }
 
                 return Redirect::route('profile.configuration.edit')
-                    ->with('status', __('status.bankcontroller.update-account-success'));
+                    ->with('success', __('status.bankcontroller.update-account-success'));
             }
 
             return Redirect::route('profile.configuration.edit')
-                ->with('status', __('status.bankcontroller.update-account-success'));
+                ->with('success', __('status.bankcontroller.update-account-success'));
         } catch (Exception $e) {
             $user->getCustomLoggerAttribute('BankController')->error(
                 'Error function update()',
@@ -129,7 +147,7 @@ class ConfigurationController extends Controller
         try {
             $user->update(['chars' => $validated['chars']]);
 
-            return redirect()->route('profile.configuration.edit')->with('status', __('status.bankcontroller.chars-updated'));
+            return redirect()->route('profile.configuration.edit')->with('success', __('status.bankcontroller.chars-updated'));
         } catch (Exception $e) {
             $user->getCustomLoggerAttribute('BankController')->error(
                 'Error function chars()',
@@ -171,7 +189,7 @@ class ConfigurationController extends Controller
         try {
             $user->update(['theme' => $validated['theme']]);
 
-            return redirect()->route('profile.configuration.edit')->with('status', __('status.bankcontroller.theme-updated'));
+            return redirect()->route('profile.configuration.edit')->with('success', __('status.bankcontroller.theme-updated'));
         } catch (Exception $e) {
             $user->getCustomLoggerAttribute('BankController')->error(
                 'Error function theme()',
@@ -214,7 +232,7 @@ class ConfigurationController extends Controller
         try {
             $user->update(['lang' => $validated['lang']]);
 
-            return redirect()->route('profile.configuration.edit')->with('status', __('status.bankcontroller.lang-updated'));
+            return redirect()->route('profile.configuration.edit')->with('success', __('status.bankcontroller.lang-updated'));
         } catch (Exception $e) {
             $user->getCustomLoggerAttribute('BankController')->error(
                 'Error function lang()',
@@ -281,7 +299,7 @@ class ConfigurationController extends Controller
             }
 
             DB::commit();
-            return redirect()->route('profile.configuration.edit')->with('status', __('status.bankcontroller.schedule-updated'));
+            return redirect()->route('profile.configuration.edit')->with('success', __('status.bankcontroller.schedule-updated'));
         } catch (Exception $e) {
             $user->getCustomLoggerAttribute('BankController')->error(
                 'Error function schedule()',
@@ -292,7 +310,7 @@ class ConfigurationController extends Controller
             );
 
             DB::rollBack();
-            return redirect()->route('profile.configuration.edit')->with('status', __('status.bankcontroller.schedule-error'));
+            return redirect()->route('profile.configuration.edit')->with('error', __('status.bankcontroller.schedule-error'));
         }
     }
 

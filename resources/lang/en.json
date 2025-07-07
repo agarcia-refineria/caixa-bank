@@ -263,5 +263,11 @@
     "The files exported represent the data from the database.": "The files exported represent the data from the database.",
 
     "No institutions found": "No institutions found",
-    "Please add a institutions from configuration.": "Please add a institutions from <a class='text-white font-semibold hover:text-main3' href=':link'>Configuration</a>."
+    "Please add a institutions from configuration.": "Please add a institutions from <a class='text-white font-semibold hover:text-main3' href=':link'>Configuration</a>.",
+
+    "Download file": "Download file",
+    "To ensure protected data you need to insert your user password.": "To ensure protected data you need to insert your user password.",
+
+    "View": "View",
+    "View api keys": "View api keys"
 }

@@ -44,7 +44,7 @@ class ProfileController extends Controller
 
         $request->user()->save();
 
-        return Redirect::route('pages.profile.edit')->with('status', __('status.profilecontroller.profile-updated'));
+        return Redirect::route('pages.profile.edit')->with('success', __('status.profilecontroller.profile-updated'));
     }
 
     /**
@@ -69,6 +69,6 @@ class ProfileController extends Controller
         $request->session()->invalidate();
         $request->session()->regenerateToken();
 
-        return Redirect::to('/')->with('status', __('status.profilecontroller.profile-deleted'));
+        return Redirect::to('/')->with('success', __('status.profilecontroller.profile-deleted'));
     }
 }

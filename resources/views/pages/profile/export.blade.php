@@ -36,10 +36,10 @@
                 </h2>
 
                 <div class="text-white p-6">
-                    <x-links.nav-link href="{{ route('profile.export.accounts', ['type' => 'csv']) }}">
+                    <x-links.nav-link x-data="" x-on:click.prevent="$dispatch('open-modal', 'confirm-download')" onclick="setFormActionDownload()" data-href="{{ route('profile.export.accounts', ['type' => 'csv']) }}">
                         {{ __('DOWNLOAD') }} CSV
                     </x-links.nav-link>
-                    <x-links.nav-link href="{{ route('profile.export.accounts', ['type' => 'xlsx']) }}">
+                    <x-links.nav-link x-data="" x-on:click.prevent="$dispatch('open-modal', 'confirm-download')" onclick="setFormActionDownload()" data-href="{{ route('profile.export.accounts', ['type' => 'xlsx']) }}">
                         {{ __('DOWNLOAD') }} XLSX
                     </x-links.nav-link>
                 </div>
@@ -52,10 +52,10 @@
                 </h2>
 
                 <div class="text-white p-6">
-                    <x-links.nav-link href="{{ route('profile.export.transactions', ['type' => 'csv']) }}">
+                    <x-links.nav-link x-data="" x-on:click.prevent="$dispatch('open-modal', 'confirm-download')" onclick="setFormActionDownload()" data-href="{{ route('profile.export.transactions', ['type' => 'csv']) }}">
                         {{ __('DOWNLOAD') }} CSV
                     </x-links.nav-link>
-                    <x-links.nav-link href="{{ route('profile.export.transactions', ['type' => 'xlsx']) }}">
+                    <x-links.nav-link x-data="" x-on:click.prevent="$dispatch('open-modal', 'confirm-download')" onclick="setFormActionDownload()" data-href="{{ route('profile.export.transactions', ['type' => 'xlsx']) }}">
                         {{ __('DOWNLOAD') }} XLSX
                     </x-links.nav-link>
                 </div>
@@ -68,14 +68,61 @@
                 </h2>
 
                 <div class="text-white p-6">
-                    <x-links.nav-link href="{{ route('profile.export.balances', ['type' => 'csv']) }}">
+                    <x-links.nav-link x-data="" x-on:click.prevent="$dispatch('open-modal', 'confirm-download')" onclick="setFormActionDownload()" data-href="{{ route('profile.export.balances', ['type' => 'csv']) }}">
                         {{ __('DOWNLOAD') }} CSV
                     </x-links.nav-link>
-                    <x-links.nav-link href="{{ route('profile.export.balances', ['type' => 'xlsx']) }}">
+                    <x-links.nav-link x-data="" x-on:click.prevent="$dispatch('open-modal', 'confirm-download')" onclick="setFormActionDownload()" data-href="{{ route('profile.export.balances', ['type' => 'xlsx']) }}">
                         {{ __('DOWNLOAD') }} XLSX
                     </x-links.nav-link>
                 </div>
             </section>
         </div>
     </div>
+
+    <x-ui.modal name="confirm-download" :show="$errors->downloadBag->isNotEmpty()" focusable>
+        <form id="confirm-download" method="POST" action="" class="p-6">
+            @csrf
+
+            <h2 class="text-lg font-medium text-primary">
+                {{ __('Download file') }}
+            </h2>
+
+            <p class="mt-1 text-sm text-secondary">
+                {{ __('To ensure protected data you need to insert your user password.') }}
+            </p>
+
+            <div class="mt-6">
+                <x-inputs.input-label for="password" value="{{ __('Password') }}" class="sr-only" />
+
+                <x-inputs.text-input
+                    id="password"
+                    name="password"
+                    type="password"
+                    class="mt-1 block w-3/4"
+                    placeholder="{{ __('Password') }}"
+                />
+
+                <x-inputs.input-error :messages="$errors->downloadBag->get('password')" class="mt-2" />
+            </div>
+
+            <div class="mt-6 flex justify-end">
+                <x-buttons.secondary-button x-on:click="$dispatch('close')">
+                    {{ __('Cancel') }}
+                </x-buttons.secondary-button>
+
+                <x-buttons.primary-button class="ms-3">
+                    {{ __('DOWNLOAD') }}
+                </x-buttons.primary-button>
+            </div>
+        </form>
+    </x-ui.modal>
+
+    <script>
+        window.setFormActionDownload = setFormActionDownload;
+        function setFormActionDownload() {
+            const form = document.getElementById('confirm-download');
+            const link = event.currentTarget.getAttribute('data-href');
+            form.setAttribute('action', link);
+        }
+    </script>
 </x-app-layout>

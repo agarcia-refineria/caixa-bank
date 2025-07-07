@@ -22,8 +22,8 @@
                 {{ __('Create Transaction') }}
             </x-buttons.primary-button>
 
-            <x-ui.modal name="confirm-transaction-create" maxWidth="full" margin="sm:px-[50px]" focusable>
-                @include('partials.profile.transaction', ['account' => $account, 'user' => $user])
+            <x-ui.modal name="confirm-transaction-create" :show="$errors->transactionCreate->isNotEmpty()" maxWidth="full" margin="sm:px-[50px]" focusable>
+                @include('partials.profile.transaction', ['account' => $account, 'user' => $user, 'errorBag' => 'transactionCreate'])
             </x-ui.modal>
         @endif
 

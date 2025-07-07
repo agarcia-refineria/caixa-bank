@@ -18,13 +18,13 @@
 
     <!-- Show the account buttons -->
     <div class="grid grid-cols-3 gap-4 py-6 sm:px-6 lg:px-8 w-full">
-        <x-inputs.input :errorName="$balance ? 'Balance.'.$balance->code.'.amount' : 'newBalance.amount' " required="required" :value="$balance ? $balance->amount : null" step="0.01" type="number" name="{{ $balance ? 'Balance['.$balance->code.'][amount]' : 'newBalance[amount]' }}" :label="__('Amount')"/>
-        <x-inputs.input :errorName="$balance ? 'Balance.'.$balance->code.'.currency' : 'newBalance.currency'" required="required" maxlength="3" minlength="3" :value="$balance ? $balance->currency : null" type="text" name="{{ $balance ? 'Balance['.$balance->code.'][currency]' : 'newBalance[currency]' }}" :label="__('Currency')" />
-        <x-inputs.select :errorName="$balance ? 'Balance.'.$balance->code.'.balance_type' : 'newBalance.balance_type'" required="required" :value="$balance ? $balance->balance_type : null" name="{{ $balance ? 'Balance['.$balance->code.'][balance_type]' : 'newBalance[balance_type]' }}" :label="__('Balance Type')">
+        <x-inputs.input :errorBag="$errorBag ?? null" :errorName="$balance ? 'Balance.'.$balance->code.'.amount' : 'newBalance.amount' " required="required" :value="$balance ? $balance->amount : null" step="0.01" type="number" name="{{ $balance ? 'Balance['.$balance->code.'][amount]' : 'newBalance[amount]' }}" :label="__('Amount')"/>
+        <x-inputs.input :errorBag="$errorBag ?? null" :errorName="$balance ? 'Balance.'.$balance->code.'.currency' : 'newBalance.currency'" required="required" maxlength="3" minlength="3" :value="$balance ? $balance->currency : null" type="text" name="{{ $balance ? 'Balance['.$balance->code.'][currency]' : 'newBalance[currency]' }}" :label="__('Currency')" />
+        <x-inputs.select :errorBag="$errorBag ?? null" :errorName="$balance ? 'Balance.'.$balance->code.'.balance_type' : 'newBalance.balance_type'" required="required" :value="$balance ? $balance->balance_type : null" name="{{ $balance ? 'Balance['.$balance->code.'][balance_type]' : 'newBalance[balance_type]' }}" :label="__('Balance Type')">
             <option value="forwardAvailable" @if ($balance && $balance->balance_type == 'forwardAvailable') selected @endif>{{ __('forwardAvailable') }}</option>
             <option value="closingBooked" @if ($balance && $balance->balance_type == 'closingBooked') selected @endif>{{ __('closingBooked') }}</option>
         </x-inputs.select>
-        <x-inputs.input :errorName="$balance ? 'Balance.'.$balance->code.'.reference_date' : 'newBalance.reference_date'" required="required" :value="$balance ? $balance->reference_date->format('Y-m-d') : null" type="date" name="{{ $balance ? 'Balance['.$balance->code.'][reference_date]' : 'newBalance[reference_date]' }}" :label="__('Reference Date')"/>
+        <x-inputs.input :errorBag="$errorBag ?? null" :errorName="$balance ? 'Balance.'.$balance->code.'.reference_date' : 'newBalance.reference_date'" required="required" :value="$balance ? $balance->reference_date->format('Y-m-d') : null" type="date" name="{{ $balance ? 'Balance['.$balance->code.'][reference_date]' : 'newBalance[reference_date]' }}" :label="__('Reference Date')"/>
     </div>
 
     @if (isset($balance))

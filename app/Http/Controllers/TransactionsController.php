@@ -71,36 +71,36 @@ class TransactionsController extends Controller
 
         $user = Auth::user();
 
+        $validated = $request->validateWithBag('transactionCreate', [
+            'account_id' => 'required|exists:accounts,id'
+        ]);
+
+        // Ensure the account is a manual account and belongs to the user
+        $account = Account::onlyManual()
+            ->where('user_id', $user->id)
+            ->findOrFail($validated['account_id']);
+
+        if (!$account) {
+            return Redirect::route('profile.accounts.edit')
+                ->with('error', __('status.transactionscontroller.account-not-found'));
+        }
+
+        $validated = $request->validateWithBag('transactionCreate', [
+            'newTransaction.bookingDate' => 'required|date',
+            'newTransaction.transactionAmount_amount' => 'required|numeric',
+            'newTransaction.valueDate' => 'nullable|date',
+            'newTransaction.transactionAmount_currency' => 'nullable|string|size:3',
+            'newTransaction.entryReference' => 'nullable|string|max:255',
+            'newTransaction.checkId' => 'nullable|string|max:255',
+            'newTransaction.remittanceInformationUnstructured' => 'nullable|string|max:1000',
+            'newTransaction.bankTransactionCode' => 'nullable|string|max:255',
+            'newTransaction.proprietaryBankTransactionCode' => 'nullable|string|max:255',
+            'newTransaction.internalTransactionId' => 'nullable|string|max:255',
+            'newTransaction.debtorName' => 'nullable|string|max:255',
+            'newTransaction.debtorAccount' => 'nullable|string|max:255',
+        ]);
+
         try {
-            $validated = $request->validate([
-                'account_id' => 'required|exists:accounts,id'
-            ]);
-
-            $validated = array_merge($validated, $request->validate([
-                'newTransaction.bookingDate' => 'required|date',
-                'newTransaction.transactionAmount_amount' => 'required|numeric',
-                'newTransaction.valueDate' => 'nullable|date',
-                'newTransaction.transactionAmount_currency' => 'nullable|string|size:3',
-                'newTransaction.entryReference' => 'nullable|string|max:255',
-                'newTransaction.checkId' => 'nullable|string|max:255',
-                'newTransaction.remittanceInformationUnstructured' => 'nullable|string|max:1000',
-                'newTransaction.bankTransactionCode' => 'nullable|string|max:255',
-                'newTransaction.proprietaryBankTransactionCode' => 'nullable|string|max:255',
-                'newTransaction.internalTransactionId' => 'nullable|string|max:255',
-                'newTransaction.debtorName' => 'nullable|string|max:255',
-                'newTransaction.debtorAccount' => 'nullable|string|max:255',
-            ]));
-
-            // Ensure the account is a manual account and belongs to the user
-            $account = Account::onlyManual()
-                ->where('user_id', $user->id)
-                ->findOrFail($validated['account_id']);
-
-            if (!$account) {
-                return Redirect::route('profile.accounts.edit')
-                    ->with('error', __('status.transactionscontroller.account-not-found'));
-            }
-
             $transactionData = $validated['newTransaction'];
 
             Transaction::create([
@@ -159,14 +159,14 @@ class TransactionsController extends Controller
 
         $user = Auth::user();
 
-        $request->validate([
+        $request->validateWithBag('transactionUpdate', [
             'transaction_id' => 'required|exists:transactions,id',
             "account_id" => 'required|exists:accounts,id',
         ]);
 
         $key = $request->input('transaction_id');
 
-        $request->validate([
+        $request->validateWithBag('transactionUpdate', [
             "Transaction.$key.entryReference" => 'nullable|string|max:255',
             "Transaction.$key.checkId" => 'nullable|string|max:255',
             "Transaction.$key.bookingDate" => 'required|date',

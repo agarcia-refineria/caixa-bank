@@ -51,6 +51,10 @@ class ExportController extends Controller
             return Redirect::route('login');
         }
 
+        $request->validateWithBag('downloadBag', [
+            'password' => ['required', 'current_password'],
+        ]);
+
         $user = Auth::user();
 
         try {

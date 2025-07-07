@@ -42,6 +42,7 @@ Route::middleware(['auth', 'web'])->group(function () {
 
     // Profile [Bank routes]
     Route::get('/profile/configuration', [ConfigurationController::class, 'edit'])->name('profile.configuration.edit');
+    Route::post('/profile/apikey/view', [ConfigurationController::class, 'viewApi'])->name('profile.configuration.viewApi');
     Route::patch('/profile/configuration', [ConfigurationController::class, 'update'])->name('profile.configuration.update');
     Route::patch('/profile/configuration/chars', [ConfigurationController::class, 'chars'])->name('profile.configuration.chars');
     Route::patch('/profile/configuration/theme', [ConfigurationController::class, 'theme'])->name('profile.configuration.theme');
@@ -79,9 +80,9 @@ Route::middleware(['auth', 'web'])->group(function () {
 
     // Profile [export routes]
     Route::get('/profile/export', [ExportController::class, 'show'])->name('profile.export.edit');
-    Route::get('/profile/export/accounts/{type}', [ExportController::class, 'accounts'])->name('profile.export.accounts');
-    Route::get('/profile/export/transactions/{type}', [ExportController::class, 'transaction'])->name('profile.export.transactions');
-    Route::get('/profile/export/balances/{type}', [ExportController::class, 'balances'])->name('profile.export.balances');
+    Route::post('/profile/export/accounts/{type}', [ExportController::class, 'accounts'])->name('profile.export.accounts');
+    Route::post('/profile/export/transactions/{type}', [ExportController::class, 'transaction'])->name('profile.export.transactions');
+    Route::post('/profile/export/balances/{type}', [ExportController::class, 'balances'])->name('profile.export.balances');
 
     // Profile [Categories routes]
     Route::get('/profile/categories', [CategoriesController::class, 'show'])->name('profile.categories');

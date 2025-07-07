@@ -74,7 +74,7 @@
 </form>
 
 @if (isset($account))
-    <x-ui.modal name="confirm-account-{{ $account->code }}-deletion" :show="$errors->userDeletion->isNotEmpty() && $errors->userDeletion->get('Account.'.$account->code.'.password')" focusable>
+    <x-ui.modal name="confirm-account-{{ $account->code }}-deletion" :show="$errors->accountDeletion->isNotEmpty() && $errors->accountDeletion->get('Account.'.$account->code.'.password')" focusable>
         <form method="post" action="{{ route('profile.account.destroy', ['id' => $account->code]) }}" class="p-6">
             @csrf
             @method('delete')
@@ -98,7 +98,7 @@
                     placeholder="{{ __('Password') }}"
                 />
 
-                <x-inputs.input-error :messages="$errors->userDeletion->get('Account.'.$account->code.'.password')" class="mt-2" />
+                <x-inputs.input-error :messages="$errors->accountDeletion->get('Account.'.$account->code.'.password')" class="mt-2" />
             </div>
 
             <div class="mt-6 flex justify-end">

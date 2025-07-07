@@ -21,8 +21,8 @@
                 x-on:click.prevent="$dispatch('open-modal', 'confirm-balance-create')"
             >{{ __('Create Balance') }}</x-buttons.primary-button>
 
-            <x-ui.modal name="confirm-balance-create" maxWidth="full" margin="sm:px-[50px]" focusable>
-                @include('partials.profile.balance', ['account' => $account, 'user' => $user])
+            <x-ui.modal name="confirm-balance-create" :show="$errors->balanceCreate->isNotEmpty()" maxWidth="full" margin="sm:px-[50px]" focusable>
+                @include('partials.profile.balance', ['account' => $account, 'user' => $user, 'errorBag' => 'balanceCreate'])
             </x-ui.modal>
         @endif
 

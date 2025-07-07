@@ -5,11 +5,12 @@
     {{ __('DELETE') }}
 </x-buttons.danger-button>
 
-<x-ui.modal name="confirm-transaction-update-{{ $balance->code }}" maxWidth="full" margin="sm:px-[50px]" focusable>
+<x-ui.modal name="confirm-transaction-update-{{ $balance->code }}" :show="$errors->balanceUpdate->isNotEmpty()" maxWidth="full" margin="sm:px-[50px]" focusable>
     @include('partials.profile.balance', [
         'balance' => $balance,
         'account' => $account,
-        'user' => $user
+        'user' => $user,
+        'errorBag' => 'balanceUpdate'
     ])
 </x-ui.modal>
 

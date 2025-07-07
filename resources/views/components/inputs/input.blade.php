@@ -14,5 +14,10 @@
         placeholder="{{ __($label) }} {{ $required ? '*' : '' }}"
         :required="$required"
         :disabled="$disabled"/>
-    <x-inputs.input-error :messages="isset($errors) ? $errors->get($errorName ?? $name) : null" class="mt-2" />
+
+    @if (isset($errorBag) && $errorBag)
+        <x-inputs.input-error :messages="isset($errors) ? $errors->{$errorBag}->get($errorName ?? $name) : null" class="mt-2" />
+    @else
+        <x-inputs.input-error :messages="isset($errors) ? $errors->get($errorName ?? $name) : null" class="mt-2" />
+    @endif
 </div>

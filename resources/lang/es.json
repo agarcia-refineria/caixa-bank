@@ -263,5 +263,11 @@
     "The files exported represent the data from the database.": "Los archivos exportados representan los datos de la base de datos.",
 
     "No institutions found": "No se encontraron instituciones",
-    "Please add a institutions from configuration.": "Por favor, agrega una institución desde <a class='text-white font-semibold hover:text-main3' href=':link'>Configuración</a>."
+    "Please add a institutions from configuration.": "Por favor, agrega una institución desde <a class='text-white font-semibold hover:text-main3' href=':link'>Configuración</a>.",
+
+    "Download file": "Descargar archivo",
+    "To ensure protected data you need to insert your user password.": "Para garantizar datos protegidos, necesitas ingresar la contraseña de tu usuario.",
+
+    "View": "Ver",
+    "View api keys": "Ver claves API"
 }
