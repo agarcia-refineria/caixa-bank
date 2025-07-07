@@ -5,7 +5,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const routeName = document.querySelector("head").getAttribute('dir');
     const nextTranslation = document.querySelector("head").getAttribute('next-translation');
     const closeTranslation = document.querySelector("head").getAttribute('close-translation');
-    let loadNavigation = true;
+    let loadNavigation = false;
 
     let tour = new Shepherd.Tour({
         useModalOverlay: true,
@@ -61,6 +61,11 @@ document.addEventListener('DOMContentLoaded', () => {
             text = document.querySelector(`#${id}`) ? document.querySelector(`#${id}`).getAttribute('shepherd-text') : '';
         }
 
+        if (document.getElementById(id) === null) {
+            console.warn(`Element with ID '${id}' not found. Step will not be added.`);
+            return;
+        }
+
         tour.addStep({
             id: id,
             text: text,
@@ -89,11 +94,13 @@ document.addEventListener('DOMContentLoaded', () => {
     console.log("Load documentation tour for route:", routeName);
     loadIndexTour();
     loadHistoryTour();
-    loadConfigurationTour();
+    loadForecastTour();
+    loadClockTour();
+    loadRequestsTour();
     loadProfileTour();
-    loadProfileBankTour();
     loadProfileAccountsTour();
     loadProfileCategoriesTour();
+    loadProfileConfigurationTour();
 })
 
 // Index page
@@ -102,14 +109,20 @@ import '/resources/js/library/documentation/index.js';
 // History page
 import '/resources/js/library/documentation/history.js';
 
+// Forecast page
+import '/resources/js/library/documentation/forecast.js';
+
+// Clock page
+import '/resources/js/library/documentation/clock.js';
+
 // Configuration page
-import '/resources/js/library/documentation/configuration.js';
+import '/resources/js/library/documentation/requests.js';
 
 // Profile page
 import '/resources/js/library/documentation/profile/profile.js';
 
 // Profile Bank page
-import '/resources/js/library/documentation/profile/bank.js';
+import '/resources/js/library/documentation/profile/configuration.js';
 
 // Profile Accounts page
 import '/resources/js/library/documentation/profile/accounts.js';

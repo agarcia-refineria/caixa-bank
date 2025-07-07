@@ -26,10 +26,19 @@ return [
     'history-transactions-table' => "The transactions table shows a detailed history of all transactions made, allowing the user to filter, sort and search specific information about their financial movements.",
     'history-balances-table' => "The balances table shows a summary of the user's account balances, providing a clear view of their financial situation and facilitating tracking of their finances over time.",
 
-    'configuration-session-data' => "Session data stores temporary user information, this information is the API access Token and the request for transfers and balances.",
-    'configuration-accounts-update' => "Updating accounts from the API allows synchronizing user financial information with the most recent data, ensuring that the Control Panel reflects the current state of their finances.",
-    'configuration-update-all' => "Updating all balances and transactions from the API allows the user to keep their financial information up to date, ensuring that all accounts reflect the most recent and accurate data, facilitating effective financial management.",
-    'sortable-accounts' => "Sortable accounts allow the user to customize the layout of their accounts in the Control Panel, facilitating quick access to the most relevant financial information and adapting the interface to their personal preferences.",
+    'forecast-dashboard-sidebar' => "The Dashboard sidebar shows accounts for quick access to financial information for each one, facilitating navigation and control of personal finances.",
+    'forecast-paysheet-select' => "The paysheet select allows the user to choose a specific paysheet apply for the max income, facilitating access to detailed information about their income and expenses for that period.",
+    'forecast-average-month-expenses-excluding-categories' => "The average monthly expenses excluding categories shows the average of expenses for the selected month, excluding specific categories, allowing the user to analyze their financial behavior without considering certain expenses.",
+    'forecast-disable-transfers' => "Disabling transfers allows the user to exclude transfers between accounts from the forecast, focusing only on income and expenses, facilitating a clearer analysis of their financial situation.",
+    'forecast-apply-expenses-monthly' => "Applying monthly expenses allows the user to apply the average monthly expenses to the current month, facilitating financial planning and control of their personal finances.",
+    'forecast-chart-incomes-future' => "The future income chart shows the expected income for the next months, allowing the user to visualize their financial projections and plan their future finances effectively.",
+
+    'clock-current-time' => "The current time shows the current time in the user's timezone, providing a reference for scheduled tasks and financial management.",
+    'clock-schedule-times' => "Scheduled times are the times when tasks are executed to import transactions and balances, ensuring that the user's financial information is always up to date without requiring manual intervention.",
+
+    'requests-update-accounts' => "Updating accounts from the API allows synchronizing your accounts and financial information with the most recent data, ensuring that the Control Panel reflects the current state of their finances.",
+    'requests-update-all' => "Updating all balances and transactions from the API allows the user to keep their financial information up to date, ensuring that all accounts reflect the most recent and accurate data, facilitating effective financial management.",
+    'requests-sortable-accounts' => "Sortable accounts allow the user to customize the layout of their accounts in the Control Panel, facilitating quick access to the most relevant financial information and adapting the interface to their personal preferences.",
 
     'profile-navigation-profile' => "User profile information, including name, email and personal configuration options.",
     'profile-navigation-bank' => "Bank configuration, where the user can manage their bank accounts, themes and task scheduling.",
@@ -40,10 +49,21 @@ return [
     'profile-password-form' => "Password change form, allowing the user to update their current password to a new one.",
     'profile-delete-form' => "Profile deletion form, where the user can permanently delete their account, ensuring they understand the implications of this action.",
 
-    'bank-profile-bank' => "Bank settings, where the user can configure their bank.",
-    'bank-profile-chars' => "Control Panel Charts settings, allowing the user to customize the display of charts and statistics.",
-    'bank-profile-theme' => "Theme settings, where the user can select the visual theme of the Control Panel, customizing the appearance according to their preferences.",
-    'bank-profile-accounts-update' => "Account update settings, allowing the user to update their bank account information from the API through scheduled tasks.",
-    'bank-profile-accounts-info' => "Bank account information, with the total of API and manual accounts, plus the number of synchronizations performed on the current day.",
-    'bank-profile-lang' => "Language settings, allowing the user to select the interface language according to their preferences.",
+    'profile-accounts-create-account' => "Account creation form, allowing the user to create a new account with the necessary details.",
+    'profile-accounts-import' => "Import accounts from CSV or XLSX files, allowing the user to import account data in bulk.",
+    'profile-accounts-export' => "Export accounts to CSV or XLSX files, allowing the user to download their account data for backup or external use.",
+    'profile-accounts-forms' => "Account management forms, allowing the user to create, edit and delete accounts, as well as manage their transactions and balances only non api accounts.",
+    'profile-accounts-transactions-table' => "Transactions table for accounts, allowing the user to view, filter and manage transactions associated with their accounts.",
+    'profile-accounts-balances-table' => "Balances table for accounts, allowing the user to view, filter and manage balances associated with their accounts.",
+
+    'profile-categories-create' => "Create categories form, allowing the user to create new categories for their transactions.",
+    'profile-categories-update-transactions' => "Updat" . "e transactions categories form, allowing the user to set or change the categories associated with their transactions.",
+    'profile-categories-forms' => "Category management forms, allowing the user to create, edit and delete categories, as well as manage their filters.",
+
+    'configuration-profile-bank' => "Banking institution configuration, where the user can manage their banking institutions and add the necessary API keys to import accounts, transactions, and balances.",
+    'configuration-profile-chars' => "Control Panel Charts settings, allowing the user to customize the display of charts and statistics.",
+    'configuration-profile-theme' => "Theme settings, where the user can select the visual theme of the Control Panel, customizing the appearance according to their preferences.",
+    'configuration-profile-accounts-update' => "Account update settings, allowing the user to update their bank account information from the API through scheduled tasks.",
+    'configuration-profile-accounts-info' => "Bank account information, with the total of API and manual accounts, plus the number of synchronizations performed on the current day.",
+    'configuration-profile-lang' => "Language settings, allowing the user to select the interface language according to their preferences.",
 ];

@@ -1,6 +1,6 @@
 <nav class="sticky top-0 left-0 z-10 bg-main2 border-b border-third">
     <!-- Primary Navigation Menu -->
-    <div class="max-w-7xl mx-auto px-4 lg:px-6 lg:px-8">
+    <div class="max-w-7xl mx-auto px-4 lg:px-6">
         <div class="flex justify-between h-16">
             <div class="flex">
                 <!-- Navigation Links -->

@@ -7,15 +7,15 @@
                 <div class="flex items-center justify-center md:justify-start gap-4">
                     <x-links.nav-link class="uppercase px-4 py-2 cursor-pointer"
                                       x-data=""
-                                      x-on:click.prevent="$dispatch('open-modal', 'confirm-user-create')">
+                                      x-on:click.prevent="$dispatch('open-modal', 'confirm-user-create')" id="profile-accounts-create-account" shepherd-text="{{ trans('shepherd.profile-accounts-create-account') }}">
                         {{ __('Create Account') }}
                     </x-links.nav-link>
 
-                    <x-links.nav-link class="uppercase px-4 py-2" :href="route('profile.import.edit')" :active="request()->routeIs(['profile.import.edit'])">
+                    <x-links.nav-link class="uppercase px-4 py-2" :href="route('profile.import.edit')" :active="request()->routeIs(['profile.import.edit'])" id="profile-accounts-import" shepherd-text="{{ trans('shepherd.profile-accounts-import') }}">
                         {{ __('Import') }}
                     </x-links.nav-link>
 
-                    <x-links.nav-link class="uppercase px-4 py-2" :href="route('profile.export.edit')" :active="request()->routeIs(['profile.export.edit'])">
+                    <x-links.nav-link class="uppercase px-4 py-2" :href="route('profile.export.edit')" :active="request()->routeIs(['profile.export.edit'])" id="profile-accounts-export" shepherd-text="{{ trans('shepherd.profile-accounts-export') }}">
                         {{ __('Export') }}
                     </x-links.nav-link>
                 </div>
@@ -27,12 +27,14 @@
 
                 <!-- Show the accounts -->
                 @if (count($accounts) > 0)
-                    @foreach ($accounts as $account)
-                        @include('partials.profile.account', [
-                            'user' => $user,
-                            'account' => $account
-                        ])
-                    @endforeach
+                    <div id="profile-accounts-forms" shepherd-text="{{ trans('shepherd.profile-accounts-forms') }}">
+                        @foreach ($accounts as $account)
+                            @include('partials.profile.account', [
+                                'user' => $user,
+                                'account' => $account
+                            ])
+                        @endforeach
+                    </div>
                 @else
                     <x-ui.empty
                         :title="__('No accounts found')"
@@ -40,8 +42,8 @@
                 @endif
             @else
                 <x-ui.empty
-                    :title="__('No bank found')"
-                    :description="__('Please add a bank from update bank.')" />
+                    :title="__('No institutions found')"
+                    :description="__('Please add a institutions from configuration.', ['link' => route('profile.configuration.edit')])" />
             @endif
         </div>
     </div>

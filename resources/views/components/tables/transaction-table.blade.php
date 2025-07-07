@@ -11,9 +11,10 @@
     <table class="datatable min-w-full table-auto nowrap @if (!$noFooter) u-footer @endif" data-type="{{ $type }}" {{ $attributes->merge() }}>
         <thead>
             <tr>
+                <th class="py-2 dt-low-priority" data-column="institution" data-orderable="false">{{ __('Logo') }}</th>
                 <th class="py-2 dt-low-priority" data-column="iban" data-orderable="false">{{ __('IBAN') }}</th>
                 <th class="py-2" data-column="bookingDate">{{ __('Date') }}</th>
-                <th class="py-2 dt-low-priority" data-column="debtorName" data-orderable="false">{{ __('Deptor Name') }}</th>
+                <th class="py-2" data-column="debtorName" data-orderable="false">{{ __('Deptor Name') }}</th>
                 <th class="py-2 dt-low-priority" data-column="remittanceInformationUnstructured">{{ __('Transaction') }}</th>
                 <th class="py-2 dt-low-priority" data-column="category_id">{{ __('Category') }}</th>
                 <th class="py-2" data-column="transactionAmount_amount">{{ __('Amount') }}</th>
@@ -27,6 +28,7 @@
             @if ($type === 'static')
                 @foreach($transactions as $transaction)
                     <tr data-amount="{{ number_format($transaction->transactionAmount_amount, 2, ',', '.') }}">
+                        <td class="py-2"><img width="32" height="32" src="{{ $transaction->account->institution->logo }}" alt="" /></td>
                         <td class="py-2">{{ $transaction->account->iban }}</td>
                         <td class="py-2 dt-date" data-order="{{ $transaction->bookingDate->format('Y-m-d') }}">{{ $transaction->bookingDate->format('d-m-Y') }}</td>
                         <td class="py-2">{{ $transaction->debtorNameFormat }}</td>
@@ -51,6 +53,7 @@
             <tfoot>
                 <tr class="w-full font-bold">
                     <td class="py-2"><span class="md:block hidden">Total:</span></td>
+                    <td class="py-2"></td>
                     <td class="py-2"><span class="md:hidden">Total:</span></td>
                     <td class="py-2"></td>
                     <td class="py-2"></td>

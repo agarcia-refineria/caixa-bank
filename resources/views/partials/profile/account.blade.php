@@ -1,6 +1,6 @@
 @props(['user', 'account'])
 
-<form @if (isset($account)) action="{{ route('profile.account.update') }}" data-id="{{ $account->code }}" @else action="{{ route('profile.account.create') }}" @endif method="POST" class="relative md:px-0 px-6 bg-main2 rounded-lg py-6 @if (isset($account) && $account->isManual) border-2 border-main3 !drop-shadow-primary @endif ">
+<form @if (isset($account)) action="{{ route('profile.account.update') }}" data-id="{{ $account->code }}" @else action="{{ route('profile.account.create') }}" @endif method="POST" class="relative md:px-0 px-6 bg-main2 rounded-lg py-6 my-4 @if (isset($account) && $account->isManual) border-2 border-main3 !drop-shadow-primary @endif ">
     @csrf
 
     @if (isset($account))

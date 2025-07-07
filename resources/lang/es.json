@@ -260,5 +260,8 @@
     "You need to set the secret id and key on Configuration!": "Necesitas establecer el ID secreto y la clave en <a class='text-white font-semibold hover:text-main3' href=':link'>Configuración</a>!",
     "You can export your transactions, accounts and balances to CSV or XLSX files.": "Puedes exportar tus transacciones, cuentas y saldos a archivos CSV o XLSX.",
     "Please note that the export process may take some time, depending on the volume of information.": "Ten en cuenta que el proceso de exportación puede llevar algún tiempo, dependiendo del volumen de información.",
-    "The files exported represent the data from the database.": "Los archivos exportados representan los datos de la base de datos."
+    "The files exported represent the data from the database.": "Los archivos exportados representan los datos de la base de datos.",
+
+    "No institutions found": "No se encontraron instituciones",
+    "Please add a institutions from configuration.": "Por favor, agrega una institución desde <a class='text-white font-semibold hover:text-main3' href=':link'>Configuración</a>."
 }

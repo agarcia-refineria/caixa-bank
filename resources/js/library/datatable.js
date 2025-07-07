@@ -102,7 +102,7 @@ function requestDataTable() {
                 {targets: 'dt-date', type: 'date'},
                 {orderable: false, targets: 'no-sort'}
             ],
-            order: [[1, 'desc']]
+            order: [[2, 'desc']]
         });
     })
 }
@@ -128,7 +128,7 @@ function staticDataTable() {
             {targets: 'dt-date', type: 'date'},
             {orderable: false, targets: 'no-sort'}
         ],
-        order: [[1, 'desc']],
+        order: [[2, 'desc']],
         drawCallback: function (settings) {
             let api = this.api();
             let rows = api.rows({search: 'applied'}).count();

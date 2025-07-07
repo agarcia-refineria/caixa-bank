@@ -260,5 +260,8 @@
     "You need to set the secret id and key on Configuration!": "You need to set the secret id and key on <a class='text-white font-semibold hover:text-main3' href=':link'>Configuration</a>!",
     "You can export your transactions, accounts and balances to CSV or XLSX files.": "You can export your transactions, accounts and balances to CSV or XLSX files.",
     "Please note that the export process may take some time, depending on the volume of information.": "Please note that the export process may take some time, depending on the volume of information.",
-    "The files exported represent the data from the database.": "The files exported represent the data from the database."
+    "The files exported represent the data from the database.": "The files exported represent the data from the database.",
+
+    "No institutions found": "No institutions found",
+    "Please add a institutions from configuration.": "Please add a institutions from <a class='text-white font-semibold hover:text-main3' href=':link'>Configuration</a>."
 }

@@ -9,7 +9,7 @@
 
         <section class="min-h-screen w-full p-6">
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
-                <section class="bg-main2 px-[40px] py-[20px] rounded-xl shadow flex flex-col gap-2">
+                <section class="bg-main2 px-[40px] py-[20px] rounded-xl shadow flex flex-col gap-2" id="forecast-paysheet-select" shepherd-text="{{ trans('shepherd.forecast-paysheet-select') }}">
                     <x-inputs.input-label for="paysheet" :value="__('Paysheet')" />
                     <select onchange="setPaysheetAccount()" data-default="{{ __('-- Select an option --') }}" id="paysheet" name="paysheet" class="select2 form-control border-third bg-main3 text-primary rounded-md shadow-sm mt-1 block w-full">
                         <option value="" selected disabled>{{ __('-- Select an option --') }}</option>
@@ -21,7 +21,7 @@
                     </select>
                 </section>
 
-                <section class="bg-main2 px-[40px] py-[20px] rounded-xl shadow flex flex-col gap-2">
+                <section class="bg-main2 px-[40px] py-[20px] rounded-xl shadow flex flex-col gap-2" id="forecast-average-month-expenses-excluding-categories" shepherd-text="{{ trans('shepherd.forecast-average-month-expenses-excluding-categories') }}">
                     <x-inputs.input-label for="average_month_expenses" :value="__('Average Month Expenses')" />
                     <x-inputs.text-input
                         type="text"
@@ -32,7 +32,7 @@
                         readonly/>
                 </section>
 
-                <section class="bg-main2 px-[40px] py-[20px] rounded-xl shadow flex flex-col gap-2">
+                <section class="bg-main2 px-[40px] py-[20px] rounded-xl shadow flex flex-col gap-2" id="forecast-disable-transfers" shepherd-text="{{ trans('shepherd.forecast-disable-transfers') }}">
                     <x-inputs.input-label for="disable_transactions" :value="__('Disable Transfers')" />
                     <select onchange="setDisableTransactions()" data-default="{{ __('-- Select an option --') }}" id="disable_transactions" name="disable_transactions[]" multiple="multiple" class="select2 form-control border-third bg-main3 text-primary rounded-md shadow-sm mt-1 block w-full">
                         <option value="" disabled>{{ __('-- Select an option --') }}</option>
@@ -45,7 +45,7 @@
                 </section>
             </div>
 
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8" id="forecast-apply-expenses-monthly" shepherd-text="{{ trans('shepherd.forecast-apply-expenses-monthly') }}">
                 <div class="px-4">
                     <x-inputs.input-label for="apply_expenses_monthly" :value="__('Apply Expenses Monthly')" />
                     <x-inputs.checkbox id="apply_expenses_monthly" :active="$currentAccount->apply_expenses_monthly" name="apply_expenses_monthly" class="mt-2" />
@@ -53,7 +53,7 @@
                 </div>
             </div>
 
-            <div class="w-full">
+            <div class="w-full" id="forecast-chart-incomes-future" shepherd-text="{{ trans('shepherd.forecast-chart-incomes-future') }}">
                 <x-charts.chart-card
                     id="futureIncomeChart"
                     :title="__('Incomes Future History')"

@@ -5,7 +5,7 @@
         @if ($user->NORDIGEN_SECRET_ID && $user->NORDIGEN_SECRET_KEY)
             <div class="py-6">
                 <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 flex gap-4">
-                    <div class="w-full bg-main2 px-4 md:px-0 overflow-hidden shadow-sm rounded-lg">
+                    <div class="w-full bg-main2 px-4 md:px-0 overflow-hidden shadow-sm rounded-lg" id="requests-update-accounts" shepherd-text="{{ trans('shepherd.requests-update-accounts') }}">
                         <div>
                             <div class="{{ $class ?? 'max-w-7xl mx-auto sm:px-6 lg:px-8 pt-4' }} ">
                                 <h2 class="text-lg font-medium text-gray-100">
@@ -36,8 +36,8 @@
                     @if ($showUpdateAccounts)
                         <div class="w-full bg-main2 px-4 md:px-0 overflow-hidden shadow-sm rounded-lg">
                             <x-box.item
-                                id="configuration-update-all"
-                                :shepherd-text="trans('shepherd.configuration-update-all')"
+                                id="requests-update-all"
+                                :shepherd-text="trans('shepherd.requests-update-all')"
                                 :title="__('Transactions and balances update')"
                                 :description="__('This will add all the accounts balances and trasactions!')"
                                 :button="__('UPDATE ALL')"
@@ -47,7 +47,7 @@
                 </div>
             </div>
 
-            <div id="sortable-accounts" shepherd-text="{{trans('shepherd.sortable-accounts')}}"
+            <div id="requests-sortable-accounts" shepherd-text="{{trans('shepherd.requests-sortable-accounts')}}"
                  class="max-w-7xl mx-auto sm:px-6 lg:px-8 pb-4">
                 <p class="mt-1 text-sm text-secondary">
                     {{ __("You can reorder the accounts!") }}

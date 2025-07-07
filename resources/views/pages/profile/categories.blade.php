@@ -8,12 +8,13 @@
                     class="py-2"
                     x-data=""
                     x-on:click.prevent="$dispatch('open-modal', 'confirm-create-category')"
+                    id="profile-categories-create" shepherd-text="{{ trans('shepherd.profile-categories-create') }}"
                 >{{ __('Create Category') }}</x-buttons.primary-button>
                 <form id="update-transactions-form" action="{{ route('profile.categories.update-transactions') }}" method="POST" style="display: none;">
                     @csrf
                 </form>
 
-                <x-buttons.secondary-button class="py-2" onclick="document.getElementById('update-transactions-form').submit();">
+                <x-buttons.secondary-button class="py-2" onclick="document.getElementById('update-transactions-form').submit();" id="profile-categories-update-transactions" shepherd-text="{{ trans('shepherd.profile-categories-update-transactions') }}">
                     {{ __('Update Transactions') }}
                 </x-buttons.secondary-button>
             </div>
@@ -23,7 +24,7 @@
             </x-ui.modal>
 
             @if (count($categories) > 0)
-                <div class="grid grid-cols-12 gap-4">
+                <div class="grid grid-cols-12 gap-4" id="profile-categories-forms" shepherd-text="{{ trans('shepherd.profile-categories-forms') }}">
                     @foreach ($categories as $category)
                         <div x-data="{ show: false }" class="col-span-12 lg:col-span-6 flex flex-col gap-4">
                             <div class="bg-main2 border-main3 drop-shadow-primary border-2 shadow rounded-lg">

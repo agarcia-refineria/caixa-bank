@@ -5,15 +5,15 @@
         <div class="pb-6 md:px-0 px-4">
             <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 space-y-6">
                 <div class="flex items-center justify-center md:justify-start gap-4">
-                    <x-links.nav-link class="uppercase px-4 py-2" :href="route('profile.accounts.edit')" :active="request()->routeIs(['profile.accounts.edit'])">
+                    <x-links.nav-link class="uppercase px-4 py-2" :href="route('profile.accounts.edit')" :active="request()->routeIs(['profile.accounts.edit'])" id="profile-accounts-create-account" shepherd-text="{{ trans('shepherd.profile-accounts-create-account') }}">
                         {{ __('Accounts') }}
                     </x-links.nav-link>
 
-                    <x-links.nav-link class="uppercase px-4 py-2" :href="route('profile.import.edit')" :active="request()->routeIs(['profile.import.edit'])">
+                    <x-links.nav-link class="uppercase px-4 py-2" :href="route('profile.import.edit')" :active="request()->routeIs(['profile.import.edit'])" id="profile-accounts-import" shepherd-text="{{ trans('shepherd.profile-accounts-import') }}">
                         {{ __('Import') }}
                     </x-links.nav-link>
 
-                    <x-links.nav-link class="uppercase px-4 py-2" :href="route('profile.export.edit')" :active="request()->routeIs(['profile.export.edit'])">
+                    <x-links.nav-link class="uppercase px-4 py-2" :href="route('profile.export.edit')" :active="request()->routeIs(['profile.export.edit'])" id="profile-accounts-export" shepherd-text="{{ trans('shepherd.profile-accounts-export') }}">
                         {{ __('Export') }}
                     </x-links.nav-link>
                 </div>

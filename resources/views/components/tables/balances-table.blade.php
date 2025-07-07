@@ -11,11 +11,12 @@
     <table class="datatable min-w-full table-auto nowrap text-left  @if (!$noFooter) u-footer @endif" data-type="{{ $type }}" {{ $attributes->merge() }}>
         <thead>
             <tr>
-                <th class="py-2" data-column="iban" data-orderable="false">{{ __('IBAN') }}</th>
+                <th class="py-2 dt-low-priority" data-column="institution" data-orderable="false">{{ __('Logo') }}</th>
+                <th class="py-2 dt-low-priority" data-column="iban" data-orderable="false">{{ __('IBAN') }}</th>
                 <th class="py-2" data-column="reference_date">{{ __('Reference Date') }}</th>
-                <th class="py-2" data-column="balance_type">{{ __('Balance Type') }}</th>
+                <th class="py-2 dt-low-priority" data-column="balance_type">{{ __('Balance Type') }}</th>
                 <th class="py-2" data-column="currency">{{ __('Currency') }}</th>
-                <th class="py-2 dt-low-priority" data-column="amount">{{ __('Amount') }}</th>
+                <th class="py-2" data-column="amount">{{ __('Amount') }}</th>
 
                 @if ($actions)
                     <th class="py-2 dt-low-priority" data-column="actions" data-orderable="false" data-searchable="false">{{ __('Actions') }}</th>
@@ -26,6 +27,7 @@
             @if ($type === 'static')
                 @foreach($balances as $balance)
                     <tr>
+                        <td class="py-2"><img width="32" height="32" src="{{ $balance->account->institution->logo }}" alt="{{ $balance->account->institution->name }}" /></td>
                         <td class="py-2">{{ $balance->account->iban }}</td>
                         <td class="py-2">{{ $balance->reference_date->format('d-m-Y') }}</td>
                         <td class="py-2">{{ $balance->balance_type }}</td>
@@ -50,6 +52,7 @@
             <tfoot>
                 <tr class="w-full font-bold">
                     <td class="py-2">Total:</td>
+                    <td class="py-2"></td>
                     <td class="py-2"></td>
                     <td class="py-2"></td>
                     <td class="py-2"></td>

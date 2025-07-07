@@ -65,9 +65,10 @@ class DatatableController extends Controller
             'recordsFiltered' => $recordsFiltered,
             'data' => $data->map(function ($account) {
                 $lastInstance = $account->balances()->balanceTypeForward($account)->lastInstance()->first();
-                $color = $lastInstance && $lastInstance->amount > 0 ? 'success' : 'error';
+                $color = $lastInstance && $lastInstance->amount == 0 ? 'white': ($lastInstance && $lastInstance->amount > 0 ? 'success' : 'error');
 
                 return [
+                    'institution' => '<img width="32" height="32" src="'. $account->institution->logo .'" alt="" />',
                     'iban' => $account->iban,
                     'owner_name' => $account->owner_name,
                     'balance' => $this::toColor(number_format($lastInstance ? $lastInstance->amount : 0, 2, ',', '.') . ' €', $color),
@@ -100,7 +101,7 @@ class DatatableController extends Controller
         $search = $request->input('search', '');
         $orderDir = $request->input('order_dir', 'desc');
 
-        $validOrderColumns = ['iban', 'reference_date', 'balance_type', 'amount', 'balance'];
+        $validOrderColumns = ['reference_date', 'balance_type', 'amount', 'balance'];
         $orderBy = $request->input('order_by', 'reference_date');
 
         if (!in_array($orderBy, $validOrderColumns)) {
@@ -144,9 +145,10 @@ class DatatableController extends Controller
             'recordsTotal' => $recordsTotal,
             'recordsFiltered' => $recordsFiltered,
             'data' => $data->map(function ($balance) {
-                $color = $balance->amount > 0 ? 'success' : 'error';
+                $color = $balance->amount == 0.00 ? 'white' : ($balance->amount > 0 ? 'success' : 'error');
 
                 return [
+                    'institution' => '<img width="32" height="32" src="'. $balance->account->institution->logo .'" alt="" />',
                     'iban' => $balance->account->iban,
                     'reference_date' => $balance->reference_date->format('d-m-Y'),
                     'balance_type' => $balance->balance_type,
@@ -187,7 +189,7 @@ class DatatableController extends Controller
         $search = $request->input('search', '');
         $orderDir = $request->input('order_dir', 'desc');
 
-        $validOrderColumns = ['iban', 'bookingDate', 'debtorName', 'remittanceInformationUnstructured', 'category_id', 'transactionAmount_amount'];
+        $validOrderColumns = ['bookingDate', 'debtorName', 'remittanceInformationUnstructured', 'category_id', 'transactionAmount_amount'];
         $orderBy = $request->input('order_by', 'bookingDate');
 
         if (!in_array($orderBy, $validOrderColumns)) {
@@ -233,10 +235,12 @@ class DatatableController extends Controller
             'recordsTotal' => $recordsTotal,
             'recordsFiltered' => $recordsFiltered,
             'data' => $data->map(function ($transaction) {
-                $color = $transaction->transactionAmount_amount > 0 ? 'success' : 'error';
+                $color = $transaction->transactionAmount_amount == 0.00 ? 'white' : ($transaction->transactionAmount_amount > 0 ? 'success' : 'error');
+                $account = $transaction->account;
 
                 return [
-                    'iban' => $transaction->account->iban,
+                    'institution' => '<img width="32" height="32" src="'. $account->institution->logo .'" alt="" />',
+                    'iban' => $account->iban,
                     'bookingDate' => $transaction->bookingDate->format('d-m-Y'),
                     'debtorName' => $transaction->debtorNameFormat,
                     'remittanceInformationUnstructured' => json_decode($transaction->remittanceInformationUnstructured) ? json_decode($transaction->remittanceInformationUnstructured)[0] : '--',
@@ -244,8 +248,8 @@ class DatatableController extends Controller
                     'category_id' => $transaction->category ? $transaction->category->name : __('Sin categoría'),
                     'actions' => view('partials.datatable.transaction-actions', [
                         'transaction' => $transaction,
-                        'account' => $transaction->account,
-                        'user' => $transaction->account->user,
+                        'account' => $account,
+                        'user' => $account->user,
                     ])->render(),
                 ];
             }),
