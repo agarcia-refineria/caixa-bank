@@ -65,7 +65,11 @@ class DatatableController extends Controller
             'recordsFiltered' => $recordsFiltered,
             'data' => $data->map(function ($account) {
                 $lastInstance = $account->balances()->balanceTypeForward($account)->lastInstance()->first();
-                $color = $lastInstance && $lastInstance->amount == 0 ? 'white': ($lastInstance && $lastInstance->amount > 0 ? 'success' : 'error');
+                if (!$lastInstance) {
+                    $color = 'white';
+                } else {
+                    $color = $lastInstance->amount == 0 ? 'white' : ($lastInstance->amount > 0 ? 'success' : 'error');
+                }
 
                 return [
                     'institution' => '<img width="32" height="32" src="'. $account->institution->logo .'" alt="" />',
@@ -145,7 +149,7 @@ class DatatableController extends Controller
             'recordsTotal' => $recordsTotal,
             'recordsFiltered' => $recordsFiltered,
             'data' => $data->map(function ($balance) {
-                $color = $balance->amount == 0.00 ? 'white' : ($balance->amount > 0 ? 'success' : 'error');
+                $color = $balance->amount == 0 ? 'white' : ($balance->amount > 0 ? 'success' : 'error');
 
                 return [
                     'institution' => '<img width="32" height="32" src="'. $balance->account->institution->logo .'" alt="" />',
@@ -235,7 +239,7 @@ class DatatableController extends Controller
             'recordsTotal' => $recordsTotal,
             'recordsFiltered' => $recordsFiltered,
             'data' => $data->map(function ($transaction) {
-                $color = $transaction->transactionAmount_amount == 0.00 ? 'white' : ($transaction->transactionAmount_amount > 0 ? 'success' : 'error');
+                $color = $transaction->transactionAmount_amount == 0 ? 'white' : ($transaction->transactionAmount_amount > 0 ? 'success' : 'error');
                 $account = $transaction->account;
 
                 return [
