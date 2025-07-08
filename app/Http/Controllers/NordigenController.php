@@ -159,6 +159,7 @@ class NordigenController extends Controller
                     'last_accessed' => Carbon::parse($accountData['last_accessed'])->format('Y-m-d H:i:s'),
                     'institution_id' => $institution->id,
                     'user_id' => $user->id,
+                    'authorized_at' => Carbon::now()->format('Y-m-d H:i:s'),
                 ]);
             } else {
                 Account::create([

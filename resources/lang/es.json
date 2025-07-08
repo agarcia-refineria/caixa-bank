@@ -289,5 +289,8 @@
     "Search Institution...": "Buscar Institución...",
 
     "Para conseguir el SECRET ID y el SECRET KEY debes de ir a <strong>GoCardless</strong> y iniciar session, despues ir a Developers -> User Secrets y crear o usar una cuenta para el Secret Id y Secret Key. Una vez hecho, vuelve a esta página y inserta estos datos en los inputs de bajado y guardalo.": "Para conseguir el <strong>SECRET ID</strong> y el <strong>SECRET KEY</strong> debes ir a <strong>GoCardless</strong> e iniciar sesión, luego ir a Developers -> User Secrets y crear o usar una cuenta para el Secret Id y Secret Key. Una vez hecho esto, vuelve a esta página e inserta estos datos en los campos correspondientes y guárdalo.",
-    "This institution will retrieve all the transactions from :date. Total :days days": "Esta institución recuperará todas las transacciones desde :date. Total :days días"
+    "This institution will retrieve all the transactions from :date. Total :days days": "Esta institución recuperará todas las transacciones desde :date. Total :days días",
+    "Authorization needed on :date": "Autorización necesaria el :date",
+    "Authorization needed": "Autorización necesaria",
+    "You need to update this account on update accounts button": "Necesitas actualizar esta cuenta en el botón de <strong>ACTUALIZAR CUENTAS</strong>."
 }

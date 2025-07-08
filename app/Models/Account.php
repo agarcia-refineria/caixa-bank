@@ -32,6 +32,7 @@ use App\Helpers\ColorHelper;
  * @property string $type
  * @property boolean $apply_expenses_monthly
  * @property string $paysheet_id
+ * @property Carbon $authorized_at
  * @property-read Collection<int, Balance> $balances
  * @property-read int|null $balances_count
  * @property-read Collection<int, BankDataSync> $bankDataSync
@@ -110,6 +111,7 @@ class Account extends Model
         'last_accessed' => 'datetime',
         'transactions_disabled_date' => 'datetime',
         'balance_disabled_date' => 'datetime',
+        'authorized_at' => 'datetime',
     ];
 
     protected $fillable = [
@@ -124,7 +126,8 @@ class Account extends Model
         'institution_id',
         'type',
         'user_id',
-        'order'
+        'order',
+        'authorized_at',
     ];
 
     /**
@@ -293,6 +296,24 @@ class Account extends Model
     public function scopeOnlyType($query, $type)
     {
         return $query->where('type', $type);
+    }
+
+    /**
+     * Determine if the account is authorized.
+     *
+     * @noinspection PhpUnused
+     * @return bool
+     * @property-read bool $is_authorized
+     *
+     * @property Carbon|null $authorized_at
+     */
+    public function getIsAuthorizedAttribute(): bool
+    {
+        if ($this->authorized_at === null) {
+            return false;
+        }
+
+        return $this->authorized_at->diffInDays(now()) <= $this->institution->max_access_valid_for_days;
     }
 
     /**

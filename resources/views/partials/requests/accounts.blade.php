@@ -12,66 +12,74 @@
 
 
             @if ($account->is_api)
-                <p class="mt-2 text-sm text-secondary py-2 sm:px-6 lg:px-8">
-                    {{ __('This institution will retrieve all the transactions from :date. Total :days days', [
-                            'date' => now()->subDays($account->institution->transaction_total_days)->format('d-m-Y'),
-                            'days' => $account->institution->transaction_total_days
+                <p class="mt-2 text-sm  @if ($account->IsAuthorized) text-secondary @else text-error @endif py-2 sm:px-6 lg:px-8">
+                    {{ __('Authorization needed on :date', [
+                            'date' => $account->authorized_at->addDays($account->institution->max_access_valid_for_days)->format('d-m-Y'),
                         ])
                      }}
                 </p>
 
-                <!-- Show the account buttons -->
-                <div class="flex md:flex-row flex-col gap-4 pt-2 pb-6 sm:px-6 lg:px-8">
-                    <!-- Show the update all button -->
-                    @if ($account->show_update_all)
+                @if ($account->IsAuthorized)
+                    <!-- Show the account buttons -->
+                    <div class="flex md:flex-row flex-col gap-4 pt-2 pb-4 sm:px-6 lg:px-8">
+                        <!-- Show the update all button -->
+                        @if ($account->show_update_all)
+                            <x-box.item
+                                :title="__('Update all')"
+                                :description="__('This will add all the transactions and balances at the same time')"
+                                :button="__('UPDATE INFORMATION')"
+                                :link="route('nordigen.all', ['accountId' => $account->code])"
+                                class="bg-main2 overflow-hidden shadow-sm rounded-lg"/>
+                        @endif
+
+                        <!-- Show the transactions buttons -->
+                        <div class="bg-main2 overflow-hidden shadow-sm rounded-lg">
+                            @if ($account->transactions_disabled)
+                                <x-box.danger
+                                    text="[{{ __('Rate limit exceeded') }}: {{ $account->transactions_disabled_date->format('d-m-Y H:i:s') }}]" />
+                            @endif
+
+                            @include('partials.requests.request', [
+                                'title' => __('Transactions update'),
+                                'description' => __('This will add all the transactions'),
+                                'button' => __('UPDATE INFORMATION'),
+
+                                'account' => $account,
+                                'dataSyncCount' => $account->bank_data_sync_transactions_count,
+                                'disabled' => $account->transactions_disabled,
+                                'last' => $account->bankDataSync()->dataTypeTransaction()->latest()->first() ? $account->bankDataSync()->dataTypeTransaction()->latest()->first()->created_at->format('d-m-Y H:i:s') : __('No transactions found'),
+                                'link' => route('nordigen.transactions', ['accountId' => $account->code]),
+                            ])
+                        </div>
+
+                        <!-- Show the balances buttons -->
+                        <div class="bg-main2 overflow-hidden shadow-sm rounded-lg">
+                            @if ($account->balance_disabled)
+                                <x-box.danger
+                                    text="[{{ __('Rate limit exceeded') }}: {{ $account->balance_disabled_date->format('d-m-Y H:i:s') }}]" />
+                            @endif
+
+                            @include('partials.requests.request', [
+                                'title' => __('Balances update'),
+                                'description' => __('This will add all the balances'),
+                                'button' => __('UPDATE INFORMATION'),
+
+                                'account' => $account,
+                                'dataSyncCount' => $account->bank_data_sync_balances_count,
+                                'disabled' => $account->balance_disabled,
+                                'last' => $account->bankDataSync()->dataTypeBalance()->latest()->first() ? $account->bankDataSync()->dataTypeBalance()->latest()->first()->created_at->format('d-m-Y H:i:s') : __('No balances found'),
+                                'link' => route('nordigen.balances', ['accountId' => $account->code]),
+                            ])
+                        </div>
+                    </div>
+                @else
+                    <div class="flex md:flex-row flex-col gap-4 py-2 pb-6 sm:px-6 lg:px-8">
                         <x-box.item
-                            :title="__('Update all')"
-                            :description="__('This will add all the transactions and balances at the same time')"
-                            :button="__('UPDATE INFORMATION')"
-                            :link="route('nordigen.all', ['accountId' => $account->code])"
+                            :title="__('Authorization needed')"
+                            :description="__('You need to update this account on update accounts button')"
                             class="bg-main2 overflow-hidden shadow-sm rounded-lg"/>
-                    @endif
-
-                    <!-- Show the transactions buttons -->
-                    <div class="bg-main2 overflow-hidden shadow-sm rounded-lg">
-                        @if ($account->transactions_disabled)
-                            <x-box.danger
-                                text="[{{ __('Rate limit exceeded') }}: {{ $account->transactions_disabled_date->format('d-m-Y H:i:s') }}]" />
-                        @endif
-
-                        @include('partials.requests.request', [
-                            'title' => __('Transactions update'),
-                            'description' => __('This will add all the transactions'),
-                            'button' => __('UPDATE INFORMATION'),
-
-                            'account' => $account,
-                            'dataSyncCount' => $account->bank_data_sync_transactions_count,
-                            'disabled' => $account->transactions_disabled,
-                            'last' => $account->bankDataSync()->dataTypeTransaction()->latest()->first() ? $account->bankDataSync()->dataTypeTransaction()->latest()->first()->created_at->format('d-m-Y H:i:s') : __('No transactions found'),
-                            'link' => route('nordigen.transactions', ['accountId' => $account->code]),
-                        ])
                     </div>
-
-                    <!-- Show the balances buttons -->
-                    <div class="bg-main2 overflow-hidden shadow-sm rounded-lg">
-                        @if ($account->balance_disabled)
-                            <x-box.danger
-                                text="[{{ __('Rate limit exceeded') }}: {{ $account->balance_disabled_date->format('d-m-Y H:i:s') }}]" />
-                        @endif
-
-                        @include('partials.requests.request', [
-                            'title' => __('Balances update'),
-                            'description' => __('This will add all the balances'),
-                            'button' => __('UPDATE INFORMATION'),
-
-                            'account' => $account,
-                            'dataSyncCount' => $account->bank_data_sync_balances_count,
-                            'disabled' => $account->balance_disabled,
-                            'last' => $account->bankDataSync()->dataTypeBalance()->latest()->first() ? $account->bankDataSync()->dataTypeBalance()->latest()->first()->created_at->format('d-m-Y H:i:s') : __('No balances found'),
-                            'link' => route('nordigen.balances', ['accountId' => $account->code]),
-                        ])
-                    </div>
-                </div>
+                @endif
             @else
                 <div class="flex md:flex-row flex-col gap-4 py-6 sm:px-6 lg:px-8">
                     <x-box.item

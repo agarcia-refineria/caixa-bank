@@ -5,7 +5,7 @@
         </h2>
 
         <p class="mt-1 text-sm text-gray-400">
-            {{ $description }}
+            {!! $description !!}
         </p>
     </div>
 
