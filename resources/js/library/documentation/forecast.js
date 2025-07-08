@@ -1,14 +1,14 @@
 window.loadForecastTour = loadForecastTour;
 
-function loadForecastTour() {
+function loadForecastTour(tour) {
     let routeName = window.routeName;
 
     if (routeName === "dashboard.forecast" || routeName === "dashboard.forecastShow") {
-        addStep('forecast-dashboard-sidebar');
-        addStep('forecast-paysheet-select');
-        addStep('forecast-average-month-expenses-excluding-categories');
-        addStep('forecast-disable-transfers');
-        addStep('forecast-apply-expenses-monthly');
-        addStep('forecast-chart-incomes-future');
+        addStep(tour,'forecast-dashboard-sidebar');
+        addStep(tour,'forecast-paysheet-select');
+        addStep(tour,'forecast-average-month-expenses-excluding-categories');
+        addStep(tour,'forecast-disable-transfers');
+        addStep(tour,'forecast-apply-expenses-monthly');
+        addStep(tour,'forecast-chart-incomes-future');
     }
 }

@@ -1,11 +1,11 @@
 window.loadProfileTour = loadProfileTour;
 
-function loadProfileTour() {
+function loadProfileTour(tour) {
     let routeName = window.routeName;
 
     if (routeName === "profile.edit") {
-        addStep('profile-information-form');
-        addStep('profile-password-form');
-        addStep('profile-delete-form');
+        addStep(tour,'profile-information-form');
+        addStep(tour,'profile-password-form');
+        addStep(tour,'profile-delete-form');
     }
 }

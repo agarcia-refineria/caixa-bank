@@ -1,11 +1,11 @@
 window.loadRequestsTour = loadRequestsTour;
 
-function loadRequestsTour() {
+function loadRequestsTour(tour) {
     let routeName = window.routeName;
 
     if (routeName === "dashboard.requests") {
-        addStep('requests-update-accounts');
-        addStep('requests-update-all');
-        addStep('requests-sortable-accounts');
+        addStep(tour,'requests-update-accounts');
+        addStep(tour,'requests-update-all');
+        addStep(tour,'requests-sortable-accounts');
     }
 }

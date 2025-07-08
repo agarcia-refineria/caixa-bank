@@ -6,7 +6,7 @@ $(document).ready(function() {
     $('.select2').each(function (index, select2) {
         $(select2).select2({
             placeholder: select2.getAttribute('data-default'),
-            allowClear: true
+            allowClear: true,
         });
     });
 

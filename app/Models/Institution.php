@@ -11,7 +11,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
 /**
- * 
+ *
  *
  * @property int $id
  * @property string $code
@@ -53,7 +53,7 @@ class Institution extends Model
         'name',
         'bic',
         'transaction_total_days',
-        'country',
+        'countries',
         'logo',
         'max_access_valid_for_days',
     ];
@@ -66,5 +66,33 @@ class Institution extends Model
     public function users(): BelongsToMany
     {
         return $this->belongsToMany(UserInstitution::class, 'user_institution', 'institution_id', 'user_id');
+    }
+
+    public static function getInstitutionsGroupedByCountry(): array
+    {
+        $institutions = Institution::orderBy('name')
+            ->get();
+
+        $grouped = [];
+
+        foreach ($institutions as $institution) {
+            $countries = json_decode($institution->countries);
+
+            foreach ($countries as $country) {
+                $country = trim($country);
+
+                // Ensure the country is not empty and is a valid string
+                if (empty($country) || $country === 'XX') {
+                    continue;
+                }
+
+                if (!isset($grouped[$country])) {
+                    $grouped[$country] = [];
+                }
+                $grouped[$country][] = $institution;
+            }
+        }
+
+        return $grouped;
     }
 }

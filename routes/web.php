@@ -44,6 +44,7 @@ Route::middleware(['auth', 'web'])->group(function () {
     Route::get('/profile/configuration', [ConfigurationController::class, 'edit'])->name('profile.configuration.edit');
     Route::post('/profile/apikey/view', [ConfigurationController::class, 'viewApi'])->name('profile.configuration.viewApi');
     Route::patch('/profile/configuration', [ConfigurationController::class, 'update'])->name('profile.configuration.update');
+    Route::patch('/profile/configuration/institutions', [ConfigurationController::class, 'institutions'])->name('profile.configuration.institutions');
     Route::patch('/profile/configuration/chars', [ConfigurationController::class, 'chars'])->name('profile.configuration.chars');
     Route::patch('/profile/configuration/theme', [ConfigurationController::class, 'theme'])->name('profile.configuration.theme');
     Route::patch('/profile/configuration/lang', [ConfigurationController::class, 'lang'])->name('profile.configuration.lang');
@@ -128,7 +129,7 @@ Route::middleware(['auth', 'web'])->group(function () {
     Route::get('/nordigen/update/{accountId}', [NordigenController::class, 'update'])->name('nordigen.all');
     Route::get('/nordigen/update', [NordigenController::class, 'updateAll'])->name('nordigen.all_accounts');
 
-    Route::post('/nordigen/institutions', [NordigenController::class, 'insertInstitutions'])->name('nordigen.institutions');
+    Route::get('/nordigen/institutions', [NordigenController::class, 'insertInstitutions'])->name('nordigen.institutions');
 });
 
 

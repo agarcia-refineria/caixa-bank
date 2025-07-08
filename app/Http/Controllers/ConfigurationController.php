@@ -78,14 +78,27 @@ class ConfigurationController extends Controller
         ]);
         $user->save();
 
-        try {
-            // Delete existing user institutions
-            UserInstitution::where('user_id', $user->id)->whereNotIn('institution_id', request('institutions') ?? [])->delete();
+        // Execute Nordigen API call to add institutions table
+        return Redirect::route('nordigen.institutions');
+    }
 
+    public function institutions(): RedirectResponse
+    {
+        if (!auth()->check()) {
+            return Redirect::route('login');
+        }
+
+        $user = Auth::user();
+
+        try {
             if (\request()->has('institutions')) {
-                $institutions = request('institutions');
+                $institutions = request('institutions') ? explode(',', request('institutions')) : [];
+
+                // Delete existing user institutions
+                UserInstitution::where('user_id', $user->id)->whereNotIn('institution_id', $institutions ?? [])->delete();
 
                 foreach ($institutions as $institutionId) {
+
                     // Skip if the institution does not exist
                     $existingInstitution = Institution::find($institutionId);
                     if (!$existingInstitution) {
@@ -97,13 +110,10 @@ class ConfigurationController extends Controller
                         'institution_id' => $institutionId,
                     ]);
                 }
-
-                return Redirect::route('profile.configuration.edit')
-                    ->with('success', __('status.bankcontroller.update-account-success'));
             }
 
             return Redirect::route('profile.configuration.edit')
-                ->with('success', __('status.bankcontroller.update-account-success'));
+                ->with('success', __('status.bankcontroller.update-institutions-success'));
         } catch (Exception $e) {
             $user->getCustomLoggerAttribute('BankController')->error(
                 'Error function update()',
@@ -114,7 +124,7 @@ class ConfigurationController extends Controller
             );
 
             return Redirect::route('profile.configuration.edit')
-                ->with('error', __('status.bankcontroller.update-account-failed'));
+                ->with('error', __('status.bankcontroller.update-institutions-failed'));
         }
     }
 

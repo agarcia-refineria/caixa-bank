@@ -40,6 +40,9 @@ if (currentLocale) {
 console.log("Current Locale: "+ currentLocale);
 window.currentLocale = currentLocale;
 
+// COOKIE JS
+import '/resources/js/library/cookie.js';
+
 // SELECT2 JS
 import '/resources/js/library/select2.js';
 

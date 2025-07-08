@@ -60,7 +60,8 @@ return [
     'profile-categories-update-transactions' => "Updat" . "e transactions categories form, allowing the user to set or change the categories associated with their transactions.",
     'profile-categories-forms' => "Category management forms, allowing the user to create, edit and delete categories, as well as manage their filters.",
 
-    'configuration-profile-bank' => "Banking institution configuration, where the user can manage their banking institutions and add the necessary API keys to import accounts, transactions, and balances.",
+    'configuration-profile-secrets' => "API keys settings, allowing the user to manage their API keys for importing accounts, transactions and balances from their banking institutions.",
+    'configuration-profile-institutions' => "Banking institutions settings, allowing the user to manage their banking institutions and add the necessary API keys to import accounts, transactions, and balances.",
     'configuration-profile-chars' => "Control Panel Charts settings, allowing the user to customize the display of charts and statistics.",
     'configuration-profile-theme' => "Theme settings, where the user can select the visual theme of the Control Panel, customizing the appearance according to their preferences.",
     'configuration-profile-accounts-update' => "Account update settings, allowing the user to update their bank account information from the API through scheduled tasks.",

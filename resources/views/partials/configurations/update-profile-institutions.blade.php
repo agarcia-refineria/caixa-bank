@@ -1,108 +1,107 @@
 <section>
     <header>
         <h2 class="text-lg font-medium text-primary">
-            {{ __('Bank Information') }}
+            {{ __('Institutions Information') }}
         </h2>
 
         <p class="mt-1 text-sm text-secondary">
-            {!! __('Sino te aparece ningun entidad bancaria, debes de ir a <strong>GoCardless</strong> y iniciar session, despues ir a Developers -> User Secrets y crear o usar una cuenta para el Secret Id y Secret Key. Una vez hecho, vuelve a esta página y inserta estos datos en los inputs de bajado y guardalo. Ahora te aparezera el boton <strong>Actualizar lista</strong>, una vez le des click te mostrara la todas las entidades bancarias.') !!}
+            {{ __('Manage your bank institutions and their configurations.') }}
         </p>
-
-        <div class="flex gap-4 mt-4">
-            @if ($user->NORDIGEN_SECRET_ID && $user->NORDIGEN_SECRET_KEY)
-                <form method="post" action="{{ route('nordigen.institutions') }}">
-                    @csrf
-                    <x-buttons.primary-button class="mt-2">{{ __('Update List') }}</x-buttons.primary-button>
-                </form>
-            @endif
-
-            <x-links.nav-link href="https://bankaccountdata.gocardless.com/overview/" target="_blank">
-                GoCardless
-            </x-links.nav-link>
-        </div>
     </header>
 
-    <form id="send-verification" method="post" action="{{ route('verification.send') }}">
-        @csrf
-    </form>
-
-    <form method="post" action="{{ route('profile.configuration.update') }}" class="mt-6 space-y-6">
+    <form method="post" action="{{ route('profile.configuration.institutions') }}" class="mt-6 space-y-6">
         @csrf
         @method('patch')
 
+        <input type="hidden" name="institutions" value="{{ $user->institutions()->orderBy('name')->get()->pluck('id')->implode(',') }}" id="institutions">
+        <div id="institutions-info" data-empty="{{ __('No institutions found. Please add an institution.') }}" style="display: none">
+            @foreach ($user->institutions()->orderBy('name')->get() as $institution)
+                <div id="institution-{{ $institution->id }}" data-name="{{ $institution->name }}" data-logo="{{ $institution->logo }}" data-linked="true" style="display: none;"></div>
+            @endforeach
+        </div>
+
         <div>
-            <x-inputs.input-label for="institutions" :value="__('Institutions')" />
-            <select data-default="{{ __('-- Select an option --') }}" id="institutions" name="institutions[]" multiple class="select2 form-control border-third bg-main2 text-primary rounded-md shadow-sm mt-1 block w-full">
-                <option value="" disabled>{{ __('Select an institution') }}</option>
-                @foreach (\App\Models\Institution::all() as $institution)
-                    <option value="{{ $institution->id }}" {{ in_array($institution->id, $user->institutions->pluck('id')->toArray()) ? 'selected' : '' }}>
-                        {{ $institution->name }}
-                    </option>
-                @endforeach
-            </select>
-            <x-inputs.input-error class="mt-2" :messages="$errors->get('institutions')" />
-        </div>
+            <x-inputs.input-label for="country-select" :value="__('Institutions')" />
+            <div class="js-institutions flex flex-col gap-2">
+                @if (!$user->institutions()->orderBy('name')->get()->isEmpty())
+                    @foreach ($user->institutions()->orderBy('name')->get() as $institution)
+                        <div class="flex items-center justify-between p-2 bg-main2 text-white border-2 border-third rounded-md">
+                            <img width="32" height="32" src="{{ $institution->logo }}" alt="{{ $institution->name }}" class="inline-block mr-2">
+                            <span>{{ $institution->name }}</span>
+                            <button type="button" class="text-error hover:opacity-50" onclick="removeInstitution('{{ $institution->id }}')">
+                                &times;
+                            </button>
+                        </div>
+                    @endforeach
+                @else
+                    <p class="text-sm text-secondary">
+                        {{ __('No institutions found. Please add an institution.') }}
+                    </p>
+                @endif
+            </div>
 
-        <div class="grid grid-cols-2 gap-4">
-            @php
-                $NORDIGEN_SECRET_ID = $user->NORDIGEN_SECRET_ID ? '✅' : '❌';
-                $NORDIGEN_SECRET_KEY = $user->NORDIGEN_SECRET_KEY ? '✅' : '❌';
-            @endphp
-            <x-inputs.input :type="session('secret_id') ? 'text' : 'password'" value="{{ session('secret_id') }}" name="NORDIGEN_SECRET_ID" id="NORDIGEN_SECRET_ID" label="{{ __('SECRET ID') }} ({{ $NORDIGEN_SECRET_ID }})" />
-            <x-inputs.input :type="session('secret_key') ? 'text' : 'password'" value="{{ session('secret_key') }}" name="NORDIGEN_SECRET_KEY" id="NORDIGEN_SECRET_KEY" label="{{ __('SECRET KEY') }} ({{ $NORDIGEN_SECRET_KEY }})" />
-        </div>
-
-        <div class="flex items-center gap-4">
-            <x-buttons.primary-button>{{ __('Save') }}</x-buttons.primary-button>
-            <x-buttons.primary-button x-data="" x-on:click.prevent="$dispatch('open-modal', 'confirm-view-api-keys')">{{ __('View') }} {{ __('SECRET') }}</x-buttons.primary-button>
-
-            @if (session('status') === 'bank-updated')
-                <p
-                    x-data="{ show: true }"
-                    x-show="show"
-                    x-transition
-                    x-init="setTimeout(() => show = false, 2000)"
-                    class="text-sm text-secondary"
-                >{{ __('Saved.') }}</p>
-            @endif
+            <x-buttons.primary-button type="submit">
+                {{ __('Save') }}
+            </x-buttons.primary-button>
+            <x-buttons.primary-button class="mt-4" x-data="" x-on:click.prevent="$dispatch('open-modal', 'add-institution-countries')">
+                {{ __('Add Institution') }}
+            </x-buttons.primary-button>
         </div>
     </form>
 
-    <x-ui.modal name="confirm-view-api-keys" :show="$errors->apiKeysBag->isNotEmpty()" focusable>
-        <form id="confirm-view-api-keys" method="POST" action="{{ route('profile.configuration.viewApi') }}" class="p-6">
-            @csrf
-
-            <h2 class="text-lg font-medium text-primary">
-                {{ __('View api keys') }}
+    <x-ui.modal name="add-institution-countries" focusable>
+        <div class="p-6">
+            <h2 class="text-xl font-medium text-primary">
+                {{ __('Select your country') }}
             </h2>
 
-            <p class="mt-1 text-sm text-secondary">
-                {{ __('To ensure protected data you need to insert your user password.') }}
-            </p>
+            <x-inputs.text-input type="text" id="search-country" name="search-country" placeholder="{{ __('Search country...') }}" class="my-4 block w-full border-gray-300 rounded-md shadow-sm focus:border-primary focus:ring-primary" />
 
-            <div class="mt-6">
-                <x-inputs.input-label for="password" value="{{ __('Password') }}" class="sr-only" />
-
-                <x-inputs.text-input
-                    id="password"
-                    name="password"
-                    type="password"
-                    class="mt-1 block w-3/4"
-                    placeholder="{{ __('Password') }}"
-                />
-
-                <x-inputs.input-error :messages="$errors->downloadBag->get('password')" class="mt-2" />
+            <div class="mt-6 flex flex-col justify-center js-country-list">
+                @foreach(\App\Models\Institution::getInstitutionsGroupedByCountry() as $country => $institutions)
+                    <h3 class="text-lg text-primary py-4 border-t-[1px] border-white/50" data-searchable="{{ trans('countries.'.$country) }}">
+                        <span class="flex items-center gap-4 px-10 cursor-pointer" x-data="" x-on:click.prevent="$dispatch('open-modal', 'add-institution-fields')" onclick="setCountryInstitution('{{ $country }}')">
+                            <img src="https://flagcdn.com/24x18/{{ strtolower($country) }}.png" alt="{{ $country }}"/> {{ trans('countries.'.$country) }}
+                        </span>
+                    </h3>
+                @endforeach
             </div>
 
             <div class="mt-6 flex justify-end">
                 <x-buttons.secondary-button x-on:click="$dispatch('close')">
                     {{ __('Cancel') }}
                 </x-buttons.secondary-button>
-
-                <x-buttons.primary-button class="ms-3">
-                    {{ __('DOWNLOAD') }}
-                </x-buttons.primary-button>
             </div>
-        </form>
+        </div>
     </x-ui.modal>
+
+    <x-ui.modal name="add-institution-fields" focusable>
+        <div class="p-6">
+            <h2 class="text-xl font-medium text-primary">
+                {{ __('Select your institution') }}
+            </h2>
+
+            <x-inputs.text-input type="text" id="search-institutions" name="search-institutions" placeholder="{{ __('Search Institution...') }}" class="my-4 block w-full border-gray-300 rounded-md shadow-sm focus:border-primary focus:ring-primary" />
+
+            <div class="mt-6 flex flex-col justify-center js-institutions-list">
+                @foreach(\App\Models\Institution::getInstitutionsGroupedByCountry() as $country => $institutions)
+                    @foreach($institutions as $institution)
+                        <h3 data-country="{{ $country }}" class="text-lg text-primary py-4 border-t-[1px] border-white/50" data-searchable="{{ $institution->name }}">
+                            <span class="flex items-center gap-4 px-10 cursor-pointer" onclick="addInstitution('{{ $institution->id }}', '{{ $institution->name }}', '{{ $institution->logo }}')">
+                                <img width="32" height="32" src="{{ $institution->logo }}" alt="{{ $institution->name }}"/> {{ $institution->name }}
+                            </span>
+                        </h3>
+                    @endforeach
+                @endforeach
+            </div>
+
+            <div class="mt-6 flex justify-end">
+                <x-buttons.secondary-button x-on:click="$dispatch('close')">
+                    {{ __('Cancel') }}
+                </x-buttons.secondary-button>
+            </div>
+        </div>
+    </x-ui.modal>
+
+    @vite(['resources/js/institutions.js'])
 </section>

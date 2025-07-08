@@ -13,6 +13,7 @@ export default defineConfig({
                 'resources/css/fonts.css',
 
                 'resources/js/app.js',
+                'resources/js/institutions.js'
             ],
             refresh: true,
         }),

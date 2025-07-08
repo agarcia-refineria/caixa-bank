@@ -157,7 +157,7 @@ class User extends Authenticatable
      */
     public function getThemeMain3Attribute(): string
     {
-        return $this->theme['main3'] ?? '#364791';
+        return $this->theme['main3'] ?? '#03bab7';
     }
 
     /**

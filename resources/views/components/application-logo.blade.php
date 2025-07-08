@@ -1,1 +1,1 @@
-<img src="{{ asset('img/logo.png') }}" alt="Logo" class="rounded-full c-logo">
+<img src="{{ asset('img/logo.svg') }}" alt="Logo" class="rounded-full c-logo object-cover w-full h-full">

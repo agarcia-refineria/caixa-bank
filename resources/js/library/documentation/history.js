@@ -1,11 +1,11 @@
 window.loadHistoryTour = loadHistoryTour;
 
-function loadHistoryTour() {
+function loadHistoryTour(tour) {
     let routeName = window.routeName;
 
     if (routeName === "dashboard.history") {
-        addStep('history-accounts-table');
-        addStep('history-balances-table');
-        addStep('history-transactions-table');
+        addStep(tour,'history-accounts-table');
+        addStep(tour,'history-balances-table');
+        addStep(tour,'history-transactions-table');
     }
 }

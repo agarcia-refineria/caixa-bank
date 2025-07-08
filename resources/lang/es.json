@@ -269,5 +269,25 @@
     "To ensure protected data you need to insert your user password.": "Para garantizar datos protegidos, necesitas ingresar la contraseña de tu usuario.",
 
     "View": "Ver",
-    "View api keys": "Ver claves API"
+    "View api keys": "Ver claves API",
+
+    "No tienes instituciones disponibles para importar.": "No tienes instituciones disponibles para importar.",
+    "Por favor, agrega una institución primero en Configuracion.": "Por favor, agrega una institución primero en <a class='text-white font-semibold hover:text-main3 focus:outline-none' href=':link'>Configuracion</a>.",
+    "Please select an account from the sidebar to view your forecast. If there is no account on the sidebar go to requests to import the accounts.": "Por favor, selecciona una cuenta desde la barra lateral para ver tu previsión. Si no hay cuentas en la barra lateral, ve a <a class='text-white font-semibold hover:text-main3 focus:outline-none' href=':link'>Solicitudes</a> para importar las cuentas.",
+
+    "Secret Bank Information": "Información Secreta del Banco",
+    "Manage your bank secret information for Nordigen and GoCardless. Without this fields you cannot connect with your bank.": "Gestiona tu información secreta del banco para Nordigen y GoCardless. Sin estos campos no puedes conectarte con tu banco.",
+
+    "Institutions Information": "Información de Instituciones",
+    "Manage your bank institutions and their configurations.": "Gestiona tus instituciones bancarias y sus configuraciones.",
+    "Add Institution": "Agregar Institución",
+
+    "Select your country": "Selecciona tu país",
+    "Search country...": "Buscar país...",
+
+    "Select your institution": "Selecciona tu institución",
+    "Search Institution...": "Buscar Institución...",
+
+    "Para conseguir el SECRET ID y el SECRET KEY debes de ir a <strong>GoCardless</strong> y iniciar session, despues ir a Developers -> User Secrets y crear o usar una cuenta para el Secret Id y Secret Key. Una vez hecho, vuelve a esta página y inserta estos datos en los inputs de bajado y guardalo.": "Para conseguir el <strong>SECRET ID</strong> y el <strong>SECRET KEY</strong> debes ir a <strong>GoCardless</strong> e iniciar sesión, luego ir a Developers -> User Secrets y crear o usar una cuenta para el Secret Id y Secret Key. Una vez hecho esto, vuelve a esta página e inserta estos datos en los campos correspondientes y guárdalo.",
+    "This institution will retrieve all the transactions from :date. Total :days days": "Esta institución recuperará todas las transacciones desde :date. Total :days días"
 }

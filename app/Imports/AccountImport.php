@@ -48,6 +48,11 @@ class AccountImport implements ToModel, WithHeadingRow
                 'type' => Account::$accountTypes['manual'],
             ]);
         } else {
+            if ($existingAccount->type !== Account::$accountTypes['manual']) {
+                // If the account exists but is not a manual account, return null
+                return null;
+            }
+
             // If the account already exists for the user, update it
             $existingAccount->update([
                 'name' => $row['name'],

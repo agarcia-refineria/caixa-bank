@@ -1,19 +1,19 @@
 window.loadIndexTour = loadIndexTour;
 
-function loadIndexTour() {
+function loadIndexTour(tour) {
     let routeName = window.routeName;
 
     if (routeName === "dashboard.index" || routeName === "dashboard.show") {
-        addStep('index-total-amount');
-        addStep('index-dashboard-sidebar', 'right');
+        addStep(tour,'index-total-amount');
+        addStep(tour,'index-dashboard-sidebar', 'right');
 
-        addStep('index-stat-current');
-        addStep('index-stat-expenses');
-        addStep('index-stat-income');
+        addStep(tour,'index-stat-current');
+        addStep(tour,'index-stat-expenses');
+        addStep(tour,'index-stat-income');
 
-        addStep('categoryChart');
-        addStep('balanceChart');
+        addStep(tour,'categoryChart');
+        addStep(tour,'balanceChart');
 
-        addStep('index-transactions-table');
+        addStep(tour,'index-transactions-table');
     }
 }

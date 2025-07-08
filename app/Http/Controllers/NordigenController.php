@@ -208,9 +208,19 @@ class NordigenController extends Controller
             $account->transactions_disabled_date = null;
             $account->save();
 
-            $transactions = Http::withToken($accessToken)->get("$this->baseUrl/accounts/$accountId/transactions/")->json();
+            $totalDays = $account->institution->transaction_total_days;
+
+            $dateFrom = Carbon::now()->subDays($totalDays)->format('Y-m-d');
+            $dateTo = Carbon::now()->format('Y-m-d');
+
+            $transactions = Http::withToken($accessToken)->get("$this->baseUrl/accounts/$accountId/transactions/?date_from=$dateFrom&date_to=$dateTo")->json();
 
             if (isset($transactions['detail'])) {
+                Auth::user()->getCustomLoggerAttribute('nordigen')->error('Transactions fetch failed', [
+                    'account_id' => $accountId,
+                    'error' => $transactions['detail']
+                ]);
+
                 $account->transactions_disabled_date = $this->getSecondsFromString($transactions['detail']);
                 $account->save();
 
@@ -295,6 +305,11 @@ class NordigenController extends Controller
             $balances = Http::withToken($accessToken)->get("$this->baseUrl/accounts/$accountId/balances/")->json();
 
             if (isset($balances['detail'])) {
+                Auth::user()->getCustomLoggerAttribute('nordigen')->error('Balances fetch failed', [
+                    'account_id' => $accountId,
+                    'error' => $balances['detail']
+                ]);
+
                 $account->balance_disabled_date = $this->getSecondsFromString($balances['detail']);
                 $account->save();
 
@@ -421,6 +436,12 @@ class NordigenController extends Controller
      */
     public function insertInstitutions(): RedirectResponse
     {
+        if (!auth()->check()) {
+            return Redirect::route('login');
+        }
+
+        $user = Auth::user();
+
         $accessToken = session('access_token', $this->getAccessToken());
 
         $response = Http::withToken($accessToken)->get("$this->baseUrl/institutions/");
@@ -436,7 +457,7 @@ class NordigenController extends Controller
                 }
             }
         } else {
-            return Redirect::route('profile.configuration.edit')->with('error', __('status.nordigencontroller.institutions-error'));
+            return Redirect::route('profile.configuration.edit');
         }
 
         foreach ($institutions as $institution) {
@@ -453,6 +474,6 @@ class NordigenController extends Controller
             Institution::create($institutionData);
         }
 
-        return Redirect::route('profile.configuration.edit')->with('success', __('status.nordigencontroller.institutions-updated'));
+        return Redirect::route('profile.configuration.edit');
     }
 }

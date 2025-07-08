@@ -2,14 +2,26 @@
     @foreach ($accounts as $account)
         <div data-id="{{ $account->code }}" class="relative max-w-7xl md:px-0 px-4 mx-auto bg-main2 rounded-lg border-t-main3 border-b-main3 border-l-main3 border-r-main3 border-2 py-4 mt-4">
             <!-- Show the bank logo and name -->
-            <h2 class="flex gap-4 items-center text-lg font-medium text-primary w-full sm:px-6 lg:px-8 pb-3 border-b-main3 border-t-0 border-l-0 border-r-0 border-2">
-                <img src="{{ $account->institution->logo }}" alt="{{ $account->institution->name }}" width="32" height="32" class="h-8 w-8 mr-2">
-                {{ $account->institution?->name }} - {{ $account->iban }} <span class="md:block hidden">({{ $account->type }})</span>
-            </h2>
+            <div class="border-b-main3 border-t-0 border-l-0 border-r-0 border-2 w-full sm:px-6 lg:px-8 pb-3">
+                <h2 class="flex gap-4 items-center text-lg font-medium text-primary ">
+                    <img src="{{ $account->institution->logo }}" alt="{{ $account->institution->name }}" width="32" height="32" class="h-8 w-8 mr-2">
+                    {{ $account->institution?->name }} - {{ $account->iban }} <span class="md:block hidden">({{ $account->type }})</span>
+                    <br/>
+                </h2>
+            </div>
+
 
             @if ($account->is_api)
+                <p class="mt-2 text-sm text-secondary py-2 sm:px-6 lg:px-8">
+                    {{ __('This institution will retrieve all the transactions from :date. Total :days days', [
+                            'date' => now()->subDays($account->institution->transaction_total_days)->format('d-m-Y'),
+                            'days' => $account->institution->transaction_total_days
+                        ])
+                     }}
+                </p>
+
                 <!-- Show the account buttons -->
-                <div class="flex md:flex-row flex-col gap-4 py-6 sm:px-6 lg:px-8">
+                <div class="flex md:flex-row flex-col gap-4 pt-2 pb-6 sm:px-6 lg:px-8">
                     <!-- Show the update all button -->
                     @if ($account->show_update_all)
                         <x-box.item

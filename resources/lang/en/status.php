@@ -40,6 +40,8 @@ return [
         'lang-updated' => 'Bank language updated successfully',
         'lang-error' => 'An error occurred while updating the bank language',
         'view-api-keys' => 'API keys viewed successfully',
+        'update-institutions-success' => 'Institutions updated successfully',
+        'update-institutions-failed' => 'An error occurred while updating institutions',
     ],
     'nordigencontroller' => [
         'callback-success' => 'Callback received successfully',

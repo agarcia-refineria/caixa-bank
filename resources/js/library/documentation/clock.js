@@ -1,10 +1,10 @@
 window.loadClockTour = loadClockTour;
 
-function loadClockTour() {
+function loadClockTour(tour) {
     let routeName = window.routeName;
 
     if (routeName === "dashboard.clock") {
-        addStep('clock-current-time');
-        addStep('clock-schedule-times');
+        addStep(tour,'clock-current-time');
+        addStep(tour,'clock-schedule-times');
     }
 }

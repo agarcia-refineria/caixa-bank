@@ -2,7 +2,7 @@ import $ from "jquery";
 import Sortable from "sortablejs";
 
 $(document).ready(function () {
-    const container = document.getElementById('sortable-accounts');
+    const container = document.getElementById('requests-sortable-accounts');
     if (container && container instanceof HTMLElement) {
         console.log('Sortable is working!');
         Sortable.create(container, {

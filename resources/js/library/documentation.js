@@ -5,47 +5,82 @@ document.addEventListener('DOMContentLoaded', () => {
     const routeName = document.querySelector("head").getAttribute('dir');
     const nextTranslation = document.querySelector("head").getAttribute('next-translation');
     const closeTranslation = document.querySelector("head").getAttribute('close-translation');
-    let loadNavigation = false;
 
-    let tour = new Shepherd.Tour({
-        useModalOverlay: true,
-        defaultStepOptions: {
-            classes: 'c-shepherd',
-            scrollTo: false,
-        }
-    });
 
-    // Define navigation steps default
-    if (loadNavigation) {
-        addStep('navigation-panel-control');
-
-        addStep('navigation-history');
-
-        addStep('navigation-forecast');
-
-        addStep('navigation-clock');
-
-        addStep('navigation-configuration');
-
-        if (routeName === "dashboard.index" || routeName === "dashboard.show") {
-            addStep('navigation-month-selector');
-        }
-
-        addStep('navigation-lang-selector');
-
-        addStep('navigation-user-dropdown');
+    // Set cookies for navigation and profile true if they do not exist
+    if (!window.cookie.get('documentation_tour_navigation')) {
+        window.cookie.set('documentation_tour_navigation', 'true', { expires: 10 / (24 * 60) }); // Set cookie to expire in 10 minutes
     }
-
-    // Navigation steps for profile
-    if (loadNavigation && (routeName === "profile.edit" || routeName === "profile.configuration.edit" || routeName === "profile.accounts.edit" || routeName === "profile.categories")) {
-        addStep('profile-navigation-profile');
-        addStep('profile-navigation-bank');
-        addStep('profile-navigation-accounts');
-        addStep('profile-navigation-categories');
+    if (!window.cookie.get('documentation_tour_navigation_profile')) {
+        window.cookie.set('documentation_tour_navigation_profile', 'true', { expires: 10 / (24 * 60) }); // Set cookie to expire in 10 minutes
     }
 
     // Trigger tour start
     function startTour() {
+        let loadNavigation = window.cookie.get('documentation_tour_navigation') === 'true';
+        let loadNavigationProfile = window.cookie.get('documentation_tour_navigation_profile') === 'true';
+
+        let tour = new Shepherd.Tour({
+            useModalOverlay: true,
+            defaultStepOptions: {
+                classes: 'c-shepherd',
+                scrollTo: true,
+                scrollToHandler: function (element) {
+                    // Scroll to the element with a smooth behavior + 200 offset top
+                    const topOffset = 200;
+                    const elementPosition = element.getBoundingClientRect().top + window.pageYOffset;
+                    window.scrollTo({
+                        top: elementPosition - topOffset,
+                        behavior: 'smooth'
+                    });
+                }
+            }
+        });
+
+        // Define navigation steps default
+        if (loadNavigation) {
+            addStep(tour,'navigation-panel-control');
+
+            addStep(tour,'navigation-history');
+
+            addStep(tour,'navigation-forecast');
+
+            addStep(tour,'navigation-clock');
+
+            addStep(tour,'navigation-configuration');
+
+            if (routeName === "dashboard.index" || routeName === "dashboard.show") {
+                addStep(tour, 'navigation-month-selector');
+            }
+
+            addStep(tour,'navigation-lang-selector');
+
+            addStep(tour,'navigation-user-dropdown');
+
+            window.cookie.set('documentation_tour_navigation', 'false', { expires: 10 / (24 * 60) }); // Set cookie to expire in 10 minutes
+        }
+
+        // Navigation steps for profile
+        if (loadNavigationProfile && (routeName === "profile.edit" || routeName === "profile.configuration.edit" || routeName === "profile.accounts.edit" || routeName === "profile.categories")) {
+            addStep(tour, 'profile-navigation-profile');
+            addStep(tour, 'profile-navigation-accounts');
+            addStep(tour, 'profile-navigation-categories');
+            addStep(tour, 'profile-navigation-bank');
+
+            window.cookie.set('documentation_tour_navigation_profile', 'false', { expires: 10 / (24 * 60) }); // Set cookie to expire in 10 minutes
+        }
+
+        console.log("Load documentation tour for route:", routeName);
+        loadIndexTour(tour);
+        loadHistoryTour(tour);
+        loadForecastTour(tour);
+        loadClockTour(tour);
+        loadRequestsTour(tour);
+        loadProfileTour(tour);
+        loadProfileAccountsTour(tour);
+        loadProfileCategoriesTour(tour);
+        loadProfileConfigurationTour(tour);
+
         // Check if the tour has steps
         if (tour.steps.length === 0) {
             // If no steps are defined add a default step
@@ -56,7 +91,7 @@ document.addEventListener('DOMContentLoaded', () => {
         tour.start();
     }
 
-    function addStep(id, position = 'top', text = null) {
+    function addStep(tour, id, position = 'top', text = null) {
         if (!text) {
             text = document.querySelector(`#${id}`) ? document.querySelector(`#${id}`).getAttribute('shepherd-text') : '';
         }
@@ -86,21 +121,9 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    window.tour = tour;
     window.routeName = routeName;
     window.startTour = startTour;
     window.addStep = addStep;
-
-    console.log("Load documentation tour for route:", routeName);
-    loadIndexTour();
-    loadHistoryTour();
-    loadForecastTour();
-    loadClockTour();
-    loadRequestsTour();
-    loadProfileTour();
-    loadProfileAccountsTour();
-    loadProfileCategoriesTour();
-    loadProfileConfigurationTour();
 })
 
 // Index page

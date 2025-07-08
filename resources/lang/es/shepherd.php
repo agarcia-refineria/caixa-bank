@@ -60,7 +60,8 @@ return [
     'profile-categories-update-transactions' => "Actualizar categorías de transacciones, permitiendo al usuario aplicar las categorias creadas a todas las transacciones segun sus filtros.",
     'profile-categories-forms' => "Formularios de gestión de categorías, permitiendo al usuario crear, editar y eliminar categorías, así como gestionar los filtros asociados a esas categorías.",
 
-    'configuration-profile-bank' => "Configuración de instituciones bancarias, donde el usuario puede gestionar sus instituciones bancarias, ademas de añadir las claves api necesarias para la importación de cuentas, transacciones y balances.",
+    'configuration-profile-secrets' => "Ajustes de secretos, donde el usuario puede configurar las claves API y otros secretos necesarios para la integración con servicios externos.",
+    'configuration-profile-institutions' => "Ajustes de instituciones, permitiendo al usuario configurar las instituciones financieras con las que interactúa, facilitando la conexión y sincronización de datos.",
     'configuration-profile-chars' => "Ajustes de Graficos del Panel de Control, permitiendo al usuario personalizar la visualización de los gráficos y estadísticas.",
     'configuration-profile-theme' => "Ajustes del tema, donde el usuario puede seleccionar el tema visual del Panel de Control, personalizando la apariencia según sus preferencias.",
     'configuration-profile-accounts-update' => "Ajustes de actualización de cuentas, permitiendo al usuario actualizar la información de sus cuentas bancarias desde la API por tareas programadas.",
