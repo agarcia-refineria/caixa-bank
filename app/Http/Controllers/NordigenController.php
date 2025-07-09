@@ -209,12 +209,11 @@ class NordigenController extends Controller
             $account->transactions_disabled_date = null;
             $account->save();
 
-            $totalDays = $account->institution->transaction_total_days;
+            // $totalDays = $account->institution->transaction_total_days;
+            // $dateFrom = Carbon::now()->subDays($totalDays)->format('Y-m-d');
+            // $dateTo = Carbon::now()->format('Y-m-d');
 
-            $dateFrom = Carbon::now()->subDays($totalDays)->format('Y-m-d');
-            $dateTo = Carbon::now()->format('Y-m-d');
-
-            $transactions = Http::withToken($accessToken)->get("$this->baseUrl/accounts/$accountId/transactions/?date_from=$dateFrom&date_to=$dateTo")->json();
+            $transactions = Http::withToken($accessToken)->get("$this->baseUrl/accounts/$accountId/transactions")->json();
 
             if (isset($transactions['detail'])) {
                 Auth::user()->getCustomLoggerAttribute('nordigen')->error('Transactions fetch failed', [
