@@ -54,7 +54,12 @@ return [
         'institutions-error' => 'An error occurred while updating institutions',
         'missing-credentials' => 'Missing credentials for Nordigen',
         'token-error' => 'An error occurred while retrieving the token from Nordigen',
-        'institution-not-found' => 'Institution not found'
+        'institution-not-found' => 'Institution not found',
+        'account-not-found' => 'Account not found',
+        'transactions-fetch-failed' => 'An error occurred while fetching transactions',
+        'transactions-fetch-success' => 'Transactions fetched successfully',
+        'balances-fetch-failed' => 'An error occurred while fetching balances',
+        'balances-fetch-success' => 'Balances fetched successfully',
     ],
     'profilecontroller' => [
         'profile-updated' => 'Profile updated successfully',

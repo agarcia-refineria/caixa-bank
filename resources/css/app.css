@@ -23,3 +23,7 @@
 .c-logo__container {
     @apply w-[120px] h-[45px] block;
 }
+
+.alert-nordigen {
+    @apply text-[16px] border-[4px] border-main3 p-[15px] md:py-[40px] md:px-[60px] rounded-[20px] flex gap-[50px] top-[200px] !important;
+}

@@ -42,6 +42,7 @@ use Monolog\Logger;
  * @property-read mixed $balances
  * @property-read DatabaseNotificationCollection<int, DatabaseNotification> $notifications
  * @property-read int|null $notifications_count
+ * @property-read string $nordigen_response
  * @property-read Collection<int, ScheduledTasks> $schedule
  * @property-read int|null $schedule_count
  * @property-read Collection<int, PersonalAccessToken> $tokens
@@ -104,7 +105,8 @@ class User extends Authenticatable
         'theme',
         'NORDIGEN_SECRET_ID',
         'NORDIGEN_SECRET_KEY',
-        'lang'
+        'lang',
+        'nordigen_response'
     ];
 
 

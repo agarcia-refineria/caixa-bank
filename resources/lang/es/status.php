@@ -52,7 +52,12 @@ return [
         'institutions-error' => 'Ocurrió un error al actualizar las instituciones',
         'missing-credentials' => 'Faltan credenciales de Nordigen',
         'token-error' => 'Ocurrió un error al obtener el token de Nordigen',
-        'institution-not-found' => 'Institución no encontrada'
+        'institution-not-found' => 'Institución no encontrada',
+        'account-not-found' => 'Cuenta no encontrada',
+        'transactions-fetch-failed' => 'Ocurrió un error al obtener las transacciones',
+        'transactions-fetch-success' => 'Transacciones obtenidas exitosamente',
+        'balances-fetch-failed' => 'Ocurrió un error al obtener los balances',
+        'balances-fetch-success' => 'Balances obtenidos exitosamente',
     ],
     'profilecontroller' => [
         'profile-updated' => 'Perfil actualizado exitosamente',

@@ -6,6 +6,7 @@ use App\Models\Balance;
 use App\Models\BankDataSync;
 use App\Models\Institution;
 use App\Models\Transaction;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Auth;
@@ -198,9 +199,9 @@ class NordigenController extends Controller
      *
      * @param string $accountId The ID of the bank account whose transactions need to be synchronized.
      *
-     * @return RedirectResponse Redirects to the bank configuration page upon completion of the synchronization process.
+     * @return RedirectResponse|JsonResponse Redirects to the bank configuration page upon completion of the synchronization process.
      */
-    public function transactions(string $accountId): RedirectResponse
+    public function transactions(string $accountId, string $type = "redirect"): RedirectResponse|JsonResponse
     {
         $accessToken = session('access_token', $this->getAccessToken());
 
@@ -208,10 +209,6 @@ class NordigenController extends Controller
         if ($account && !$account->transactionsDisabled) {
             $account->transactions_disabled_date = null;
             $account->save();
-
-            // $totalDays = $account->institution->transaction_total_days;
-            // $dateFrom = Carbon::now()->subDays($totalDays)->format('Y-m-d');
-            // $dateTo = Carbon::now()->format('Y-m-d');
 
             $transactions = Http::withToken($accessToken)->get("$this->baseUrl/accounts/$accountId/transactions")->json();
 
@@ -224,7 +221,14 @@ class NordigenController extends Controller
                 $account->transactions_disabled_date = $this->getSecondsFromString($transactions['detail']);
                 $account->save();
 
-                return Redirect::route('dashboard.requests');
+                if ($type === 'json') {
+                    return response()->json([
+                        'status' => 'error',
+                        'message' => __('status.nordigencontroller.transactions-fetch-failed')
+                    ]);
+                }
+
+                return Redirect::route('dashboard.requests')->with('error', __('status.nordigencontroller.transactions-fetch-failed'));
             }
 
             $bookedTransactions = $transactions["transactions"]['booked'];
@@ -277,7 +281,14 @@ class NordigenController extends Controller
             ]);
         }
 
-        return Redirect::route('dashboard.requests');
+        if ($type === 'json') {
+            return response()->json([
+                'status' => 'success',
+                'message' => __('status.nordigencontroller.transactions-fetch-success')
+            ]);
+        }
+
+        return Redirect::route('dashboard.requests')->with('success', __('status.nordigencontroller.transactions-fetch-success'));
     }
 
     /**
@@ -291,9 +302,9 @@ class NordigenController extends Controller
      *
      * @param string $accountId The unique identifier of the account whose balances need to be synchronized.
      *
-     * @return RedirectResponse Redirects to the bank configuration page.
+     * @return RedirectResponse|JsonResponse Redirects to the bank configuration page or returns a JSON response with the status of the operation.
      */
-    public function balances(string $accountId): RedirectResponse
+    public function balances(string $accountId, string $type = "redirect"): RedirectResponse|JsonResponse
     {
         $accessToken = session('access_token', $this->getAccessToken());
 
@@ -313,7 +324,14 @@ class NordigenController extends Controller
                 $account->balance_disabled_date = $this->getSecondsFromString($balances['detail']);
                 $account->save();
 
-                return Redirect::route('dashboard.requests');
+                if ($type === 'json') {
+                    return response()->json([
+                        'status' => 'error',
+                        'message' => __('status.nordigencontroller.balances-fetch-failed')
+                    ]);
+                }
+
+                return Redirect::route('dashboard.requests')->with('success', __('status.nordigencontroller.balances-fetch-failed'));
             }
 
             foreach ($balances["balances"] as $bal) {
@@ -347,7 +365,14 @@ class NordigenController extends Controller
             ]);
         }
 
-        return Redirect::route('dashboard.requests');
+        if ($type === 'json') {
+            return response()->json([
+                'status' => 'success',
+                'message' => __('status.nordigencontroller.balances-fetch-success')
+            ]);
+        }
+
+        return Redirect::route('dashboard.requests')->with('success', __('status.nordigencontroller.balances-fetch-success'));
     }
 
     /**
@@ -382,10 +407,24 @@ class NordigenController extends Controller
      */
     public function update(string $accountId): RedirectResponse
     {
-        $this->transactions($accountId);
-        $this->balances($accountId);
+        $auth = Auth::user();
+        $account = Account::where('id', $accountId)->where('user_id', $auth->id)->onlyApi()->first();
 
-        return Redirect::route('dashboard.requests')->with('success', __('status.nordigencontroller.update-account-success'));
+        if ($account) {
+            $jsonTransactions[$account->iban] = $this->transactions($account->code, 'json');
+            $jsonBalances[$account->iban] = $this->balances($account->code, 'json');
+
+            // Merge the results into a single response message
+            $messages = [
+                'transactions' => $jsonTransactions,
+                'balances' => $jsonBalances,
+            ];
+
+            $auth->nordigen_response = json_encode($messages);
+            $auth->save();
+        }
+
+        return Redirect::route('dashboard.requests');
     }
 
     /**
@@ -406,15 +445,27 @@ class NordigenController extends Controller
         $accounts = Account::where('user_id', $user->id)->onlyApi()->get();
 
         if ($accounts->isEmpty()) {
-            return Redirect::route('dashboard.requests')->with('error', __('status.nordigencontroller.schedule-error'));
+            return Redirect::route('dashboard.requests')->with('error', __('status.nordigencontroller.accounts-not-found'));
         }
+
+        $jsonTransactions = [];
+        $jsonBalances = [];
 
         foreach ($accounts as $account) {
-            $this->transactions($account->code);
-            $this->balances($account->code);
+            $jsonTransactions[$account->iban] = $this->transactions($account->code, 'json');
+            $jsonBalances[$account->iban] = $this->balances($account->code, 'json');
         }
 
-        return Redirect::route('dashboard.requests')->with('success', __('status.nordigencontroller.schedule-updated'));
+        // Create message with $json array
+        $messages = [
+            'transactions' => $jsonTransactions,
+            'balances' => $jsonBalances,
+        ];
+
+        $user->nordigen_response = json_encode($messages);
+        $user->save();
+
+        return Redirect::route('dashboard.requests');
     }
 
     /**
@@ -439,8 +490,6 @@ class NordigenController extends Controller
         if (!auth()->check()) {
             return Redirect::route('login');
         }
-
-        $user = Auth::user();
 
         $accessToken = session('access_token', $this->getAccessToken());
 
