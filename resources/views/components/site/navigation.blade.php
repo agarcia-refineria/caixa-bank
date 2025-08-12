@@ -80,6 +80,10 @@
                             <x-inputs.dropdown-link :href="route('profile.configuration.edit')">
                                 {{ __('Configuration') }}
                             </x-inputs.dropdown-link>
+
+                            <x-inputs.dropdown-link :href="route('profile.logs')">
+                                {{ __('Logs') }}
+                            </x-inputs.dropdown-link>
                         @endif
 
                         <!-- Authentication -->
@@ -169,6 +173,10 @@
 
                     <x-links.responsive-nav-link :href="route('profile.categories')">
                         {{ __('Categories') }}
+                    </x-links.responsive-nav-link>
+
+                    <x-links.responsive-nav-link :href="route('profile.logs')">
+                        {{ __('Logs') }}
                     </x-links.responsive-nav-link>
 
                     <x-links.responsive-nav-link :href="route('profile.configuration.edit')">

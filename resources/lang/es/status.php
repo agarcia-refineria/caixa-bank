@@ -64,6 +64,10 @@ return [
         'profile-update-failed' => 'Ocurrió un error al actualizar el perfil',
         'profile-deleted' => 'Perfil eliminado exitosamente',
         'profile-delete-failed' => 'Ocurrió un error al eliminar el perfil',
+        'unauthorized-action' => 'Acción no autorizada',
+        'logs-clear-failed' => 'Ocurrió un error al limpiar los registros',
+        'logs-cleared' => 'Registros limpiados exitosamente',
+        'logs-not-found' => 'No se encontraron registros para limpiar',
     ],
     'transactionscontroller' => [
         'transaction-account-type-failed' => 'No puede editar transacciones para este tipo de cuenta.',

@@ -25,7 +25,11 @@
 
 @php
     $user = Auth::user();
-    $nordigenResponse = $user->nordigen_response;
+    if (!$user) {
+        $nordigenResponse = null;
+    } else {
+        $nordigenResponse = $user->nordigen_response;
+    }
 @endphp
 
 @if ($nordigenResponse)

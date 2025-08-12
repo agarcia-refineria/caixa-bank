@@ -23,6 +23,12 @@
                 </div>
 
                 <div class="hidden space-x-8 lg:-my-px lg:ms-10 lg:flex">
+                    <x-links.nav-link id="profile-navigation-logs" :shepherd-text="trans('shepherd.profile-navigation-logs')" :href="route('profile.logs')" :active="request()->routeIs(['profile.logs'])">
+                        {{ __('Logs') }}
+                    </x-links.nav-link>
+                </div>
+
+                <div class="hidden space-x-8 lg:-my-px lg:ms-10 lg:flex">
                     <x-links.nav-link id="profile-navigation-bank" :shepherd-text="trans('shepherd.profile-navigation-bank')" :href="route('profile.configuration.edit')" :active="request()->routeIs(['profile.configuration.edit'])">
                         {{ __('Configuration') }}
                     </x-links.nav-link>
@@ -46,6 +52,12 @@
                 <div class="pt-2 pb-3 space-y-1">
                     <x-links.responsive-nav-link :href="route('profile.categories')" :active="request()->routeIs(['profile.categories'])">
                         {{ __('Categories') }}
+                    </x-links.responsive-nav-link>
+                </div>
+
+                <div class="pt-2 pb-3 space-y-1">
+                    <x-links.responsive-nav-link :href="route('profile.logs')" :active="request()->routeIs(['profile.logs'])">
+                        {{ __('Logs') }}
                     </x-links.responsive-nav-link>
                 </div>
 

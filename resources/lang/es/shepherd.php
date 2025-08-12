@@ -44,6 +44,7 @@ return [
     'profile-navigation-bank' => "Configuración del banco, donde el usuario puede gestionar sus cuentas bancarias, temas y programación de tareas.",
     'profile-navigation-accounts' => "Administración de cuentas, permitiendo al usuario crear, editar y eliminar cuentas manualmente.",
     'profile-navigation-categories' => "Gestión de categorías, donde el usuario puede crear, editar y eliminar categorías ademas de añadir o cambiar filtros para las transacciones relacionadas con esas categorías.",
+    'profile-navigation-logs' => "Registro de actividad del usuario, donde se muestra un historial de acciones realizadas en el sistema, permitiendo al usuario revisar sus interacciones y cambios realizados en su perfil y configuraciones.",
 
     'profile-information-form' => "Formulario de información del perfil, donde el usuario puede actualizar su nombre y correo electrónico.",
     'profile-password-form' => "Formulario de cambio de contraseña, permitiendo al usuario actualizar su contraseña actual por una nueva.",

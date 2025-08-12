@@ -65,6 +65,7 @@ document.addEventListener('DOMContentLoaded', () => {
             addStep(tour, 'profile-navigation-profile');
             addStep(tour, 'profile-navigation-accounts');
             addStep(tour, 'profile-navigation-categories');
+            addStep(tour, 'profile-navigation-logs');
             addStep(tour, 'profile-navigation-bank');
 
             window.cookie.set('documentation_tour_navigation_profile', 'false', { expires: 10 / (24 * 60) }); // Set cookie to expire in 10 minutes

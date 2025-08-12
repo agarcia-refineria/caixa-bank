@@ -66,6 +66,10 @@ return [
         'profile-update-failed' => 'An error occurred while updating the profile',
         'profile-deleted' => 'Profile deleted successfully',
         'profile-delete-failed' => 'An error occurred while deleting the profile',
+        'unauthorized-action' => 'Unauthorized action',
+        'logs-clear-failed' => 'An error occurred while clearing logs',
+        'logs-cleared' => 'Logs cleared successfully',
+        'logs-not-found' => 'Logs not found',
     ],
     'transactionscontroller' => [
         'transaction-account-type-failed' => 'You cannot edit transactions for this account type.',

@@ -238,37 +238,29 @@ class NordigenController extends Controller
 
                 if ($transactionModel) {
                     $transactionModel->update([
-                        'entryReference' => $transaction['entryReference'],
-                        'checkId' => $transaction['checkId'] ?? null,
                         'bookingDate' => Carbon::parse($transaction['bookingDate'])->format('Y-m-d H:i:s'),
                         'valueDate' => Carbon::parse($transaction['valueDate'])->format('Y-m-d H:i:s'),
-                        'transactionAmount_amount' => $transaction['transactionAmount']['amount'],
-                        'transactionAmount_currency' => $transaction['transactionAmount']['currency'],
+                        'transactionAmount_amount' => (string) $transaction['transactionAmount']['amount'],
+                        'transactionAmount_currency' => (string) $transaction['transactionAmount']['currency'],
                         'remittanceInformationUnstructured' => isset($transaction['remittanceInformationUnstructuredArray']) ? json_encode($transaction['remittanceInformationUnstructuredArray']) : null,
-                        'bankTransactionCode' => $transaction['bankTransactionCode'] ?? null,
-                        'proprietaryBankTransactionCode' => $transaction['proprietaryBankTransactionCode'] ?? null,
-                        'internalTransactionId' => $transaction['internalTransactionId'] ?? null,
-                        'debtorName' => $transaction['debtorName'] ?? null,
-                        'debtorAccount' => $transaction['debtorAccount'] ?? null,
-                        'category_id' => Transaction::getCategoryId(isset($transaction['remittanceInformationUnstructuredArray']) ? json_encode($transaction['remittanceInformationUnstructuredArray']) : null),
+                        'debtorName' => isset($transaction['debtorName']) ? (string) $transaction['debtorName'] : null,
+                        'debtorAccount' => isset($transaction['debtorAccount']) ? json_encode($transaction['debtorAccount']) : null,
+                        'category_id' => isset($transaction['remittanceInformationUnstructuredArray']) ? Transaction::getCategoryId(json_encode($transaction['remittanceInformationUnstructuredArray'])) : null,
+                        'data' => json_encode($transaction, JSON_UNESCAPED_UNICODE)
                     ]);
                 } else {
                     Transaction::create([
-                        'id' => $transaction['transactionId'],
-                        'entryReference' => $transaction['entryReference'],
-                        'checkId' => $transaction['checkId'] ?? null,
+                        'id' => (string) str($transaction['transactionId']),
                         'bookingDate' => Carbon::parse($transaction['bookingDate'])->format('Y-m-d H:i:s'),
                         'valueDate' => Carbon::parse($transaction['valueDate'])->format('Y-m-d H:i:s'),
-                        'transactionAmount_amount' => $transaction['transactionAmount']['amount'],
-                        'transactionAmount_currency' => $transaction['transactionAmount']['currency'],
+                        'transactionAmount_amount' => (string) $transaction['transactionAmount']['amount'],
+                        'transactionAmount_currency' => (string) $transaction['transactionAmount']['currency'],
                         'remittanceInformationUnstructured' => isset($transaction['remittanceInformationUnstructuredArray']) ? json_encode($transaction['remittanceInformationUnstructuredArray']) : null,
-                        'bankTransactionCode' => $transaction['bankTransactionCode'] ?? null,
-                        'proprietaryBankTransactionCode' => $transaction['proprietaryBankTransactionCode'] ?? null,
-                        'internalTransactionId' => $transaction['internalTransactionId'] ?? null,
-                        'debtorName' => $transaction['debtorName'] ?? null,
-                        'debtorAccount' => $transaction['debtorAccount'] ?? null,
+                        'debtorName' => isset($transaction['debtorName']) ? (string) $transaction['debtorName'] : null,
+                        'debtorAccount' => isset($transaction['debtorAccount']) ? json_encode($transaction['debtorAccount']) : null,
                         'account_id' => $accountId,
-                        'category_id' => Transaction::getCategoryId(isset($transaction['remittanceInformationUnstructuredArray']) ? json_encode($transaction['remittanceInformationUnstructuredArray']) : null),
+                        'category_id' => isset($transaction['remittanceInformationUnstructuredArray']) ? Transaction::getCategoryId(json_encode($transaction['remittanceInformationUnstructuredArray'])) : null,
+                        'data' => json_encode($transaction, JSON_UNESCAPED_UNICODE)
                     ]);
                 }
             }
@@ -343,14 +335,14 @@ class NordigenController extends Controller
                 if ($balanceModel) {
                     $balanceModel->update([
                         'amount' => $bal['balanceAmount']['amount'],
-                        'currency' => $bal['balanceAmount']['currency'],
+                        'currency' => (string) $bal['balanceAmount']['currency'],
                         'reference_date' => Carbon::parse($bal['referenceDate'] ?? now())->format('Y-m-d H:i:s'),
                     ]);
                 } else {
                     Balance::create([
                         'amount' => $bal['balanceAmount']['amount'],
-                        'currency' => $bal['balanceAmount']['currency'],
-                        'balance_type' => $bal['balanceType'],
+                        'currency' => (string) $bal['balanceAmount']['currency'],
+                        'balance_type' => (string) $bal['balanceType'],
                         'reference_date' => Carbon::parse($bal['referenceDate'] ?? now())->format('Y-m-d H:i:s'),
                         'account_id' => $accountId,
                     ]);

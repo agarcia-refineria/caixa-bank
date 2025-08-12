@@ -11,19 +11,14 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Support\Carbon;
 
 /**
- * 
+ *
  *
  * @property int $id
- * @property string|null $entryReference
- * @property string|null $checkId
  * @property Carbon|null $bookingDate
  * @property Carbon|null $valueDate
  * @property string|null $transactionAmount_amount
  * @property string|null $transactionAmount_currency
  * @property string|null $remittanceInformationUnstructured
- * @property string|null $bankTransactionCode
- * @property string|null $proprietaryBankTransactionCode
- * @property string|null $internalTransactionId
  * @property string|null $debtorName
  * @property string|null $debtorAccount
  * @property string $account_id
@@ -63,24 +58,22 @@ class Transaction extends Model
     protected $casts = [
         'bookingDate' => 'datetime',
         'valueDate' => 'datetime',
+        'data' => 'json'
     ];
 
     protected $fillable = [
         'id',
-        'entryReference',
-        'checkId',
         'bookingDate',
         'valueDate',
         'transactionAmount_amount',
         'transactionAmount_currency',
         'remittanceInformationUnstructured',
-        'bankTransactionCode',
-        'proprietaryBankTransactionCode',
-        'internalTransactionId',
         'debtorName',
         'debtorAccount',
         'account_id',
         'category_id',
+
+        'data'
     ];
 
     public function account(): BelongsTo

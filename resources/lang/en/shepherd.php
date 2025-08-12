@@ -44,6 +44,7 @@ return [
     'profile-navigation-bank' => "Bank configuration, where the user can manage their bank accounts, themes and task scheduling.",
     'profile-navigation-accounts' => "Account management, allowing the user to create, edit and delete accounts manually.",
     'profile-navigation-categories' => "Category management, where the user can create, edit and delete categories as well as add or change filters for transactions related to those categories.",
+    'profile-navigation-logs' => "Log management, allowing the user to view and clear logs of actions performed in the Control Panel.",
 
     'profile-information-form' => "Profile information form, where the user can update their name and email.",
     'profile-password-form' => "Password change form, allowing the user to update their current password to a new one.",

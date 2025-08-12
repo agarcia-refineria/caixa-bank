@@ -97,6 +97,10 @@ Route::middleware(['auth', 'web'])->group(function () {
     Route::patch('/profile/categories/filter/{id}', [CategoriesController::class, 'updateFilter'])->name('profile.categories.filter.update');
     Route::delete('/profile/categories/filter/{id}', [CategoriesController::class, 'destroyFilter'])->name('profile.category.filter.destroy');
 
+    // Profile [Logs routes]
+    Route::get('/profile/logs', [ProfileController::class, 'logs'])->name('profile.logs');
+    Route::post('/profile/logs/clear', [ProfileController::class, 'clearLogs'])->name('profile.logs.clear');
+
     // Profile [Datatable routes]
     Route::get('/datatable/accounts', [DatatableController::class, 'accounts'])->name('api.datatable.accounts');
     Route::get('/datatable/balances/{id?}', [DatatableController::class, 'balances'])->name('api.datatable.balances');
